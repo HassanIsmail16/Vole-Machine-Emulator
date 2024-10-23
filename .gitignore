@@ -55,3 +55,4 @@ test/test_runner
 ## vs
 .vs/
 x64/
+/x64/
