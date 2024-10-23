@@ -50,3 +50,8 @@ build/**/*
 include/*
 bin/*
 test/test_runner
+
+
+## vs
+.vs/
+x64/
