@@ -5,6 +5,7 @@
 #include <string>
 #include <array>
 #include <memory>
+#include <sstream>
 #include <unordered_map>
 
 typedef std::shared_ptr<std::array<StorageUnit, 256>> MemoryPtr;
