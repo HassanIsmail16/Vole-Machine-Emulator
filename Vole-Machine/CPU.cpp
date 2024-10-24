@@ -56,3 +56,29 @@ void CPU::storeInMemory(std::string operands) {
 	(*this->memory_interface)[XY].setValue(this->registers[R].getValue());
 }
 
+void CPU::addTwoComplement(std::string operands) {
+	size_t R = hexToDec(std::to_string(operands[0]));
+	size_t S = hexToDec(std::to_string(operands[1]));
+	size_t T = hexToDec(std::to_string(operands[2]));
+
+	int valueS = std::stoi(registers[S].getValue(), nullptr, 16); // Convert hex to int
+	int valueT = std::stoi(registers[T].getValue(), nullptr, 16);
+	
+	// two's complement
+	int result = valueS + valueT;
+
+	// Handle two's complement overflow for an 8-bit system
+	if (result > 127) { 
+		result -= 256;  
+	}
+	else if (result < -128) { 
+		result += 256;  
+	}
+
+	// Convert back to a hexadecimal string
+	std::stringstream stream;
+	stream << std::hex << (result & 0xFF); 
+
+	registers[R].setValue(stream.str());
+}
+
