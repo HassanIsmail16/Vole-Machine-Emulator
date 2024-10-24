@@ -7,17 +7,6 @@
 #include <memory>
 #include <unordered_map>
 
-enum class OP_CODE : char {
-	LOAD_M   = '1',
-	LOAD_V   = '2',
-	STORE    = '3',
-	MOVE     = '4',
-	ADD      = '5',
-	ADD_F    = '6',
-	JUMP     = 'B',
-	HALT     = 'C'
-};
-
 typedef std::shared_ptr<std::array<StorageUnit, 256>> MemoryPtr;
 
 class CPU {
@@ -51,7 +40,8 @@ private:
 	void clearMemory(); // reset all memory cells to "00"
 
 	void initializeInstructionSet();
-
+	
+	size_t hexToDec(std::string hex);
 
 	std::array<StorageUnit, 16> registers;
 	MemoryPtr memory_interface;

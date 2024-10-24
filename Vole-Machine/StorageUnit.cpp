@@ -4,11 +4,11 @@ StorageUnit::StorageUnit() {
 	this->value = "00";
 }
 
-void StorageUnit::setValue(System::String^ new_value) {
+void StorageUnit::setValue(std::string new_value) {
 	this->value = new_value;
 }
 
-System::String^ StorageUnit::getValue() {
+std::string StorageUnit::getValue() {
 	return this->value;
 }
 
