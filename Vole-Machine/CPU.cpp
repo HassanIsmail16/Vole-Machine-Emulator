@@ -1,84 +1,48 @@
 #include "CPU.h"
 
-CPU::CPU(MemoryPtr memory) {
-	this->memory_interface = memory;
-	this->initializeInstructionSet();
-	this->clearRegisters();
-	this->clearMemory();
+CPU::CPU() {
 	this->program_counter = 0;
-	this->instruction_register = Instruction();
+	this->instruction_register = "";
+	this->clearRegisters();
 }
 
-void CPU::runAllInstructions() {
+void CPU::runInstructions(std::array<StorageUnit, 256>& memory) {
 	while (!this->isHalt()) {
-		this->fetch();
-		this->executeFetchedInstruction();
+		this->fetch(memory);
+		std::vector<int> instruction = this->decode();
+		this->execute(this->registers, memory, instruction);
 	}
-
 	this->halt();
 }
 
-void CPU::fetch() {
-	std::string first_cell_value = (*this->memory_interface)[this->program_counter].getValue();
-	std::string second_cell_value = (*this->memory_interface)[this->program_counter + 1].getValue();
-
-	this->instruction_register = Instruction(first_cell_value + second_cell_value);
+void CPU::fetch(std::array<StorageUnit, 256>& memory) {
+	std::string instruction1 = memory[this->program_counter].getValue();
+	std::string instruction2 = memory[this->program_counter + 1].getValue();
+	this->instruction_register = instruction1 + instruction2;
 	this->program_counter += 2;
 }
 
-void CPU::executeFetchedInstruction() {
-	this->instruction_set[this->instruction_register.op_code](this->instruction_register.operands);
+std::vector<int> CPU::decode() {
+	std::vector<int> instruction;
+	instruction.push_back(std::stoi(instruction_register.substr(0, 2), nullptr, 16)); // op-code
+	instruction.push_back(std::stoi(instruction_register.substr(2, 2), nullptr, 16)); // operands
+	return instruction;
 }
 
-void CPU::loadFromMemory(std::string operands) {
-	size_t R = hexToDec(std::to_string(operands[0]));
-	size_t XY = hexToDec(operands.substr(1));
-
-	this->registers[R].setValue((*this->memory_interface)[XY].getValue());
+void CPU::execute(std::array<StorageUnit, 16>& registers, std::array<StorageUnit, 256>& memory, std::vector<int> instruction) {
+	this->cu.executeInstruction(instruction, registers, memory, alu);
 }
 
-void CPU::loadValue(std::string operands) {
-	size_t R = hexToDec(std::to_string(operands[0]));
-	std::string XY = operands.substr(1);
-
-	this->registers[R].setValue(XY);
-}
-
-void CPU::storeInMemory(std::string operands) {
-	if (this->isWritingToScreen(operands)) {
-		this->writeToScreen(operands);
-		return;
+void CPU::clearRegisters() {
+	for (auto& reg : registers) {
+		reg.clear();
 	}
-
-	size_t R = hexToDec(std::to_string(operands[0]));
-	size_t XY = hexToDec(operands.substr(1));
-
-	(*this->memory_interface)[XY].setValue(this->registers[R].getValue());
 }
 
-void CPU::addTwoComplement(std::string operands) {
-	size_t R = hexToDec(std::to_string(operands[0]));
-	size_t S = hexToDec(std::to_string(operands[1]));
-	size_t T = hexToDec(std::to_string(operands[2]));
-
-	int valueS = std::stoi(registers[S].getValue(), nullptr, 16); // Convert hex to int
-	int valueT = std::stoi(registers[T].getValue(), nullptr, 16);
+bool CPU::isHalt() {
 	
-	// two's complement
-	int result = valueS + valueT;
-
-	// Handle two's complement overflow for an 8-bit system
-	if (result > 127) { 
-		result -= 256;  
-	}
-	else if (result < -128) { 
-		result += 256;  
-	}
-
-	// Convert back to a hexadecimal string
-	std::stringstream stream;
-	stream << std::hex << (result & 0xFF); 
-
-	registers[R].setValue(stream.str());
 }
 
+void CPU::halt() {
+	
+}

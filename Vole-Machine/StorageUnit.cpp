@@ -1,8 +1,6 @@
 #include "StorageUnit.h"
 
-StorageUnit::StorageUnit() {
-	this->value = "00";
-}
+StorageUnit::StorageUnit() : value("") {}
 
 void StorageUnit::setValue(std::string new_value) {
 	this->value = new_value;
