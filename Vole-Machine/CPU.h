@@ -15,6 +15,7 @@ private:
     CU cu;
 
 public:
+    CPU();
     void runInstructions(std::array<StorageUnit, 256>& memory);
     void fetch(std::array<StorageUnit, 256>& memory);
     std::vector<int> decode();
