@@ -40,7 +40,7 @@ void CPU::clearRegisters() {
 }
 
 bool CPU::isHalt() {
-	
+	return false; // TODO: implement
 }
 
 void CPU::halt() {
