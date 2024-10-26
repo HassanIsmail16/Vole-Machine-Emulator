@@ -40,9 +40,11 @@ void CPU::clearRegisters() {
 }
 
 bool CPU::isHalt() {
-	
+	return instruction_register == "C000";
 }
 
 void CPU::halt() {
-	
+	program_counter = 0;
+	clearRegisters();
+	instruction_register.clear();
 }

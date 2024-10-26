@@ -26,3 +26,8 @@ void ALU::addTwoComp(int RegR, int RegS, int RegT, std::array<StorageUnit, 16>& 
 void ALU::addFloatingPoint(int RegR, int RegS, int RegT, std::array<StorageUnit, 16>& registers) {
     
 }
+
+std::string hexToDec(const std::string& hexValue) {
+    int decimalValue = std::stoi(hexValue, nullptr, 16);
+    return std::to_string(decimalValue);
+}

@@ -15,17 +15,23 @@ void CU::loadValue(int reg, std::string value, std::array<StorageUnit, 16>& regi
 }
 
 void CU::storeInMemory(int reg, int mem_addr, std::array<StorageUnit, 16>& registers, std::array<StorageUnit, 256>& memory) {
-    memory[mem_addr].setValue(registers[reg].getValue());
+    if (isScreen(reg, mem_addr)) {
+        // ??
+    }
+    else {
+        memory[mem_addr].setValue(registers[reg].getValue());
+    }
 }
 
-void CU::jumpTo(int reg, int mem_addr, std::array<StorageUnit, 16>& registers) {
-   
+void CU::jumpTo(int reg, int mem_addr, std::array<StorageUnit, 16>& registers, size_t& program_counter) {
+    if (registers[reg].getValue() == registers[0].getValue()) {
+        program_counter = mem_addr;
+    }
 }
+
 
 bool CU::isScreen(int reg, int mem_addr) {
-    
-
-    return false;
+    return mem_addr == 0x00;
 }
 
 void CU::move(int Reg1, int Reg2, std::array<StorageUnit, 16>& registers) {
