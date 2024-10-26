@@ -4,10 +4,10 @@
 #include <array>
 #include <string>
 
-void ALU::addTwoComp(int RegR, int RegS, int RegT, std::array<StorageUnit, 16>& registers) {
+void ALU::addTwoComp(int regR, int regS, int regT, Registers& registers) {
 
-    int valueS = std::stoi(registers[RegS].getValue(), nullptr, 16); // convert hex to int
-    int valueT = std::stoi(registers[RegT].getValue(), nullptr, 16);
+    int valueS = std::stoi(registers[regS].getValue(), nullptr, 16); // convert hex to int
+    int valueT = std::stoi(registers[regT].getValue(), nullptr, 16);
     int result = valueS + valueT;
 
     // Handle two's complement overflow
@@ -20,14 +20,14 @@ void ALU::addTwoComp(int RegR, int RegS, int RegT, std::array<StorageUnit, 16>& 
 
     std::stringstream stream;
     stream << std::hex << (result & 0xFF);
-    registers[RegR].setValue(stream.str());
+    registers[regR].setValue(stream.str());
 }
 
-void ALU::addFloatingPoint(int RegR, int RegS, int RegT, std::array<StorageUnit, 16>& registers) {
+void ALU::addFloatingPoint(int regR, int regS, int regT, Registers& registers) {
     
 }
 
-std::string hexToDec(const std::string& hexValue) {
-    int decimalValue = std::stoi(hexValue, nullptr, 16);
+std::string ALU::hexToDec(const std::string& hex_value) {
+    int decimalValue = std::stoi(hex_value, nullptr, 16);
     return std::to_string(decimalValue);
 }

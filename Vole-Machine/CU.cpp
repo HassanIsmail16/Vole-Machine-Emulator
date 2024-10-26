@@ -1,40 +1,40 @@
 #include "CU.h"
 #include <vector> 
 
-void CU::executeInstruction(const std::vector<int>& instruction, std::array<StorageUnit, 16>& registers, std::array<StorageUnit, 256>& memory, ALU& alu) {
+void CU::executeInstruction(const std::vector<int>& instruction, Registers& registers, MainMemory& memory, ALU& alu) {
     int op_code = instruction[0];  
 }
 
 
-void CU::loadFromMemory(int reg, int mem_addr, std::array<StorageUnit, 16>& registers, std::array<StorageUnit, 256>& memory) {
-    registers[reg].setValue(memory[mem_addr].getValue());
+void CU::loadFromMemory(int reg, int memory_address, Registers& registers, MainMemory& memory) {
+    registers[reg].setValue(memory[memory_address].getValue());
 }
 
-void CU::loadValue(int reg, std::string value, std::array<StorageUnit, 16>& registers) {
+void CU::loadValue(int reg, std::string value, Registers& registers) {
     registers[reg].setValue(value);
 }
 
-void CU::storeInMemory(int reg, int mem_addr, std::array<StorageUnit, 16>& registers, std::array<StorageUnit, 256>& memory) {
-    if (isScreen(reg, mem_addr)) {
+void CU::storeInMemory(int reg, int memory_address, Registers& registers, MainMemory& memory) {
+    if (isScreen(reg, memory_address)) {
         // ??
     }
     else {
-        memory[mem_addr].setValue(registers[reg].getValue());
+        memory[memory_address].setValue(registers[reg].getValue());
     }
 }
 
-void CU::jumpTo(int reg, int mem_addr, std::array<StorageUnit, 16>& registers, size_t& program_counter) {
+void CU::jumpTo(int reg, int memory_address, Registers& registers, size_t& program_counter) {
     if (registers[reg].getValue() == registers[0].getValue()) {
-        program_counter = mem_addr;
+        program_counter = memory_address;
     }
 }
 
 
-bool CU::isScreen(int reg, int mem_addr) {
-    return mem_addr == 0x00;
+bool CU::isScreen(int reg, int memory_address) {
+    return memory_address == 0x00;
 }
 
-void CU::move(int Reg1, int Reg2, std::array<StorageUnit, 16>& registers) {
-    registers[Reg1].setValue(registers[Reg2].getValue());
+void CU::move(int reg1, int reg2, Registers& registers) {
+    registers[reg1].setValue(registers[reg2].getValue());
 }
 
