@@ -6,7 +6,7 @@ CPU::CPU() {
 	this->clearRegisters();
 }
 
-void CPU::runInstructions(std::array<StorageUnit, 256>& memory) {
+void CPU::runInstructions(MainMemory& memory) {
 	while (!this->isHalt()) {
 		this->fetch(memory);
 		std::vector<int> instruction = this->decode();
@@ -15,7 +15,7 @@ void CPU::runInstructions(std::array<StorageUnit, 256>& memory) {
 	this->halt();
 }
 
-void CPU::fetch(std::array<StorageUnit, 256>& memory) {
+void CPU::fetch(MainMemory& memory) {
 	std::string instruction1 = memory[this->program_counter].getValue();
 	std::string instruction2 = memory[this->program_counter + 1].getValue();
 	this->instruction_register = instruction1 + instruction2;
@@ -29,7 +29,7 @@ std::vector<int> CPU::decode() {
 	return instruction;
 }
 
-void CPU::execute(std::array<StorageUnit, 16>& registers, std::array<StorageUnit, 256>& memory, std::vector<int> instruction) {
+void CPU::execute(Registers& registers, MainMemory& memory, std::vector<int> instruction) {
 	this->cu.executeInstruction(instruction, registers, memory, alu);
 }
 
