@@ -47,12 +47,12 @@ System::Void VoleMachine::MainForm::initializeMemoryList() {
 	this->memory_list->Columns[1]->Name = "Value";
 	this->memory_list->Columns[1]->Width = 50;
 
-	this->memory_list->Columns[2]->Name = "Address";
-	this->memory_list->Columns[2]->ReadOnly = true;
-	this->memory_list->Columns[2]->Width = 60;
+	this->memory_list->Columns[2]->Name = "Value";
+	this->memory_list->Columns[2]->Width = 50;
 
-	this->memory_list->Columns[3]->Name = "Value";
-	this->memory_list->Columns[3]->Width = 50;
+	this->memory_list->Columns[3]->Name = "Address";
+	this->memory_list->Columns[3]->ReadOnly = true;
+	this->memory_list->Columns[3]->Width = 60;
 
 	for (int i = 0; i < 128; i++) {
 		int address1 = i * 2;
@@ -63,6 +63,48 @@ System::Void VoleMachine::MainForm::initializeMemoryList() {
 
 		String^ value = "00";
 
-		this->memory_list->Rows->Add(address1_hex, value, address2_hex, value);
+		this->memory_list->Rows->Add(address1_hex, value, value, address2_hex);
+	}
+}
+
+//System::Void VoleMachine::MainForm::memory_list_KeyDown(Object^ sender, KeyEventArgs^ e) {
+//	// Only handle Enter key when not editing a cell
+//	if (this->move_after_edit) {
+//		MessageBox::Show("Enter was pressed to end editing.");
+//		this->move_after_edit = false;
+//	}
+//}
+
+// Separate method to handle the navigation logic
+//System::Void VoleMachine::MainForm::MoveToNextEditableCell() {
+//	int currentColumn = this->memory_list->CurrentCell->ColumnIndex;
+//	int currentRow = this->memory_list->CurrentCell->RowIndex;
+//
+//	// Loop to find the next editable cell
+//	do {
+//		if (currentColumn < this->memory_list->ColumnCount - 1) {
+//			currentColumn++;
+//		} else if (currentRow < this->memory_list->RowCount - 1) {
+//			currentColumn = 0;
+//			currentRow++;
+//		} else {
+//			currentColumn = 0;
+//			currentRow = 0; // Loop back to the start of the grid
+//		}
+//	} while (this->memory_list->Rows[currentRow]->Cells[currentColumn]->ReadOnly);
+//
+//	this->memory_list->CurrentCell = this->memory_list->Rows[currentRow]->Cells[currentColumn];
+//}
+
+System::Void VoleMachine::MainForm::memory_list_CellEndEdit(Object^ sender, DataGridViewCellEventArgs^ e) {
+	if (this->move_after_edit) {
+		MessageBox::Show("Enter was pressed to end editing.");
+		this->move_after_edit = false;
+	}
+}
+
+System::Void VoleMachine::MainForm::memory_list_PreviewKeyDown(Object^ sender, PreviewKeyDownEventArgs^ e) {
+	if (e->KeyCode == Keys::Enter && this->memory_list->IsCurrentCellInEditMode) {
+		this->move_after_edit = true;
 	}
 }
