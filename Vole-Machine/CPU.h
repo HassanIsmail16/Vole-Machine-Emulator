@@ -22,4 +22,6 @@ public:
     void clearRegisters();
     bool isHalt();
     void halt();
+
+    size_t& getProgramCounter();
 };

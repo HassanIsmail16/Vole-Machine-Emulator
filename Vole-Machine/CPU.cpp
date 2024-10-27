@@ -30,7 +30,7 @@ std::vector<int> CPU::decode() {
 }
 
 void CPU::execute(Registers& registers, MainMemory& memory, std::vector<int> instruction) {
-	this->cu.executeInstruction(instruction, registers, memory, alu);
+	this->cu.executeInstruction(instruction, registers, memory, alu, program_counter);
 }
 
 void CPU::clearRegisters() {
@@ -47,4 +47,8 @@ void CPU::halt() {
 	program_counter = 0;
 	clearRegisters();
 	instruction_register.clear();
+}
+
+size_t& CPU::getProgramCounter() {
+	return program_counter;
 }
