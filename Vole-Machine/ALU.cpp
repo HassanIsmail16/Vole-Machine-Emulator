@@ -187,3 +187,28 @@ void ALU::clampFloatingValue(double& floating_point_value) {
         floating_point_value = -7.5;
     }
 }
+
+int ALU::hexToInt(std::string hex) {
+    std::string dec = hexToDec(hex);
+
+    std::string binary = integerToBinary(std::stoi(dec));
+
+    // fill the 8-bits for two's comp
+    binary.insert(0, 8 - binary.size(), '0');
+
+    
+
+    if (binary[0] == '1') {  // negative in two's complement
+        // Invert the bits
+        for (char& bit : binary) {
+            bit = (bit == '0') ? '1' : '0';
+        }
+
+        // Convert to decimal and add 1
+        int intValue = std::stoi(binary, nullptr, 2);
+        return -(intValue + 1);
+    }
+    else {
+        return std::stoi(binary, nullptr, 2);
+    }
+}
