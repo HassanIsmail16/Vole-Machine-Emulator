@@ -1,4 +1,5 @@
 #include "ALU.h"
+#include <algorithm>
 #include <sstream>
 #include <iomanip>
 #include <cmath>
@@ -33,26 +34,38 @@ void ALU::addFloatingPoint(int regR, int regS, int regT, Registers& registers) {
     std::string binaryS = integerToBinary(valueS);
     std::string binaryT = integerToBinary(valueT);
 
-    // interpret binary as floating-point representation and convert value to decimal flaot number.
+    // interpret binary as floating-point representation and convert value to decimal float number.
     double floating_pointS = binaryToFloat(binaryS);
     double floating_pointT = binaryToFloat(binaryT);;
 
     // Floating point addition
     double floating_pointR = floating_pointS + floating_pointT;
+    clampFloatingValue(floating_pointR);
 
-    // convert back to floting-point binary representation
+    // convert back to floating-point binary representation
+    std::string floating_point_representationR = floatToBinary(floating_pointR);
 
+    // binary to int
+    int valueR = std::stoi(floating_point_representationR, nullptr, 2);
 
-    // binary to hex
-
+    // int to hex
+    std::string final_result = decToHex(valueR);
 
     // store the result in regeister R
-
+    registers[regR].setValue(final_result);
 }
 
-std::string ALU::hexToDec(const std::string& hex_value) {
-    int decimalValue = std::stoi(hex_value, nullptr, 16);
+std::string ALU::hexToDec(const std::string& hex) {
+    int decimalValue = std::stoi(hex, nullptr, 16);
     return std::to_string(decimalValue);
+}
+
+std::string ALU::decToHex(int integer) {
+    std::stringstream stream;
+    stream << std::hex << (integer & 0xFF);
+    std::string result = stream.str();
+    std::transform(result.begin(), result.end(), result.begin(), ::toupper);
+    return result;
 }
 
 std::string ALU::integerToBinary(int integer) {
@@ -92,7 +105,10 @@ std::string ALU::decimalToBinary(double decimal) {
     return binary;
 }
 
-double ALU::binaryToFloat(const std::string& binary) {
+double ALU::binaryToFloat(std::string& binary) {
+    // make sure it's 8-bits
+    binary.insert(0, 8 - binary.size(), '0');
+
     int sign = (binary[0] == '0' ? 1 : -1); // 1-bit sign
 
     // 3-bit exponent
@@ -111,7 +127,7 @@ double ALU::binaryToFloat(const std::string& binary) {
     // Get float value using explicit normalization
     const int bias = 4;
     double result = sign * mantissa * pow(2, exponent - bias);
-
+    clampFloatingValue(result);
     return result;
 }
 
@@ -137,15 +153,37 @@ std::string ALU::floatToBinary(double decimal) {
 
     // normalize
     const int bias = 4;
-    std::string exponent_bits = integerToBinary(pow(2, exponent + bias));
+    std::string exponent_bits = integerToBinary(exponent + bias);
     exponent_bits.insert(0, 3 - exponent_bits.size(), '0'); // make sure the exponent is 3-bits
 
     // extract mantissa
-    std::string mantissa_bits = normal_binary.substr(significant_bit_position);
-    mantissa_bits.erase(mantissa_bits.find('.'));
-    mantissa_bits.insert(mantissa_bits.end(), 4 - mantissa_bits.size(), '0'); // make sure the mantissa is 4-bits
+    std::string mantissa_bits;
+    for (int i = significant_bit_position; i < normal_binary.size(); i++) {
+        // skip the radix point
+        if (normal_binary[i] != '.') {
+            mantissa_bits.push_back(normal_binary[i]);
+        }
+
+        // don't take more than 4 bits
+        if (mantissa_bits.size() == 4) {
+            break;
+        }
+    }
+
+    // make sure the mantissa is 4-bits
+    mantissa_bits.insert(mantissa_bits.end(), 4 - mantissa_bits.size(), '0');
 
     // represent the floating point number
     std::string floating_point_representation = sign_bit + exponent_bits + mantissa_bits;
     return floating_point_representation;
+}
+
+void ALU::clampFloatingValue(double& floating_point_value) {
+    if (floating_point_value > 7.5) {
+        floating_point_value = 7.5;
+    }
+
+    if (floating_point_value < -7.5) {
+        floating_point_value = -7.5;
+    }
 }
