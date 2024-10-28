@@ -17,5 +17,6 @@ public:
     double binaryToFloat(std::string& binary);
     std::string floatToBinary(double decimal);
     void clampFloatingValue(double& floating_point_value);
+    int hexToInt(std::string hex);
 };
 
