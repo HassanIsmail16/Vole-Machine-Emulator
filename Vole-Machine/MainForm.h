@@ -47,13 +47,8 @@ namespace VoleMachine {
 	private: System::Windows::Forms::Button^ reset_registers;
 	private: System::Windows::Forms::Button^ play;
 
-
-
-
-
 	private: System::Windows::Forms::Button^ load_from_file;
 	private: System::Windows::Forms::NumericUpDown^ steps_spinbox;
-
 
 	private: System::Windows::Forms::Label^ steps_label;
 
@@ -63,15 +58,12 @@ namespace VoleMachine {
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::ListView^ registers_list;
 	private: System::Windows::Forms::Label^ memory_label;
+	private: System::Windows::Forms::Panel^ memory_panel;
 
-	private: System::Windows::Forms::Panel^ panel1;
 	private: System::Windows::Forms::DataGridView^ memory_list;
 	private: System::Windows::Forms::Panel^ program_counter_panel;
 	private: System::Windows::Forms::Label^ program_counter_label;
 	private: System::Windows::Forms::Label^ program_counter_address_label;
-
-
-
 
 	private:
 		/// <summary>
@@ -87,8 +79,11 @@ namespace VoleMachine {
 		void InitializeComponent(void)
 		{
 			this->main_panel = (gcnew System::Windows::Forms::Panel());
+			this->program_counter_label = (gcnew System::Windows::Forms::Label());
+			this->program_counter_panel = (gcnew System::Windows::Forms::Panel());
+			this->program_counter_address_label = (gcnew System::Windows::Forms::Label());
 			this->memory_label = (gcnew System::Windows::Forms::Label());
-			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->memory_panel = (gcnew System::Windows::Forms::Panel());
 			this->memory_list = (gcnew System::Windows::Forms::DataGridView());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->registers_panel = (gcnew System::Windows::Forms::Panel());
@@ -104,16 +99,13 @@ namespace VoleMachine {
 			this->reset_registers = (gcnew System::Windows::Forms::Button());
 			this->play = (gcnew System::Windows::Forms::Button());
 			this->load_from_file = (gcnew System::Windows::Forms::Button());
-			this->program_counter_panel = (gcnew System::Windows::Forms::Panel());
-			this->program_counter_label = (gcnew System::Windows::Forms::Label());
-			this->program_counter_address_label = (gcnew System::Windows::Forms::Label());
 			this->main_panel->SuspendLayout();
-			this->panel1->SuspendLayout();
+			this->program_counter_panel->SuspendLayout();
+			this->memory_panel->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->memory_list))->BeginInit();
 			this->registers_panel->SuspendLayout();
 			this->controls_panel->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->steps_spinbox))->BeginInit();
-			this->program_counter_panel->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// main_panel
@@ -121,7 +113,7 @@ namespace VoleMachine {
 			this->main_panel->Controls->Add(this->program_counter_label);
 			this->main_panel->Controls->Add(this->program_counter_panel);
 			this->main_panel->Controls->Add(this->memory_label);
-			this->main_panel->Controls->Add(this->panel1);
+			this->main_panel->Controls->Add(this->memory_panel);
 			this->main_panel->Controls->Add(this->label1);
 			this->main_panel->Controls->Add(this->registers_panel);
 			this->main_panel->Controls->Add(this->controls_label);
@@ -134,6 +126,35 @@ namespace VoleMachine {
 			this->main_panel->TabIndex = 0;
 			this->main_panel->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MainForm::panel1_Paint);
 			// 
+			// program_counter_label
+			// 
+			this->program_counter_label->AutoSize = true;
+			this->program_counter_label->Location = System::Drawing::Point(23, 79);
+			this->program_counter_label->Name = L"program_counter_label";
+			this->program_counter_label->Size = System::Drawing::Size(86, 13);
+			this->program_counter_label->TabIndex = 6;
+			this->program_counter_label->Text = L"Program Counter";
+			// 
+			// program_counter_panel
+			// 
+			this->program_counter_panel->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->program_counter_panel->Controls->Add(this->program_counter_address_label);
+			this->program_counter_panel->Location = System::Drawing::Point(10, 84);
+			this->program_counter_panel->Name = L"program_counter_panel";
+			this->program_counter_panel->Size = System::Drawing::Size(200, 63);
+			this->program_counter_panel->TabIndex = 5;
+			// 
+			// program_counter_address_label
+			// 
+			this->program_counter_address_label->AutoSize = true;
+			this->program_counter_address_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->program_counter_address_label->Location = System::Drawing::Point(13, 26);
+			this->program_counter_address_label->Name = L"program_counter_address_label";
+			this->program_counter_address_label->Size = System::Drawing::Size(101, 13);
+			this->program_counter_address_label->TabIndex = 0;
+			this->program_counter_address_label->Text = L"Current Address:";
+			// 
 			// memory_label
 			// 
 			this->memory_label->AutoSize = true;
@@ -143,22 +164,30 @@ namespace VoleMachine {
 			this->memory_label->TabIndex = 4;
 			this->memory_label->Text = L"Memory";
 			// 
-			// panel1
+			// memory_panel
 			// 
-			this->panel1->Controls->Add(this->memory_list);
-			this->panel1->Location = System::Drawing::Point(217, 84);
-			this->panel1->Name = L"panel1";
-			this->panel1->Size = System::Drawing::Size(240, 464);
-			this->panel1->TabIndex = 3;
+			this->memory_panel->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->memory_panel->Controls->Add(this->memory_list);
+			this->memory_panel->Location = System::Drawing::Point(217, 84);
+			this->memory_panel->Name = L"memory_panel";
+			this->memory_panel->Size = System::Drawing::Size(249, 464);
+			this->memory_panel->TabIndex = 3;
 			// 
 			// memory_list
 			// 
+			this->memory_list->BackgroundColor = System::Drawing::SystemColors::Control;
+			this->memory_list->BorderStyle = System::Windows::Forms::BorderStyle::None;
 			this->memory_list->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->memory_list->Location = System::Drawing::Point(65, 9);
+			this->memory_list->Location = System::Drawing::Point(4, 9);
 			this->memory_list->Name = L"memory_list";
-			this->memory_list->Size = System::Drawing::Size(120, 449);
+			this->memory_list->Size = System::Drawing::Size(238, 449);
 			this->memory_list->TabIndex = 0;
 			this->memory_list->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_CellContentClick);
+			this->memory_list->CellPainting += gcnew System::Windows::Forms::DataGridViewCellPaintingEventHandler(this, &MainForm::memory_list_CellPainting);
+			this->memory_list->CellStateChanged += gcnew System::Windows::Forms::DataGridViewCellStateChangedEventHandler(this, &MainForm::memory_list_AddressCellStateChanged);
+			this->memory_list->CellEndEdit += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_CellEndEdit);
+			this->memory_list->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MainForm::memory_list_KeyDown);
+			
 			// 
 			// label1
 			// 
@@ -171,6 +200,7 @@ namespace VoleMachine {
 			// 
 			// registers_panel
 			// 
+			this->registers_panel->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->registers_panel->Controls->Add(this->registers_list);
 			this->registers_panel->Location = System::Drawing::Point(10, 162);
 			this->registers_panel->Name = L"registers_panel";
@@ -292,34 +322,6 @@ namespace VoleMachine {
 			this->load_from_file->Text = L"Load From File";
 			this->load_from_file->UseVisualStyleBackColor = true;
 			// 
-			// program_counter_panel
-			// 
-			this->program_counter_panel->Controls->Add(this->program_counter_address_label);
-			this->program_counter_panel->Location = System::Drawing::Point(10, 84);
-			this->program_counter_panel->Name = L"program_counter_panel";
-			this->program_counter_panel->Size = System::Drawing::Size(200, 63);
-			this->program_counter_panel->TabIndex = 5;
-			// 
-			// program_counter_label
-			// 
-			this->program_counter_label->AutoSize = true;
-			this->program_counter_label->Location = System::Drawing::Point(23, 79);
-			this->program_counter_label->Name = L"program_counter_label";
-			this->program_counter_label->Size = System::Drawing::Size(86, 13);
-			this->program_counter_label->TabIndex = 6;
-			this->program_counter_label->Text = L"Program Counter";
-			// 
-			// program_counter_address_label
-			// 
-			this->program_counter_address_label->AutoSize = true;
-			this->program_counter_address_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->program_counter_address_label->Location = System::Drawing::Point(13, 26);
-			this->program_counter_address_label->Name = L"program_counter_address_label";
-			this->program_counter_address_label->Size = System::Drawing::Size(101, 13);
-			this->program_counter_address_label->TabIndex = 0;
-			this->program_counter_address_label->Text = L"Current Address:";
-			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -331,14 +333,14 @@ namespace VoleMachine {
 			this->Text = L"MainForm";
 			this->main_panel->ResumeLayout(false);
 			this->main_panel->PerformLayout();
-			this->panel1->ResumeLayout(false);
+			this->program_counter_panel->ResumeLayout(false);
+			this->program_counter_panel->PerformLayout();
+			this->memory_panel->ResumeLayout(false);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->memory_list))->EndInit();
 			this->registers_panel->ResumeLayout(false);
 			this->controls_panel->ResumeLayout(false);
 			this->controls_panel->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->steps_spinbox))->EndInit();
-			this->program_counter_panel->ResumeLayout(false);
-			this->program_counter_panel->PerformLayout();
 			this->ResumeLayout(false);
 
 		}
@@ -348,12 +350,16 @@ namespace VoleMachine {
 		//private: System::Void memory_list_KeyDown(Object^ sender, KeyEventArgs^ e);
 		//private: System::Void MoveToNextEditableCell();
 		private: System::Void memory_list_CellEndEdit(Object^ sender, DataGridViewCellEventArgs^ e);
-		private: System::Void memory_list_PreviewKeyDown(Object^ sender, PreviewKeyDownEventArgs^ e);
+		private: System::Void memory_list_AddressCellStateChanged(Object^ sender, DataGridViewCellStateChangedEventArgs^ e);
+		private: System::Void memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e);
+		private: System::Void memory_list_HandleCellSelection(int edited_cell_col, int edited_cell_row);
+		private: System::Void memory_list_KeyDown(Object^ sender, KeyEventArgs^ e);
+		private: System::Void panel1_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {}
+		
 
+		private: int memory_list_selected_cell_row = 0;
+		private: int memory_list_selected_cell_col = 1;
 
-	private: System::Void panel1_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {}
-
-		   private: bool move_after_edit = false;
 
 private: System::Void memory_list_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {}
 };
