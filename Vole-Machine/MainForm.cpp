@@ -19,12 +19,16 @@ System::Void VoleMachine::MainForm::initializeRegistersList() {
 
 	this->registers_list->Columns->Add("Register", 60, HorizontalAlignment::Left);
 	this->registers_list->Columns->Add("Hex", 50, HorizontalAlignment::Left);
-	this->registers_list->Columns->Add("Bin", 100, HorizontalAlignment::Left);
+	this->registers_list->Columns->Add("Binary", 100, HorizontalAlignment::Left);
+	this->registers_list->Columns->Add("Integer", 80, HorizontalAlignment::Left);
+	this->registers_list->Columns->Add("Floating Point", 80, HorizontalAlignment::Left);
 
 	for (int i = 0; i < 16; i++) {
 		ListViewItem^ item = gcnew ListViewItem("R" + i.ToString());
 		item->SubItems->Add("0x00");
 		item->SubItems->Add("00000000");
+		item->SubItems->Add("0");
+		item->SubItems->Add("0");
 		this->registers_list->Items->Add(item);
 	}
 }

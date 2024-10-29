@@ -64,12 +64,71 @@ namespace VoleMachine {
 	private: System::Windows::Forms::Panel^ program_counter_panel;
 	private: System::Windows::Forms::Label^ program_counter_label;
 	private: System::Windows::Forms::Label^ program_counter_address_label;
+	private: System::Windows::Forms::Panel^ instruction_register_panel;
+	private: System::Windows::Forms::Label^ instruction_register_label;
+
+
+	private: System::Windows::Forms::Label^ screen_label;
+	private: System::Windows::Forms::Panel^ screen_panel;
+	private: System::Windows::Forms::Button^ clear_screen;
+	private: System::Windows::Forms::ContextMenuStrip^ contextMenuStrip1;
+	private: System::Windows::Forms::TextBox^ screen_textbox;
+	private: System::Windows::Forms::TextBox^ textBox1;
+	private: System::Windows::Forms::TextBox^ current_instruction_textbox;
+
+	private: System::Windows::Forms::Label^ instruction_register_instruction_label;
+	private: System::Windows::Forms::Button^ decode;
+	private: System::Windows::Forms::Button^ button1;
+	private: System::Windows::Forms::Label^ opcode_label;
+	private: System::Windows::Forms::TextBox^ opcode_textbox;
+
+	private: System::Windows::Forms::Label^ first_operand_label;
+	private: System::Windows::Forms::TextBox^ first_operand_textbox;
+	private: System::Windows::Forms::TextBox^ third_operand_textbox;
+
+
+
+
+	private: System::Windows::Forms::TextBox^ second_operand_textbox;
+	private: System::Windows::Forms::Label^ third_operand_label;
+	private: System::Windows::Forms::Label^ second_operand_label;
+
+
+
+	private: System::Windows::Forms::Button^ execute;
+	private: System::Windows::Forms::TextBox^ instruction_decode_textbox;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	private: System::ComponentModel::IContainer^ components;
+
+
+
+
+
+
+
+
 
 	private:
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		System::ComponentModel::Container ^components;
+
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -78,6 +137,7 @@ namespace VoleMachine {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			this->main_panel = (gcnew System::Windows::Forms::Panel());
 			this->program_counter_label = (gcnew System::Windows::Forms::Label());
 			this->program_counter_panel = (gcnew System::Windows::Forms::Panel());
@@ -99,6 +159,28 @@ namespace VoleMachine {
 			this->reset_registers = (gcnew System::Windows::Forms::Button());
 			this->play = (gcnew System::Windows::Forms::Button());
 			this->load_from_file = (gcnew System::Windows::Forms::Button());
+			this->instruction_register_panel = (gcnew System::Windows::Forms::Panel());
+			this->instruction_register_label = (gcnew System::Windows::Forms::Label());
+			this->screen_panel = (gcnew System::Windows::Forms::Panel());
+			this->screen_label = (gcnew System::Windows::Forms::Label());
+			this->clear_screen = (gcnew System::Windows::Forms::Button());
+			this->contextMenuStrip1 = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
+			this->screen_textbox = (gcnew System::Windows::Forms::TextBox());
+			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->current_instruction_textbox = (gcnew System::Windows::Forms::TextBox());
+			this->instruction_register_instruction_label = (gcnew System::Windows::Forms::Label());
+			this->decode = (gcnew System::Windows::Forms::Button());
+			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->opcode_label = (gcnew System::Windows::Forms::Label());
+			this->opcode_textbox = (gcnew System::Windows::Forms::TextBox());
+			this->first_operand_label = (gcnew System::Windows::Forms::Label());
+			this->first_operand_textbox = (gcnew System::Windows::Forms::TextBox());
+			this->second_operand_label = (gcnew System::Windows::Forms::Label());
+			this->second_operand_textbox = (gcnew System::Windows::Forms::TextBox());
+			this->third_operand_label = (gcnew System::Windows::Forms::Label());
+			this->third_operand_textbox = (gcnew System::Windows::Forms::TextBox());
+			this->execute = (gcnew System::Windows::Forms::Button());
+			this->instruction_decode_textbox = (gcnew System::Windows::Forms::TextBox());
 			this->main_panel->SuspendLayout();
 			this->program_counter_panel->SuspendLayout();
 			this->memory_panel->SuspendLayout();
@@ -106,10 +188,17 @@ namespace VoleMachine {
 			this->registers_panel->SuspendLayout();
 			this->controls_panel->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->steps_spinbox))->BeginInit();
+			this->instruction_register_panel->SuspendLayout();
+			this->screen_panel->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// main_panel
 			// 
+			this->main_panel->Controls->Add(this->clear_screen);
+			this->main_panel->Controls->Add(this->screen_label);
+			this->main_panel->Controls->Add(this->screen_panel);
+			this->main_panel->Controls->Add(this->instruction_register_label);
+			this->main_panel->Controls->Add(this->instruction_register_panel);
 			this->main_panel->Controls->Add(this->program_counter_label);
 			this->main_panel->Controls->Add(this->program_counter_panel);
 			this->main_panel->Controls->Add(this->memory_label);
@@ -122,7 +211,7 @@ namespace VoleMachine {
 			this->main_panel->Location = System::Drawing::Point(0, 0);
 			this->main_panel->Name = L"main_panel";
 			this->main_panel->Padding = System::Windows::Forms::Padding(10);
-			this->main_panel->Size = System::Drawing::Size(984, 561);
+			this->main_panel->Size = System::Drawing::Size(957, 561);
 			this->main_panel->TabIndex = 0;
 			this->main_panel->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MainForm::panel1_Paint);
 			// 
@@ -138,10 +227,12 @@ namespace VoleMachine {
 			// program_counter_panel
 			// 
 			this->program_counter_panel->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->program_counter_panel->Controls->Add(this->textBox1);
 			this->program_counter_panel->Controls->Add(this->program_counter_address_label);
+			this->program_counter_panel->Controls->Add(this->button1);
 			this->program_counter_panel->Location = System::Drawing::Point(10, 84);
 			this->program_counter_panel->Name = L"program_counter_panel";
-			this->program_counter_panel->Size = System::Drawing::Size(200, 63);
+			this->program_counter_panel->Size = System::Drawing::Size(393, 63);
 			this->program_counter_panel->TabIndex = 5;
 			// 
 			// program_counter_address_label
@@ -158,36 +249,37 @@ namespace VoleMachine {
 			// memory_label
 			// 
 			this->memory_label->AutoSize = true;
-			this->memory_label->Location = System::Drawing::Point(232, 77);
+			this->memory_label->Location = System::Drawing::Point(426, 77);
 			this->memory_label->Name = L"memory_label";
 			this->memory_label->Size = System::Drawing::Size(44, 13);
 			this->memory_label->TabIndex = 4;
 			this->memory_label->Text = L"Memory";
+			this->memory_label->Click += gcnew System::EventHandler(this, &MainForm::memory_label_Click);
 			// 
 			// memory_panel
 			// 
 			this->memory_panel->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->memory_panel->Controls->Add(this->memory_list);
-			this->memory_panel->Location = System::Drawing::Point(217, 84);
+			this->memory_panel->Location = System::Drawing::Point(411, 84);
 			this->memory_panel->Name = L"memory_panel";
 			this->memory_panel->Size = System::Drawing::Size(249, 464);
 			this->memory_panel->TabIndex = 3;
+			this->memory_panel->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MainForm::memory_panel_Paint);
 			// 
 			// memory_list
 			// 
 			this->memory_list->BackgroundColor = System::Drawing::SystemColors::Control;
 			this->memory_list->BorderStyle = System::Windows::Forms::BorderStyle::None;
 			this->memory_list->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->memory_list->Location = System::Drawing::Point(4, 9);
+			this->memory_list->Location = System::Drawing::Point(7, 8);
 			this->memory_list->Name = L"memory_list";
 			this->memory_list->Size = System::Drawing::Size(238, 449);
 			this->memory_list->TabIndex = 0;
 			this->memory_list->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_CellContentClick);
+			this->memory_list->CellEndEdit += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_CellEndEdit);
 			this->memory_list->CellPainting += gcnew System::Windows::Forms::DataGridViewCellPaintingEventHandler(this, &MainForm::memory_list_CellPainting);
 			this->memory_list->CellStateChanged += gcnew System::Windows::Forms::DataGridViewCellStateChangedEventHandler(this, &MainForm::memory_list_AddressCellStateChanged);
-			this->memory_list->CellEndEdit += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_CellEndEdit);
 			this->memory_list->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MainForm::memory_list_KeyDown);
-			
 			// 
 			// label1
 			// 
@@ -204,7 +296,7 @@ namespace VoleMachine {
 			this->registers_panel->Controls->Add(this->registers_list);
 			this->registers_panel->Location = System::Drawing::Point(10, 162);
 			this->registers_panel->Name = L"registers_panel";
-			this->registers_panel->Size = System::Drawing::Size(200, 387);
+			this->registers_panel->Size = System::Drawing::Size(393, 387);
 			this->registers_panel->TabIndex = 1;
 			// 
 			// registers_list
@@ -212,7 +304,7 @@ namespace VoleMachine {
 			this->registers_list->HideSelection = false;
 			this->registers_list->Location = System::Drawing::Point(7, 8);
 			this->registers_list->Name = L"registers_list";
-			this->registers_list->Size = System::Drawing::Size(187, 372);
+			this->registers_list->Size = System::Drawing::Size(378, 372);
 			this->registers_list->TabIndex = 0;
 			this->registers_list->UseCompatibleStateImageBehavior = false;
 			// 
@@ -230,22 +322,21 @@ namespace VoleMachine {
 			this->controls_panel->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->controls_panel->Controls->Add(this->run_until_halt);
 			this->controls_panel->Controls->Add(this->steps_label);
+			this->controls_panel->Controls->Add(this->step);
 			this->controls_panel->Controls->Add(this->steps_spinbox);
 			this->controls_panel->Controls->Add(this->export_to_file);
-			this->controls_panel->Controls->Add(this->step);
 			this->controls_panel->Controls->Add(this->reset_memory);
 			this->controls_panel->Controls->Add(this->reset_registers);
 			this->controls_panel->Controls->Add(this->play);
 			this->controls_panel->Controls->Add(this->load_from_file);
-			this->controls_panel->Dock = System::Windows::Forms::DockStyle::Top;
 			this->controls_panel->Location = System::Drawing::Point(10, 10);
 			this->controls_panel->Name = L"controls_panel";
-			this->controls_panel->Size = System::Drawing::Size(964, 59);
+			this->controls_panel->Size = System::Drawing::Size(936, 59);
 			this->controls_panel->TabIndex = 0;
 			// 
 			// run_until_halt
 			// 
-			this->run_until_halt->Location = System::Drawing::Point(444, 21);
+			this->run_until_halt->Location = System::Drawing::Point(444, 19);
 			this->run_until_halt->Name = L"run_until_halt";
 			this->run_until_halt->Size = System::Drawing::Size(99, 23);
 			this->run_until_halt->TabIndex = 8;
@@ -255,7 +346,7 @@ namespace VoleMachine {
 			// steps_label
 			// 
 			this->steps_label->AutoSize = true;
-			this->steps_label->Location = System::Drawing::Point(653, 25);
+			this->steps_label->Location = System::Drawing::Point(653, 23);
 			this->steps_label->Name = L"steps_label";
 			this->steps_label->Size = System::Drawing::Size(85, 13);
 			this->steps_label->TabIndex = 7;
@@ -263,14 +354,14 @@ namespace VoleMachine {
 			// 
 			// steps_spinbox
 			// 
-			this->steps_spinbox->Location = System::Drawing::Point(549, 22);
+			this->steps_spinbox->Location = System::Drawing::Point(549, 20);
 			this->steps_spinbox->Name = L"steps_spinbox";
 			this->steps_spinbox->Size = System::Drawing::Size(98, 20);
 			this->steps_spinbox->TabIndex = 6;
 			// 
 			// export_to_file
 			// 
-			this->export_to_file->Location = System::Drawing::Point(124, 21);
+			this->export_to_file->Location = System::Drawing::Point(124, 19);
 			this->export_to_file->Name = L"export_to_file";
 			this->export_to_file->Size = System::Drawing::Size(101, 23);
 			this->export_to_file->TabIndex = 5;
@@ -279,7 +370,7 @@ namespace VoleMachine {
 			// 
 			// step
 			// 
-			this->step->Location = System::Drawing::Point(846, 19);
+			this->step->Location = System::Drawing::Point(836, 17);
 			this->step->Name = L"step";
 			this->step->Size = System::Drawing::Size(75, 23);
 			this->step->TabIndex = 4;
@@ -288,7 +379,7 @@ namespace VoleMachine {
 			// 
 			// reset_memory
 			// 
-			this->reset_memory->Location = System::Drawing::Point(231, 21);
+			this->reset_memory->Location = System::Drawing::Point(231, 19);
 			this->reset_memory->Name = L"reset_memory";
 			this->reset_memory->Size = System::Drawing::Size(101, 23);
 			this->reset_memory->TabIndex = 3;
@@ -297,7 +388,7 @@ namespace VoleMachine {
 			// 
 			// reset_registers
 			// 
-			this->reset_registers->Location = System::Drawing::Point(338, 20);
+			this->reset_registers->Location = System::Drawing::Point(338, 18);
 			this->reset_registers->Name = L"reset_registers";
 			this->reset_registers->Size = System::Drawing::Size(100, 23);
 			this->reset_registers->TabIndex = 2;
@@ -306,7 +397,7 @@ namespace VoleMachine {
 			// 
 			// play
 			// 
-			this->play->Location = System::Drawing::Point(744, 19);
+			this->play->Location = System::Drawing::Point(744, 17);
 			this->play->Name = L"play";
 			this->play->Size = System::Drawing::Size(78, 23);
 			this->play->TabIndex = 1;
@@ -315,18 +406,219 @@ namespace VoleMachine {
 			// 
 			// load_from_file
 			// 
-			this->load_from_file->Location = System::Drawing::Point(15, 21);
+			this->load_from_file->Location = System::Drawing::Point(15, 19);
 			this->load_from_file->Name = L"load_from_file";
 			this->load_from_file->Size = System::Drawing::Size(103, 23);
 			this->load_from_file->TabIndex = 0;
 			this->load_from_file->Text = L"Load From File";
 			this->load_from_file->UseVisualStyleBackColor = true;
 			// 
+			// instruction_register_panel
+			// 
+			this->instruction_register_panel->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->instruction_register_panel->Controls->Add(this->instruction_decode_textbox);
+			this->instruction_register_panel->Controls->Add(this->third_operand_textbox);
+			this->instruction_register_panel->Controls->Add(this->second_operand_textbox);
+			this->instruction_register_panel->Controls->Add(this->first_operand_textbox);
+			this->instruction_register_panel->Controls->Add(this->opcode_textbox);
+			this->instruction_register_panel->Controls->Add(this->third_operand_label);
+			this->instruction_register_panel->Controls->Add(this->second_operand_label);
+			this->instruction_register_panel->Controls->Add(this->first_operand_label);
+			this->instruction_register_panel->Controls->Add(this->opcode_label);
+			this->instruction_register_panel->Controls->Add(this->execute);
+			this->instruction_register_panel->Controls->Add(this->decode);
+			this->instruction_register_panel->Controls->Add(this->current_instruction_textbox);
+			this->instruction_register_panel->Controls->Add(this->instruction_register_instruction_label);
+			this->instruction_register_panel->Location = System::Drawing::Point(667, 84);
+			this->instruction_register_panel->Name = L"instruction_register_panel";
+			this->instruction_register_panel->Size = System::Drawing::Size(279, 226);
+			this->instruction_register_panel->TabIndex = 7;
+			// 
+			// instruction_register_label
+			// 
+			this->instruction_register_label->AutoSize = true;
+			this->instruction_register_label->Location = System::Drawing::Point(675, 77);
+			this->instruction_register_label->Name = L"instruction_register_label";
+			this->instruction_register_label->Size = System::Drawing::Size(98, 13);
+			this->instruction_register_label->TabIndex = 8;
+			this->instruction_register_label->Text = L"Instruction Regsiter";
+			// 
+			// screen_panel
+			// 
+			this->screen_panel->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->screen_panel->Controls->Add(this->screen_textbox);
+			this->screen_panel->Location = System::Drawing::Point(667, 329);
+			this->screen_panel->Name = L"screen_panel";
+			this->screen_panel->Size = System::Drawing::Size(279, 220);
+			this->screen_panel->TabIndex = 9;
+			this->screen_panel->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MainForm::screen_panel_Paint);
+			// 
+			// screen_label
+			// 
+			this->screen_label->AutoSize = true;
+			this->screen_label->Location = System::Drawing::Point(675, 321);
+			this->screen_label->Name = L"screen_label";
+			this->screen_label->Size = System::Drawing::Size(41, 13);
+			this->screen_label->TabIndex = 10;
+			this->screen_label->Text = L"Screen";
+			// 
+			// clear_screen
+			// 
+			this->clear_screen->Location = System::Drawing::Point(849, 316);
+			this->clear_screen->Name = L"clear_screen";
+			this->clear_screen->Size = System::Drawing::Size(83, 23);
+			this->clear_screen->TabIndex = 11;
+			this->clear_screen->Text = L"Clear Screen";
+			this->clear_screen->UseVisualStyleBackColor = true;
+			// 
+			// contextMenuStrip1
+			// 
+			this->contextMenuStrip1->Name = L"contextMenuStrip1";
+			this->contextMenuStrip1->Size = System::Drawing::Size(61, 4);
+			// 
+			// screen_textbox
+			// 
+			this->screen_textbox->BackColor = System::Drawing::SystemColors::Control;
+			this->screen_textbox->Location = System::Drawing::Point(5, 15);
+			this->screen_textbox->Multiline = true;
+			this->screen_textbox->Name = L"screen_textbox";
+			this->screen_textbox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
+			this->screen_textbox->Size = System::Drawing::Size(268, 198);
+			this->screen_textbox->TabIndex = 0;
+			// 
+			// textBox1
+			// 
+			this->textBox1->Location = System::Drawing::Point(122, 23);
+			this->textBox1->Name = L"textBox1";
+			this->textBox1->Size = System::Drawing::Size(152, 20);
+			this->textBox1->TabIndex = 1;
+			this->textBox1->TextChanged += gcnew System::EventHandler(this, &MainForm::textBox1_TextChanged);
+			// 
+			// current_instruction_textbox
+			// 
+			this->current_instruction_textbox->Location = System::Drawing::Point(138, 18);
+			this->current_instruction_textbox->Name = L"current_instruction_textbox";
+			this->current_instruction_textbox->Size = System::Drawing::Size(121, 20);
+			this->current_instruction_textbox->TabIndex = 1;
+			this->current_instruction_textbox->TextChanged += gcnew System::EventHandler(this, &MainForm::textBox1_TextChanged);
+			// 
+			// instruction_register_instruction_label
+			// 
+			this->instruction_register_instruction_label->AutoSize = true;
+			this->instruction_register_instruction_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->instruction_register_instruction_label->Location = System::Drawing::Point(17, 22);
+			this->instruction_register_instruction_label->Name = L"instruction_register_instruction_label";
+			this->instruction_register_instruction_label->Size = System::Drawing::Size(112, 13);
+			this->instruction_register_instruction_label->TabIndex = 0;
+			this->instruction_register_instruction_label->Text = L"Current Instruction";
+			// 
+			// decode
+			// 
+			this->decode->Location = System::Drawing::Point(17, 50);
+			this->decode->Name = L"decode";
+			this->decode->Size = System::Drawing::Size(243, 23);
+			this->decode->TabIndex = 2;
+			this->decode->Text = L"Decode";
+			this->decode->UseVisualStyleBackColor = true;
+			// 
+			// button1
+			// 
+			this->button1->Location = System::Drawing::Point(280, 21);
+			this->button1->Name = L"button1";
+			this->button1->Size = System::Drawing::Size(98, 23);
+			this->button1->TabIndex = 4;
+			this->button1->Text = L"Fetch";
+			this->button1->UseVisualStyleBackColor = true;
+			// 
+			// opcode_label
+			// 
+			this->opcode_label->AutoSize = true;
+			this->opcode_label->Location = System::Drawing::Point(14, 85);
+			this->opcode_label->Name = L"opcode_label";
+			this->opcode_label->Size = System::Drawing::Size(48, 13);
+			this->opcode_label->TabIndex = 3;
+			this->opcode_label->Text = L"Opcode:";
+			// 
+			// opcode_textbox
+			// 
+			this->opcode_textbox->Location = System::Drawing::Point(65, 81);
+			this->opcode_textbox->Name = L"opcode_textbox";
+			this->opcode_textbox->Size = System::Drawing::Size(27, 20);
+			this->opcode_textbox->TabIndex = 4;
+			// 
+			// first_operand_label
+			// 
+			this->first_operand_label->AutoSize = true;
+			this->first_operand_label->Location = System::Drawing::Point(107, 85);
+			this->first_operand_label->Name = L"first_operand_label";
+			this->first_operand_label->Size = System::Drawing::Size(16, 13);
+			this->first_operand_label->TabIndex = 3;
+			this->first_operand_label->Text = L"\?:";
+			// 
+			// first_operand_textbox
+			// 
+			this->first_operand_textbox->Location = System::Drawing::Point(127, 81);
+			this->first_operand_textbox->Name = L"first_operand_textbox";
+			this->first_operand_textbox->Size = System::Drawing::Size(27, 20);
+			this->first_operand_textbox->TabIndex = 4;
+			// 
+			// second_operand_label
+			// 
+			this->second_operand_label->AutoSize = true;
+			this->second_operand_label->Location = System::Drawing::Point(160, 85);
+			this->second_operand_label->Name = L"second_operand_label";
+			this->second_operand_label->Size = System::Drawing::Size(16, 13);
+			this->second_operand_label->TabIndex = 3;
+			this->second_operand_label->Text = L"\?:";
+			// 
+			// second_operand_textbox
+			// 
+			this->second_operand_textbox->Location = System::Drawing::Point(180, 81);
+			this->second_operand_textbox->Name = L"second_operand_textbox";
+			this->second_operand_textbox->Size = System::Drawing::Size(27, 20);
+			this->second_operand_textbox->TabIndex = 4;
+			// 
+			// third_operand_label
+			// 
+			this->third_operand_label->AutoSize = true;
+			this->third_operand_label->Location = System::Drawing::Point(213, 85);
+			this->third_operand_label->Name = L"third_operand_label";
+			this->third_operand_label->Size = System::Drawing::Size(16, 13);
+			this->third_operand_label->TabIndex = 3;
+			this->third_operand_label->Text = L"\?:";
+			// 
+			// third_operand_textbox
+			// 
+			this->third_operand_textbox->Location = System::Drawing::Point(233, 81);
+			this->third_operand_textbox->Name = L"third_operand_textbox";
+			this->third_operand_textbox->Size = System::Drawing::Size(27, 20);
+			this->third_operand_textbox->TabIndex = 4;
+			// 
+			// execute
+			// 
+			this->execute->Location = System::Drawing::Point(17, 188);
+			this->execute->Name = L"execute";
+			this->execute->Size = System::Drawing::Size(243, 23);
+			this->execute->TabIndex = 2;
+			this->execute->Text = L"Execute";
+			this->execute->UseVisualStyleBackColor = true;
+			// 
+			// instruction_decode_textbox
+			// 
+			this->instruction_decode_textbox->AcceptsReturn = true;
+			this->instruction_decode_textbox->BackColor = System::Drawing::SystemColors::Control;
+			this->instruction_decode_textbox->Location = System::Drawing::Point(17, 111);
+			this->instruction_decode_textbox->Multiline = true;
+			this->instruction_decode_textbox->Name = L"instruction_decode_textbox";
+			this->instruction_decode_textbox->Size = System::Drawing::Size(242, 71);
+			this->instruction_decode_textbox->TabIndex = 5;
+			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(984, 561);
+			this->ClientSize = System::Drawing::Size(957, 561);
 			this->Controls->Add(this->main_panel);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 			this->Name = L"MainForm";
@@ -341,6 +633,10 @@ namespace VoleMachine {
 			this->controls_panel->ResumeLayout(false);
 			this->controls_panel->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->steps_spinbox))->EndInit();
+			this->instruction_register_panel->ResumeLayout(false);
+			this->instruction_register_panel->PerformLayout();
+			this->screen_panel->ResumeLayout(false);
+			this->screen_panel->PerformLayout();
 			this->ResumeLayout(false);
 
 		}
@@ -362,5 +658,9 @@ namespace VoleMachine {
 
 
 private: System::Void memory_list_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {}
+private: System::Void memory_label_Click(System::Object^ sender, System::EventArgs^ e) {}
+private: System::Void memory_panel_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {}
+private: System::Void screen_panel_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {}
+private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {}
 };
 }
