@@ -8,19 +8,20 @@
 
 class CPU {
 private:
-    std::array<StorageUnit, 16> registers;
+    Registers registers;
     size_t program_counter;
     std::string instruction_register;
     ALU alu;
     CU cu;
-
 public:
     CPU();
-    void runInstructions(std::array<StorageUnit, 256>& memory);
-    void fetch(std::array<StorageUnit, 256>& memory);
+    void runInstructions(MainMemory& memory);
+    void fetch(MainMemory& memory);
     std::vector<int> decode();
-    void execute(std::array<StorageUnit, 16>& Register, std::array<StorageUnit, 256>& memory, std::vector<int> instruction);
+    void execute(Registers& registers, MainMemory& memory, std::vector<int> instruction);
     void clearRegisters();
     bool isHalt();
     void halt();
+
+    size_t& getProgramCounter();
 };

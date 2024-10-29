@@ -5,7 +5,7 @@
 class Machine {
 private:
     CPU processor;
-    std::array<StorageUnit, 256> memory;
+    MainMemory memory;
 
 public:
     void loadProgram();
