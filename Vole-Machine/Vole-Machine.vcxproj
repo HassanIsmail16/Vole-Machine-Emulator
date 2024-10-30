@@ -124,21 +124,33 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ALU.cpp" />
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="CPU.cpp" />
     <ClCompile Include="CU.cpp" />
+    <ClCompile Include="ExecutionController.cpp" />
+    <ClCompile Include="InstructionValidator.cpp" />
     <ClCompile Include="Machine.cpp" />
     <ClCompile Include="MainForm.cpp" />
+    <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="MemoryController.cpp" />
+    <ClCompile Include="RegistersController.cpp" />
     <ClCompile Include="StorageUnit.cpp" />
     <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ALU.h" />
+    <ClInclude Include="Controller.h" />
     <ClInclude Include="CPU.h" />
     <ClInclude Include="CU.h" />
+    <ClInclude Include="ExecutionController.h" />
+    <ClInclude Include="InstructionValidator.h" />
     <ClInclude Include="Machine.h" />
     <ClInclude Include="MainForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="Memory.h" />
+    <ClInclude Include="MemoryController.h" />
+    <ClInclude Include="RegistersController.h" />
     <ClInclude Include="StorageUnit.h" />
     <ClInclude Include="UI.h" />
   </ItemGroup>
