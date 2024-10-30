@@ -5,7 +5,6 @@
 #include <vector> 
 #include <map>
 
-
 enum class OP_CODE : int {
 	LOAD_M = 1,
 	LOAD_V = 2,
