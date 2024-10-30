@@ -23,6 +23,7 @@ namespace VoleMachine {
 			this->InitializeComponent();
 			this->initializeRegistersList();
 			this->initializeMemoryList();
+			this->mem_ctrl->memory_updated += gcnew MemoryController::MemoryUpdatedEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdated);
 		}
 
 	protected:
@@ -436,6 +437,7 @@ namespace VoleMachine {
 			this->memory_list->CellPainting += gcnew System::Windows::Forms::DataGridViewCellPaintingEventHandler(this, &MainForm::memory_list_CellPainting);
 			this->memory_list->CellStateChanged += gcnew System::Windows::Forms::DataGridViewCellStateChangedEventHandler(this, &MainForm::memory_list_AddressCellStateChanged);
 			this->memory_list->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MainForm::memory_list_KeyDown);
+
 			// 
 			// label1
 			// 
@@ -568,6 +570,7 @@ namespace VoleMachine {
 			this->load_from_file->TabIndex = 0;
 			this->load_from_file->Text = L"Load From File";
 			this->load_from_file->UseVisualStyleBackColor = true;
+			this->load_from_file->Click += gcnew System::EventHandler(this, &MainForm::load_from_file_Click);
 			// 
 			// contextMenuStrip1
 			// 
@@ -611,6 +614,7 @@ namespace VoleMachine {
 		System::Void memory_list_HandleCellSelection(int edited_cell_col, int edited_cell_row);
 		System::Void memory_list_KeyDown(Object^ sender, KeyEventArgs^ e);
 		
+		System::Void OnMemoryUpdated(Object^ sender, EventArgs^ e);
 		
 
 		int memory_list_selected_cell_row = 0;
@@ -619,5 +623,6 @@ namespace VoleMachine {
 		MemoryController^ mem_ctrl;
 		RegistersController^ reg_ctrl;
 		ExecutionController^ exec_ctrl;
-	};
+		private: System::Void load_from_file_Click(System::Object^ sender, System::EventArgs^ e);
+};
 }

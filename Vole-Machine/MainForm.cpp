@@ -1,9 +1,12 @@
 #include "MainForm.h"
+#include <msclr/marshal_cppstd.h>
+#include <iostream>
 
 using namespace System;
 using namespace System::Windows::Forms;
 
-int main() {
+[STAThread]
+int main(array<System::String^>^ args) {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 	VoleMachine::MainForm form;
@@ -153,6 +156,19 @@ System::Void VoleMachine::MainForm::memory_list_KeyDown(Object^ sender, KeyEvent
 	}
 }
 
+System::Void VoleMachine::MainForm::OnMemoryUpdated(Object^ sender, EventArgs^ e) {
+	this->memory_list->Columns->Clear();
+
+	for (int i = 0; i < 128; i++) {
+		String^ first_value = msclr::interop::marshal_as<String^>(this->machine->getMemory().getValueAt(i * 2));
+		String^ second_value = msclr::interop::marshal_as<String^>(this->machine->getMemory().getValueAt(i * 2 + 1));
+
+		this->memory_list->Rows[i]->Cells[i * 2]->Value = first_value;
+		this->memory_list->Rows[i]->Cells[i * 2 + 1]->Value = second_value;
+	}
+}
+
+
 System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e) {
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
 		e->AdvancedBorderStyle->Left = DataGridViewAdvancedCellBorderStyle::None;
@@ -160,4 +176,20 @@ System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, Dat
 		e->AdvancedBorderStyle->Bottom = DataGridViewAdvancedCellBorderStyle::None;
 	}
 	e->Handled = false;
+}
+
+System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender, System::EventArgs^ e) {
+	OpenFileDialog^ file_dialog = gcnew OpenFileDialog();
+
+	file_dialog->Filter = "Text Files (*.txt)|*.txt|All Files(*.*)|*.*";
+	file_dialog->FilterIndex = 1;
+	file_dialog->RestoreDirectory = true;
+
+	if (file_dialog->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
+		String^ filename = file_dialog->FileName;
+		std::string std_filename = msclr::interop::marshal_as<std::string>(filename); 
+		this->machine->loadProgram(std_filename); 
+		MessageBox::Show("File loaded successfully!");
+		this->machine->displayMemory(); // TODO: remove 
+;	}
 }
