@@ -95,7 +95,6 @@ System::Void VoleMachine::MainForm::memory_list_CellEndEdit(Object^ sender, Data
 		edited_cell_col, edited_cell_row);
 }
 
-
 System::Void VoleMachine::MainForm::memory_list_AddressCellStateChanged(Object^ sender, DataGridViewCellStateChangedEventArgs^ e) {
 	if (!e->Cell || e->StateChanged != DataGridViewElementStates::Selected) {
 		return;
