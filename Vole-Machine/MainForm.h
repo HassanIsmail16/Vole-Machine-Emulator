@@ -17,9 +17,9 @@ namespace VoleMachine {
 	public:
 		MainForm(void) {
 			this->machine = new Machine();
-			this->mem_ctrl = new MemoryController(this->machine);
-			this->reg_ctrl = new RegistersController(this->machine);
-			this->exec_ctrl = new ExecutionController(this->machine);
+			this->mem_ctrl = gcnew MemoryController(this->machine);
+			this->reg_ctrl = gcnew RegistersController(this->machine);
+			this->exec_ctrl = gcnew ExecutionController(this->machine);
 			this->InitializeComponent();
 			this->initializeRegistersList();
 			this->initializeMemoryList();
@@ -623,8 +623,8 @@ namespace VoleMachine {
 		int memory_list_selected_cell_row = 0;
 		int memory_list_selected_cell_col = 1;
 		Machine* machine;
-		MemoryController* mem_ctrl;
-		RegistersController* reg_ctrl;
-		ExecutionController* exec_ctrl;
+		MemoryController^ mem_ctrl;
+		RegistersController^ reg_ctrl;
+		ExecutionController^ exec_ctrl;
 	};
 }
