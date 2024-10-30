@@ -180,7 +180,6 @@ namespace VoleMachine {
 			this->main_panel->Padding = System::Windows::Forms::Padding(10);
 			this->main_panel->Size = System::Drawing::Size(957, 561);
 			this->main_panel->TabIndex = 0;
-			this->main_panel->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MainForm::panel1_Paint);
 			// 
 			// clear_screen
 			// 
@@ -208,7 +207,6 @@ namespace VoleMachine {
 			this->screen_panel->Name = L"screen_panel";
 			this->screen_panel->Size = System::Drawing::Size(279, 220);
 			this->screen_panel->TabIndex = 9;
-			this->screen_panel->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MainForm::screen_panel_Paint);
 			// 
 			// screen_textbox
 			// 
@@ -348,7 +346,6 @@ namespace VoleMachine {
 			this->current_instruction_textbox->Name = L"current_instruction_textbox";
 			this->current_instruction_textbox->Size = System::Drawing::Size(121, 20);
 			this->current_instruction_textbox->TabIndex = 1;
-			this->current_instruction_textbox->TextChanged += gcnew System::EventHandler(this, &MainForm::textBox1_TextChanged);
 			// 
 			// instruction_register_instruction_label
 			// 
@@ -387,7 +384,6 @@ namespace VoleMachine {
 			this->current_address_textbox->Name = L"current_address_textbox";
 			this->current_address_textbox->Size = System::Drawing::Size(152, 20);
 			this->current_address_textbox->TabIndex = 1;
-			this->current_address_textbox->TextChanged += gcnew System::EventHandler(this, &MainForm::textBox1_TextChanged);
 			// 
 			// program_counter_address_label
 			// 
@@ -417,7 +413,6 @@ namespace VoleMachine {
 			this->memory_label->Size = System::Drawing::Size(44, 13);
 			this->memory_label->TabIndex = 4;
 			this->memory_label->Text = L"Memory";
-			this->memory_label->Click += gcnew System::EventHandler(this, &MainForm::memory_label_Click);
 			// 
 			// memory_panel
 			// 
@@ -427,7 +422,6 @@ namespace VoleMachine {
 			this->memory_panel->Name = L"memory_panel";
 			this->memory_panel->Size = System::Drawing::Size(249, 464);
 			this->memory_panel->TabIndex = 3;
-			this->memory_panel->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MainForm::memory_panel_Paint);
 			// 
 			// memory_list
 			// 
@@ -438,7 +432,6 @@ namespace VoleMachine {
 			this->memory_list->Name = L"memory_list";
 			this->memory_list->Size = System::Drawing::Size(238, 449);
 			this->memory_list->TabIndex = 0;
-			this->memory_list->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_CellContentClick);
 			this->memory_list->CellEndEdit += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_CellEndEdit);
 			this->memory_list->CellPainting += gcnew System::Windows::Forms::DataGridViewCellPaintingEventHandler(this, &MainForm::memory_list_CellPainting);
 			this->memory_list->CellStateChanged += gcnew System::Windows::Forms::DataGridViewCellStateChangedEventHandler(this, &MainForm::memory_list_AddressCellStateChanged);
