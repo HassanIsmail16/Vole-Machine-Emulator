@@ -8,4 +8,3 @@ public:
 	static bool isValidRegisterIndex(char& index);
 	static bool isValidHexChar(char& ch);
 };
-
