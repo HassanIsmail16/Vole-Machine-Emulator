@@ -42,7 +42,7 @@
     <ClCompile Include="MemoryController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InstructionValidator.cpp">
+    <ClCompile Include="Utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Controller.cpp">
@@ -83,7 +83,7 @@
     <ClInclude Include="MemoryController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InstructionValidator.h">
+    <ClInclude Include="Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Controller.h">

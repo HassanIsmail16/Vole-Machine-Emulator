@@ -1,6 +1,7 @@
-#include "InstructionValidator.h"
+#include "Utilities.h"
+using namespace Utilities;
 
-bool InstructionValidator::isValidInstruction(std::string& instruction_string) {
+bool InstructionValidation::isValidInstruction(std::string& instruction_string) {
 	if (instruction_string.size() != 4) {
 		return false;
 	}
@@ -26,7 +27,7 @@ bool InstructionValidator::isValidInstruction(std::string& instruction_string) {
 	return false;
 }
 
-bool InstructionValidator::isValidMemoryAddress(std::string& address) {
+bool InstructionValidation::isValidMemoryAddress(std::string& address) {
 	if (address.size() != 2) {
 		return false;
 	}
@@ -34,10 +35,19 @@ bool InstructionValidator::isValidMemoryAddress(std::string& address) {
 	return isValidHexChar(address[0]) && isValidHexChar(address[1]);
 }
 
-bool InstructionValidator::isValidRegisterIndex(char& index) {
+bool InstructionValidation::isValidRegisterIndex(char& index) {
 	return (index >= '0' && index <= '9') || (toupper(index) >= 'A' && toupper(index) <= 'F');
 }
 
-bool InstructionValidator::isValidHexChar(char& ch) {
+bool InstructionValidation::isValidHexChar(char& ch) {
 	return (ch >= '0' && ch <= '9') || (toupper(ch) >= 'A' && toupper(ch) <= 'F');
+}
+
+System::String^ Conversion::convertStdStringToSystemString(std::string& string) {
+	System::String^ result = gcnew System::String(string.c_str());
+	return result;
+}
+
+std::string Utilities::Conversion::convertSystemStringToStdString(System::String^ string) {
+	return msclr::interop::marshal_as<std::string>(string);
 }

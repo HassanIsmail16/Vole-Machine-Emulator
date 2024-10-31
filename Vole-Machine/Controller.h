@@ -1,9 +1,10 @@
 #pragma once
 #include "Machine.h"
 #include <memory>
+#include <msclr/marshal.h>
 
 ref class Controller {
-private:
+protected:
 	Machine* machine;
 
 public:

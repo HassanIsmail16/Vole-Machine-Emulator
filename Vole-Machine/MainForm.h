@@ -23,6 +23,8 @@ namespace VoleMachine {
 			this->InitializeComponent();
 			this->initializeRegistersList();
 			this->initializeMemoryList();
+			this->mem_ctrl->memory_updated += gcnew MemoryController::MemoryUpdatedEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdated);
+			this->memory_list->CellValueChanged += gcnew DataGridViewCellEventHandler(this, &MainForm::memory_list_OnMemoryCellValueChanged);
 		}
 
 	protected:
@@ -97,6 +99,11 @@ namespace VoleMachine {
 
 	private: System::Windows::Forms::Button^ execute;
 	private: System::Windows::Forms::TextBox^ instruction_decode_textbox;
+	private: System::Windows::Forms::Button^ dark_mode;
+	private: System::Windows::Forms::Label^ credits_label;
+
+
+
 
 	private: System::ComponentModel::IContainer^ components;
 
@@ -148,6 +155,8 @@ namespace VoleMachine {
 			this->play = (gcnew System::Windows::Forms::Button());
 			this->load_from_file = (gcnew System::Windows::Forms::Button());
 			this->contextMenuStrip1 = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
+			this->dark_mode = (gcnew System::Windows::Forms::Button());
+			this->credits_label = (gcnew System::Windows::Forms::Label());
 			this->main_panel->SuspendLayout();
 			this->screen_panel->SuspendLayout();
 			this->instruction_register_panel->SuspendLayout();
@@ -161,6 +170,8 @@ namespace VoleMachine {
 			// 
 			// main_panel
 			// 
+			this->main_panel->Controls->Add(this->credits_label);
+			this->main_panel->Controls->Add(this->dark_mode);
 			this->main_panel->Controls->Add(this->clear_screen);
 			this->main_panel->Controls->Add(this->screen_label);
 			this->main_panel->Controls->Add(this->screen_panel);
@@ -178,7 +189,7 @@ namespace VoleMachine {
 			this->main_panel->Location = System::Drawing::Point(0, 0);
 			this->main_panel->Name = L"main_panel";
 			this->main_panel->Padding = System::Windows::Forms::Padding(10);
-			this->main_panel->Size = System::Drawing::Size(957, 561);
+			this->main_panel->Size = System::Drawing::Size(957, 584);
 			this->main_panel->TabIndex = 0;
 			// 
 			// clear_screen
@@ -568,17 +579,36 @@ namespace VoleMachine {
 			this->load_from_file->TabIndex = 0;
 			this->load_from_file->Text = L"Load From File";
 			this->load_from_file->UseVisualStyleBackColor = true;
+			this->load_from_file->Click += gcnew System::EventHandler(this, &MainForm::load_from_file_Click);
 			// 
 			// contextMenuStrip1
 			// 
 			this->contextMenuStrip1->Name = L"contextMenuStrip1";
 			this->contextMenuStrip1->Size = System::Drawing::Size(61, 4);
 			// 
+			// dark_mode
+			// 
+			this->dark_mode->Location = System::Drawing::Point(836, 555);
+			this->dark_mode->Name = L"dark_mode";
+			this->dark_mode->Size = System::Drawing::Size(110, 23);
+			this->dark_mode->TabIndex = 12;
+			this->dark_mode->Text = L"Dark Mode";
+			this->dark_mode->UseVisualStyleBackColor = true;
+			// 
+			// credits_label
+			// 
+			this->credits_label->AutoSize = true;
+			this->credits_label->Location = System::Drawing::Point(7, 560);
+			this->credits_label->Name = L"credits_label";
+			this->credits_label->Size = System::Drawing::Size(382, 13);
+			this->credits_label->TabIndex = 13;
+			this->credits_label->Text = L"Made with (not that much) love by: Hassan Ali, Abdullah Ali, Momen Abdelkader";
+			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(957, 561);
+			this->ClientSize = System::Drawing::Size(957, 584);
 			this->Controls->Add(this->main_panel);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 			this->Name = L"MainForm";
@@ -611,7 +641,8 @@ namespace VoleMachine {
 		System::Void memory_list_HandleCellSelection(int edited_cell_col, int edited_cell_row);
 		System::Void memory_list_KeyDown(Object^ sender, KeyEventArgs^ e);
 		
-		
+		System::Void OnMemoryUpdated();
+		System::Void memory_list_OnMemoryCellValueChanged(Object^ sender, DataGridViewCellEventArgs^ e);
 
 		int memory_list_selected_cell_row = 0;
 		int memory_list_selected_cell_col = 1;
@@ -619,5 +650,6 @@ namespace VoleMachine {
 		MemoryController^ mem_ctrl;
 		RegistersController^ reg_ctrl;
 		ExecutionController^ exec_ctrl;
-	};
+		private: System::Void load_from_file_Click(System::Object^ sender, System::EventArgs^ e);
+};
 }
