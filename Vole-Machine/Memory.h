@@ -3,7 +3,7 @@
 #include <array>
 
 class Memory {
-private:
+public: // TODO: revert this to private
 	std::array<StorageUnit, 256> memory;
 	int last_added_instruction_index;
 
@@ -15,4 +15,5 @@ public:
 	void setValueAt(const size_t index, std::string& value);
 	void clearValueAt(const size_t index);
 	void clearMemory();
+
 };

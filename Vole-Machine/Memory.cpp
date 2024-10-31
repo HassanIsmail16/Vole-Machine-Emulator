@@ -1,4 +1,5 @@
 #include "Memory.h"
+#include <iostream>
 
 void Memory::addInstruction(std::string& instruction) {
 	if (this->last_added_instruction_index == 256) {

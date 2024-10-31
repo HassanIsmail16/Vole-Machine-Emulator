@@ -7,7 +7,6 @@
 #include <string>
 
 void ALU::addTwoComp(int regR, int regS, int regT, Registers& registers) {
-
     int valueS = std::stoi(registers[regS].getValue(), nullptr, 16); // convert hex to int
     int valueT = std::stoi(registers[regT].getValue(), nullptr, 16);
     int result = valueS + valueT;
