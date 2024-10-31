@@ -1,5 +1,6 @@
 #include "MemoryController.h"
 #include "Utilities.h"
+#include <fstream>
 #include <iostream>
 
 System::String^ MemoryController::getMemoryValueAt(int& index) {
@@ -13,5 +14,21 @@ void MemoryController::updateMemoryValueAt(int index, System::String^ new_value)
 void MemoryController::loadFromFile(std::string filename) {
 	this->machine->loadProgram(filename);
 	this->memory_updated();
+}
+
+void MemoryController::exportToFile(std::string filename) {
+	std::ofstream outfile(filename);
+
+	if (!outfile.is_open()) 
+		throw std::runtime_error("Could not open file for writing");
+
+		for (int i = 0; i < 128; i+=2)
+		{
+			std::string opcode = this->machine->getMemory().getValueAt(i);
+			std::string operand = this->machine->getMemory().getValueAt(i + 1);
+			outfile << opcode << operand << " ";
+		}
+
+	outfile.close();
 }
 
