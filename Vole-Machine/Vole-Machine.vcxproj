@@ -128,7 +128,7 @@
     <ClCompile Include="CPU.cpp" />
     <ClCompile Include="CU.cpp" />
     <ClCompile Include="ExecutionController.cpp" />
-    <ClCompile Include="InstructionValidator.cpp" />
+    <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="Machine.cpp" />
     <ClCompile Include="MainForm.cpp" />
     <ClCompile Include="Memory.cpp" />
@@ -143,7 +143,7 @@
     <ClInclude Include="CPU.h" />
     <ClInclude Include="CU.h" />
     <ClInclude Include="ExecutionController.h" />
-    <ClInclude Include="InstructionValidator.h" />
+    <ClInclude Include="Utilities.h" />
     <ClInclude Include="Machine.h" />
     <ClInclude Include="MainForm.h">
       <FileType>CppForm</FileType>

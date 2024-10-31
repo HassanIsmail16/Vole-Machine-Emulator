@@ -1,6 +1,7 @@
 #include "MainForm.h"
 #include <msclr/marshal_cppstd.h>
 #include <iostream>
+#include "Utilities.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -37,6 +38,8 @@ System::Void VoleMachine::MainForm::initializeRegistersList() {
 }
 
 System::Void VoleMachine::MainForm::initializeMemoryList() {
+	this->memory_list->Columns->Clear();
+
 	this->memory_list->ColumnCount = 4;
 	this->memory_list->RowHeadersVisible = false;
 	this->memory_list->AllowUserToAddRows = false;
@@ -156,18 +159,36 @@ System::Void VoleMachine::MainForm::memory_list_KeyDown(Object^ sender, KeyEvent
 	}
 }
 
-System::Void VoleMachine::MainForm::OnMemoryUpdated(Object^ sender, EventArgs^ e) {
-	this->memory_list->Columns->Clear();
+System::Void VoleMachine::MainForm::OnMemoryUpdated() {
+	this->mem_ctrl->is_updating_memory_list = true;
+
+	this->initializeMemoryList();
 
 	for (int i = 0; i < 128; i++) {
-		String^ first_value = msclr::interop::marshal_as<String^>(this->machine->getMemory().getValueAt(i * 2));
-		String^ second_value = msclr::interop::marshal_as<String^>(this->machine->getMemory().getValueAt(i * 2 + 1));
+		String^ first_value = Utilities::Conversion::convertStdStringToSystemString(this->machine->getMemory().getValueAt(i * 2));
+		String^ second_value = Utilities::Conversion::convertStdStringToSystemString(this->machine->getMemory().getValueAt(i * 2 + 1));
+		
+		//std::cout << i << std::endl;
 
-		this->memory_list->Rows[i]->Cells[i * 2]->Value = first_value;
-		this->memory_list->Rows[i]->Cells[i * 2 + 1]->Value = second_value;
+		this->memory_list->Rows[i]->Cells[1]->Value = first_value;
+		this->memory_list->Rows[i]->Cells[2]->Value = second_value;
 	}
+
+	this->mem_ctrl->is_updating_memory_list = false;
 }
 
+System::Void VoleMachine::MainForm::memory_list_OnMemoryCellValueChanged(Object^ sender, DataGridViewCellEventArgs^ e) {
+	if (this->mem_ctrl->is_updating_memory_list) {
+		return;
+	}
+
+	int address = e->RowIndex * 2 + e->ColumnIndex - 1;
+	String^ value = this->memory_list->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Value->ToString();
+
+	this->mem_ctrl->updateMemoryValueAt(address, value);
+
+	this->machine->displayMemory();
+}
 
 System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e) {
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
@@ -187,8 +208,9 @@ System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender,
 
 	if (file_dialog->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
 		String^ filename = file_dialog->FileName;
-		std::string std_filename = msclr::interop::marshal_as<std::string>(filename); 
-		this->machine->loadProgram(std_filename); 
+		std::string std_filename = Utilities::Conversion::convertSystemStringToStdString(filename); 
+		std::cout << "x1" << std::endl;
+		this->mem_ctrl->loadFromFile(std_filename);
 		MessageBox::Show("File loaded successfully!");
 		this->machine->displayMemory(); // TODO: remove 
 ;	}

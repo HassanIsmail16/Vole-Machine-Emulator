@@ -24,6 +24,7 @@ namespace VoleMachine {
 			this->initializeRegistersList();
 			this->initializeMemoryList();
 			this->mem_ctrl->memory_updated += gcnew MemoryController::MemoryUpdatedEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdated);
+			this->memory_list->CellValueChanged += gcnew DataGridViewCellEventHandler(this, &MainForm::memory_list_OnMemoryCellValueChanged);
 		}
 
 	protected:
@@ -614,8 +615,8 @@ namespace VoleMachine {
 		System::Void memory_list_HandleCellSelection(int edited_cell_col, int edited_cell_row);
 		System::Void memory_list_KeyDown(Object^ sender, KeyEventArgs^ e);
 		
-		System::Void OnMemoryUpdated(Object^ sender, EventArgs^ e);
-		
+		System::Void OnMemoryUpdated();
+		System::Void memory_list_OnMemoryCellValueChanged(Object^ sender, DataGridViewCellEventArgs^ e);
 
 		int memory_list_selected_cell_row = 0;
 		int memory_list_selected_cell_col = 1;

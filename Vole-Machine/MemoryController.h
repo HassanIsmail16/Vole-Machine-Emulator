@@ -6,13 +6,14 @@ ref class MemoryController : public Controller {
 public:
 	MemoryController(Machine* machine): Controller(machine) {}
 	
-	delegate void MemoryUpdatedEventHandler(Object^ sender, EventArgs^ e);
+	delegate void MemoryUpdatedEventHandler();
 	event MemoryUpdatedEventHandler^ memory_updated;
 
-	void onMemoryUpdated();
+	System::String^ getMemoryValueAt(int& index);
+	void updateMemoryValueAt(int index, System::String^ new_value);
+
 	void loadFromFile(std::string filename);
 
-private:
-
+	bool is_updating_memory_list = false;
 };
 
