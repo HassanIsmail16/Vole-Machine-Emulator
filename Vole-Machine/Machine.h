@@ -1,13 +1,18 @@
 #pragma once
 #include "CPU.h"
+#include "Memory.h"
 #include <array>
 
 class Machine {
 private:
     CPU processor;
-    MainMemory memory;
+    Memory memory;
 
 public:
-    void loadProgram();
+    void loadProgram(std::string& filename);
     void outputState();
+    CPU& getCPU();
+    Memory& getMemory();
+    void displayMemory();
+
 };

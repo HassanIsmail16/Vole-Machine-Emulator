@@ -7,7 +7,6 @@
 #include <string>
 
 void ALU::addTwoComp(int regR, int regS, int regT, Registers& registers) {
-
     int valueS = std::stoi(registers[regS].getValue(), nullptr, 16); // convert hex to int
     int valueT = std::stoi(registers[regT].getValue(), nullptr, 16);
     int result = valueS + valueT;
@@ -212,3 +211,31 @@ int ALU::hexToInt(std::string hex) {
         return std::stoi(binary, nullptr, 2);
     }
 }
+
+void ALU::bitwiseOr(int regR, int regS, int regT, Registers& registers) {
+    int valueS = std::stoi(registers[regS].getValue(), nullptr, 16);
+    int valueT = std::stoi(registers[regT].getValue(), nullptr, 16);
+    int result = valueS | valueT;
+    registers[regR].setValue(decToHex(result));
+}
+
+void ALU::bitwiseAnd(int regR, int regS, int regT, Registers& registers) {
+    int valueS = std::stoi(registers[regS].getValue(), nullptr, 16);
+    int valueT = std::stoi(registers[regT].getValue(), nullptr, 16);
+    int result = valueS & valueT;
+    registers[regR].setValue(decToHex(result));
+}
+
+void ALU::bitwiseXor(int regR, int regS, int regT, Registers& registers) {
+    int valueS = std::stoi(registers[regS].getValue(), nullptr, 16);
+    int valueT = std::stoi(registers[regT].getValue(), nullptr, 16);
+    int result = valueS ^ valueT;
+    registers[regR].setValue(decToHex(result));
+}
+
+void ALU::rotateRight(int regR, int steps, Registers& registers) {
+    int value = std::stoi(registers[regR].getValue(), nullptr, 16);
+    value = (value >> steps) | (value << (8 - steps)) & 0xFF;
+    registers[regR].setValue(decToHex(value));
+}
+
