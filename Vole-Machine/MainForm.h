@@ -99,6 +99,11 @@ namespace VoleMachine {
 
 	private: System::Windows::Forms::Button^ execute;
 	private: System::Windows::Forms::TextBox^ instruction_decode_textbox;
+	private: System::Windows::Forms::Button^ dark_mode;
+	private: System::Windows::Forms::Label^ credits_label;
+
+
+
 
 	private: System::ComponentModel::IContainer^ components;
 
@@ -150,6 +155,8 @@ namespace VoleMachine {
 			this->play = (gcnew System::Windows::Forms::Button());
 			this->load_from_file = (gcnew System::Windows::Forms::Button());
 			this->contextMenuStrip1 = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
+			this->dark_mode = (gcnew System::Windows::Forms::Button());
+			this->credits_label = (gcnew System::Windows::Forms::Label());
 			this->main_panel->SuspendLayout();
 			this->screen_panel->SuspendLayout();
 			this->instruction_register_panel->SuspendLayout();
@@ -163,6 +170,8 @@ namespace VoleMachine {
 			// 
 			// main_panel
 			// 
+			this->main_panel->Controls->Add(this->credits_label);
+			this->main_panel->Controls->Add(this->dark_mode);
 			this->main_panel->Controls->Add(this->clear_screen);
 			this->main_panel->Controls->Add(this->screen_label);
 			this->main_panel->Controls->Add(this->screen_panel);
@@ -180,7 +189,7 @@ namespace VoleMachine {
 			this->main_panel->Location = System::Drawing::Point(0, 0);
 			this->main_panel->Name = L"main_panel";
 			this->main_panel->Padding = System::Windows::Forms::Padding(10);
-			this->main_panel->Size = System::Drawing::Size(957, 561);
+			this->main_panel->Size = System::Drawing::Size(957, 584);
 			this->main_panel->TabIndex = 0;
 			// 
 			// clear_screen
@@ -438,7 +447,6 @@ namespace VoleMachine {
 			this->memory_list->CellPainting += gcnew System::Windows::Forms::DataGridViewCellPaintingEventHandler(this, &MainForm::memory_list_CellPainting);
 			this->memory_list->CellStateChanged += gcnew System::Windows::Forms::DataGridViewCellStateChangedEventHandler(this, &MainForm::memory_list_AddressCellStateChanged);
 			this->memory_list->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MainForm::memory_list_KeyDown);
-
 			// 
 			// label1
 			// 
@@ -578,11 +586,29 @@ namespace VoleMachine {
 			this->contextMenuStrip1->Name = L"contextMenuStrip1";
 			this->contextMenuStrip1->Size = System::Drawing::Size(61, 4);
 			// 
+			// dark_mode
+			// 
+			this->dark_mode->Location = System::Drawing::Point(836, 555);
+			this->dark_mode->Name = L"dark_mode";
+			this->dark_mode->Size = System::Drawing::Size(110, 23);
+			this->dark_mode->TabIndex = 12;
+			this->dark_mode->Text = L"Dark Mode";
+			this->dark_mode->UseVisualStyleBackColor = true;
+			// 
+			// credits_label
+			// 
+			this->credits_label->AutoSize = true;
+			this->credits_label->Location = System::Drawing::Point(7, 560);
+			this->credits_label->Name = L"credits_label";
+			this->credits_label->Size = System::Drawing::Size(382, 13);
+			this->credits_label->TabIndex = 13;
+			this->credits_label->Text = L"Made with (not that much) love by: Hassan Ali, Abdullah Ali, Momen Abdelkader";
+			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(957, 561);
+			this->ClientSize = System::Drawing::Size(957, 584);
 			this->Controls->Add(this->main_panel);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 			this->Name = L"MainForm";
