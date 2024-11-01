@@ -12,5 +12,6 @@ std::string StorageUnit::getValue() {
 }
 
 void StorageUnit::clear() {
+	std::cout << "t1" << std::endl;
 	this->value = "00";
 }

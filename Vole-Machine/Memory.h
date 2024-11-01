@@ -15,5 +15,6 @@ public:
 	void setValueAt(const size_t index, std::string& value);
 	void clearValueAt(const size_t index);
 	void clearMemory();
-
+	
+	bool isEmpty();
 };

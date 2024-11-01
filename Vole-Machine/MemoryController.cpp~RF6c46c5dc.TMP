@@ -4,6 +4,7 @@
 
 void MemoryController::memoryUpdated() {
 	if (this->is_updating_memory_list) {
+		std::cout << "n1" << std::endl;
 		return;
 	}
 
