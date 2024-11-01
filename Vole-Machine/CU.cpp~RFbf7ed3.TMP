@@ -39,7 +39,6 @@ void CU::executeInstruction(const std::vector<int>& instruction, Registers& regi
             jumpTo(instruction[1], memory_address, registers, program_counter);
         }
         default: {
-            std::cout << "def" << std::endl;
             break;
         }
     }

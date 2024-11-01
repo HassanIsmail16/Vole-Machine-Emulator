@@ -16,12 +16,10 @@ namespace VoleMachine {
 	public ref class MainForm : public System::Windows::Forms::Form {
 
 	public:
-		MemoryController^ memoryController;
 		MainForm(void) {
 
 			this->machine = new Machine();
 			this->mem_ctrl = gcnew MemoryController(this->machine);
-			this->memoryController = this->mem_ctrl;
 			this->reg_ctrl = gcnew RegistersController(this->machine);
 			this->exec_ctrl = gcnew ExecutionController(this->machine);
 			this->InitializeComponent();
@@ -30,6 +28,7 @@ namespace VoleMachine {
 			this->initializeMemoryList();
 			this->mem_ctrl->memory_updated += gcnew MemoryController::MemoryUpdatedEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdated);
 			this->exec_ctrl->fetched_instruction += gcnew ExecutionController::InstructionFetchedEventHandler(this, &VoleMachine::MainForm::OnFetchInstruction);
+			this->exec_ctrl->executed_instruction += gcnew ExecutionController::InstructionExecutedEventHandler(this, &VoleMachine::MainForm::OnExecuteInstruction);
 		}
 
 	protected:
@@ -196,7 +195,7 @@ namespace VoleMachine {
 			this->main_panel->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->main_panel->Location = System::Drawing::Point(0, 0);
 			this->main_panel->Name = L"main_panel";
-			this->main_panel->Padding = System::Windows::Forms::Padding(10, 10, 10, 10);
+			this->main_panel->Padding = System::Windows::Forms::Padding(10);
 			this->main_panel->Size = System::Drawing::Size(957, 584);
 			this->main_panel->TabIndex = 0;
 			// 
@@ -226,6 +225,7 @@ namespace VoleMachine {
 			this->clear_screen->TabIndex = 11;
 			this->clear_screen->Text = L"Clear Screen";
 			this->clear_screen->UseVisualStyleBackColor = true;
+			this->clear_screen->Click += gcnew System::EventHandler(this, &MainForm::clear_screen_Click);
 			// 
 			// screen_label
 			// 
@@ -372,6 +372,7 @@ namespace VoleMachine {
 			this->execute->TabIndex = 2;
 			this->execute->Text = L"Execute";
 			this->execute->UseVisualStyleBackColor = true;
+			this->execute->Click += gcnew System::EventHandler(this, &MainForm::execute_Click);
 			// 
 			// decode
 			// 
@@ -444,7 +445,7 @@ namespace VoleMachine {
 			// reset_pc
 			// 
 			this->reset_pc->Location = System::Drawing::Point(300, 21);
-			this->reset_pc->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->reset_pc->Margin = System::Windows::Forms::Padding(2);
 			this->reset_pc->Name = L"reset_pc";
 			this->reset_pc->Size = System::Drawing::Size(78, 23);
 			this->reset_pc->TabIndex = 4;
@@ -455,7 +456,7 @@ namespace VoleMachine {
 			// fetch
 			// 
 			this->fetch->Location = System::Drawing::Point(205, 22);
-			this->fetch->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->fetch->Margin = System::Windows::Forms::Padding(2);
 			this->fetch->Name = L"fetch";
 			this->fetch->Size = System::Drawing::Size(91, 23);
 			this->fetch->TabIndex = 4;
@@ -679,6 +680,7 @@ namespace VoleMachine {
 		System::Void memory_list_OnMemoryCellValueChanged(Object^ sender, DataGridViewCellEventArgs^ e);
 
 		System::Void OnFetchInstruction();
+		System::Void OnExecuteInstruction();
 
 		int memory_list_selected_cell_row = 0;
 		int memory_list_selected_cell_col = 1;
@@ -694,5 +696,7 @@ namespace VoleMachine {
 	private: System::Void reset_registers_Click(System::Object^ sender, System::EventArgs^ e) {}
 	private: System::Void fetch_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void reset_pc_Click(System::Object^ sender, System::EventArgs^ e);
-	};
+	private: System::Void clear_screen_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void execute_Click(System::Object^ sender, System::EventArgs^ e);
+};
 }

@@ -11,7 +11,7 @@ void CPU::runInstructions(Memory& memory) {
 	while (!this->isHalt()) {
 		this->fetch(memory);
 		std::vector<int> instruction = this->decode();
-		this->execute(memory, instruction);
+		this->execute(this->registers, memory, instruction);
 	}
 	this->halt();
 }
@@ -34,7 +34,7 @@ std::vector<int> CPU::decode() {
 	return instruction;
 }
 
-void CPU::execute(Memory& memory, std::vector<int> instruction) {
+void CPU::execute(Registers& registers, Memory& memory, std::vector<int> instruction) {
 	this->cu.executeInstruction(instruction, registers, memory, alu, program_counter);
 }
 

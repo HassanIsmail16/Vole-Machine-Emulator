@@ -199,6 +199,12 @@ System::Void VoleMachine::MainForm::OnFetchInstruction() {
 	this->current_instruction_textbox->Text = current_instruction;
 }
 
+System::Void VoleMachine::MainForm::OnExecuteInstruction() {
+	this->mem_ctrl->memoryUpdated();
+	// TODO: update registers and screen
+	this->machine->displayMemory();
+}
+
 System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e) {
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
 		e->AdvancedBorderStyle->Left = DataGridViewAdvancedCellBorderStyle::None;
@@ -233,7 +239,7 @@ System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender,
 }
 
 System::Void VoleMachine::MainForm::export_to_file_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (memoryController == nullptr) {
+	if (mem_ctrl == nullptr) {
 		MessageBox::Show("MemoryController is not initialized!", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
 		return;
 	}
@@ -244,7 +250,7 @@ System::Void VoleMachine::MainForm::export_to_file_Click(System::Object^ sender,
 
 	if (saveFileDialog->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
 		std::string filename = Utilities::Conversion::convertSystemStringToStdString(saveFileDialog->FileName);
-		memoryController->exportToFile(filename);
+		mem_ctrl->exportToFile(filename);
 		MessageBox::Show("File saved successfully.", "Export Complete", MessageBoxButtons::OK, MessageBoxIcon::Information);
 	}
 }
@@ -266,4 +272,12 @@ System::Void VoleMachine::MainForm::fetch_Click(System::Object^ sender, System::
 
 System::Void VoleMachine::MainForm::reset_pc_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->exec_ctrl->resetProgram();
+}
+
+System::Void VoleMachine::MainForm::clear_screen_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->screen_textbox->Clear();
+}
+
+System::Void VoleMachine::MainForm::execute_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->exec_ctrl->executeCurrentInstruction();
 }
