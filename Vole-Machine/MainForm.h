@@ -708,6 +708,29 @@ namespace VoleMachine {
 		private: System::Void load_from_file_Click(System::Object^ sender, System::EventArgs^ e);
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 private: System::Void export_to_file_Click(System::Object^ sender, System::EventArgs^ e) {
 	SaveFileDialog^ saveFileDialog = gcnew SaveFileDialog();
 	saveFileDialog->Filter = "Text Files|*.txt|All Files|*.*";
