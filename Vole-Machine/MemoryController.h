@@ -15,6 +15,8 @@ public:
 
 	void loadFromFile(std::string filename);
 
+	void exportToFile(std::string filename);
+
 	void resetMemory();
 
 	bool is_updating_memory_list = false;
