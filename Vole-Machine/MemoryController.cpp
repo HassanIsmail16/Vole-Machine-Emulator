@@ -34,15 +34,15 @@ void MemoryController::resetMemory() {
 void MemoryController::exportToFile(std::string filename) {
 	std::ofstream outfile(filename);
 
-	if (!outfile.is_open()) 
+	if (!outfile.is_open()) {
 		throw std::runtime_error("Could not open file for writing");
+	}
 
-		for (int i = 0; i < 128; i+=2)
-		{
-			std::string opcode = this->machine->getMemory().getValueAt(i);
-			std::string operand = this->machine->getMemory().getValueAt(i + 1);
-			outfile << opcode << operand << " ";
-		}
+	for (int i = 0; i < 128; i += 2) {
+		auto opcode = this->machine->getMemory().getValueAt(i);
+		auto operand = this->machine->getMemory().getValueAt(i + 1);
+		outfile << opcode << operand << " ";
+	}
 
 	outfile.close();
 }

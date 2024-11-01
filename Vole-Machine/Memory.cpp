@@ -13,6 +13,7 @@ void Memory::addInstruction(std::string& instruction) {
 }
 
 std::string Memory::getValueAt(const size_t index) {
+	std::cout << "n1" << std::endl;
 	return this->memory[index].getValue();
 }
 

@@ -688,17 +688,7 @@ namespace VoleMachine {
 		private: System::Void load_from_file_Click(System::Object^ sender, System::EventArgs^ e);
 
 
-private: System::Void export_to_file_Click(System::Object^ sender, System::EventArgs^ e) {
-	SaveFileDialog^ saveFileDialog = gcnew SaveFileDialog();
-	saveFileDialog->Filter = "Text Files|*.txt|All Files|*.*";
-	saveFileDialog->Title = "Export Memory to File";
-
-	if (saveFileDialog->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
-		std::string filename = Utilities::Conversion::convertSystemStringToStdString(saveFileDialog->FileName);
-		memoryController->exportToFile(filename);
-	}
-	MessageBox::Show("File saved successfully.", "Export Complete", MessageBoxButtons::OK, MessageBoxIcon::Information);
-}
+		private: System::Void export_to_file_Click(System::Object^ sender, System::EventArgs^ e);
 		private: System::Void reset_memory_Click(System::Object^ sender, System::EventArgs^ e);
 		private: System::Void reset_registers_Click(System::Object^ sender, System::EventArgs^ e) {}
 		private: System::Void fetch_Click(System::Object^ sender, System::EventArgs^ e);
