@@ -16,7 +16,7 @@ namespace VoleMachine {
 	public ref class MainForm : public System::Windows::Forms::Form {
 
 	public:
-		MemoryController^ memoryController;
+		
 		MainForm(void) {
 
 			this->machine = new Machine();
@@ -34,6 +34,7 @@ namespace VoleMachine {
 		}
 
 	protected:
+		MemoryController^ memoryController;
 		~MainForm() {
 			this->!MainForm();
 			if (components)
@@ -713,10 +714,17 @@ private: System::Void export_to_file_Click(System::Object^ sender, System::Event
 	saveFileDialog->Title = "Export Memory to File";
 
 	if (saveFileDialog->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
-		std::string filename = Utilities::Conversion::convertSystemStringToStdString(saveFileDialog->FileName);
-		memoryController->exportToFile(filename);
+		try {
+			std::string filename = Utilities::Conversion::convertSystemStringToStdString(saveFileDialog->FileName);
+			memoryController->exportToFile(filename);
+
+			MessageBox::Show("File saved successfully.", "Export Complete", MessageBoxButtons::OK, MessageBoxIcon::Information);
+		}
+		catch (const std::exception& e) {
+			MessageBox::Show("An error occurred: " + gcnew System::String(e.what()), "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		}
 	}
-	MessageBox::Show("File saved successfully.", "Export Complete", MessageBoxButtons::OK, MessageBoxIcon::Information);
 }
+
 };
 }
