@@ -21,6 +21,7 @@ namespace VoleMachine {
 
 			this->machine = new Machine();
 			this->mem_ctrl = gcnew MemoryController(this->machine);
+			this->memoryController = this->mem_ctrl;
 			this->reg_ctrl = gcnew RegistersController(this->machine);
 			this->exec_ctrl = gcnew ExecutionController(this->machine);
 			this->InitializeComponent();
@@ -673,7 +674,7 @@ namespace VoleMachine {
 		System::Void memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e);
 		System::Void memory_list_HandleCellSelection(int edited_cell_col, int edited_cell_row);
 		System::Void memory_list_KeyDown(Object^ sender, KeyEventArgs^ e);
-		
+
 		System::Void OnMemoryUpdated();
 		System::Void memory_list_OnMemoryCellValueChanged(Object^ sender, DataGridViewCellEventArgs^ e);
 
@@ -685,13 +686,13 @@ namespace VoleMachine {
 		MemoryController^ mem_ctrl;
 		RegistersController^ reg_ctrl;
 		ExecutionController^ exec_ctrl;
-		private: System::Void load_from_file_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void load_from_file_Click(System::Object^ sender, System::EventArgs^ e);
 
 
-		private: System::Void export_to_file_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void reset_memory_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void reset_registers_Click(System::Object^ sender, System::EventArgs^ e) {}
-		private: System::Void fetch_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void reset_pc_Click(System::Object^ sender, System::EventArgs^ e);
-};
+	private: System::Void export_to_file_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void reset_memory_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void reset_registers_Click(System::Object^ sender, System::EventArgs^ e) {}
+	private: System::Void fetch_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void reset_pc_Click(System::Object^ sender, System::EventArgs^ e);
+	};
 }
