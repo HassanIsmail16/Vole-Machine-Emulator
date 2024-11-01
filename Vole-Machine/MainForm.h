@@ -25,6 +25,7 @@ namespace VoleMachine {
 			this->initializeRegistersList();
 			this->initializeMemoryList();
 			this->mem_ctrl->memory_updated += gcnew MemoryController::MemoryUpdatedEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdated);
+			this->exec_ctrl->fetched_instruction += gcnew ExecutionController::InstructionFetchedEventHandler(this, &VoleMachine::MainForm::OnFetchInstruction);
 		}
 
 	protected:
@@ -101,6 +102,8 @@ namespace VoleMachine {
 	private: System::Windows::Forms::TextBox^ instruction_decode_textbox;
 	private: System::Windows::Forms::Button^ dark_mode;
 	private: System::Windows::Forms::Label^ credits_label;
+	private: System::Windows::Forms::Button^ reset_pc;
+
 
 
 
@@ -138,6 +141,7 @@ namespace VoleMachine {
 			this->program_counter_panel = (gcnew System::Windows::Forms::Panel());
 			this->current_address_textbox = (gcnew System::Windows::Forms::TextBox());
 			this->program_counter_address_label = (gcnew System::Windows::Forms::Label());
+			this->reset_pc = (gcnew System::Windows::Forms::Button());
 			this->fetch = (gcnew System::Windows::Forms::Button());
 			this->memory_label = (gcnew System::Windows::Forms::Label());
 			this->memory_panel = (gcnew System::Windows::Forms::Panel());
@@ -243,6 +247,7 @@ namespace VoleMachine {
 			this->screen_textbox->Location = System::Drawing::Point(5, 15);
 			this->screen_textbox->Multiline = true;
 			this->screen_textbox->Name = L"screen_textbox";
+			this->screen_textbox->ReadOnly = true;
 			this->screen_textbox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
 			this->screen_textbox->Size = System::Drawing::Size(268, 198);
 			this->screen_textbox->TabIndex = 0;
@@ -291,6 +296,7 @@ namespace VoleMachine {
 			// 
 			this->third_operand_textbox->Location = System::Drawing::Point(233, 81);
 			this->third_operand_textbox->Name = L"third_operand_textbox";
+			this->third_operand_textbox->ReadOnly = true;
 			this->third_operand_textbox->Size = System::Drawing::Size(27, 20);
 			this->third_operand_textbox->TabIndex = 4;
 			// 
@@ -298,6 +304,7 @@ namespace VoleMachine {
 			// 
 			this->second_operand_textbox->Location = System::Drawing::Point(180, 81);
 			this->second_operand_textbox->Name = L"second_operand_textbox";
+			this->second_operand_textbox->ReadOnly = true;
 			this->second_operand_textbox->Size = System::Drawing::Size(27, 20);
 			this->second_operand_textbox->TabIndex = 4;
 			// 
@@ -305,6 +312,7 @@ namespace VoleMachine {
 			// 
 			this->first_operand_textbox->Location = System::Drawing::Point(127, 81);
 			this->first_operand_textbox->Name = L"first_operand_textbox";
+			this->first_operand_textbox->ReadOnly = true;
 			this->first_operand_textbox->Size = System::Drawing::Size(27, 20);
 			this->first_operand_textbox->TabIndex = 4;
 			// 
@@ -312,6 +320,7 @@ namespace VoleMachine {
 			// 
 			this->opcode_textbox->Location = System::Drawing::Point(65, 81);
 			this->opcode_textbox->Name = L"opcode_textbox";
+			this->opcode_textbox->ReadOnly = true;
 			this->opcode_textbox->Size = System::Drawing::Size(27, 20);
 			this->opcode_textbox->TabIndex = 4;
 			// 
@@ -373,6 +382,7 @@ namespace VoleMachine {
 			// 
 			this->current_instruction_textbox->Location = System::Drawing::Point(138, 18);
 			this->current_instruction_textbox->Name = L"current_instruction_textbox";
+			this->current_instruction_textbox->ReadOnly = true;
 			this->current_instruction_textbox->Size = System::Drawing::Size(121, 20);
 			this->current_instruction_textbox->TabIndex = 1;
 			// 
@@ -401,6 +411,7 @@ namespace VoleMachine {
 			this->program_counter_panel->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->program_counter_panel->Controls->Add(this->current_address_textbox);
 			this->program_counter_panel->Controls->Add(this->program_counter_address_label);
+			this->program_counter_panel->Controls->Add(this->reset_pc);
 			this->program_counter_panel->Controls->Add(this->fetch);
 			this->program_counter_panel->Location = System::Drawing::Point(10, 84);
 			this->program_counter_panel->Name = L"program_counter_panel";
@@ -411,7 +422,8 @@ namespace VoleMachine {
 			// 
 			this->current_address_textbox->Location = System::Drawing::Point(122, 23);
 			this->current_address_textbox->Name = L"current_address_textbox";
-			this->current_address_textbox->Size = System::Drawing::Size(152, 20);
+			this->current_address_textbox->ReadOnly = true;
+			this->current_address_textbox->Size = System::Drawing::Size(103, 20);
 			this->current_address_textbox->TabIndex = 1;
 			// 
 			// program_counter_address_label
@@ -425,14 +437,25 @@ namespace VoleMachine {
 			this->program_counter_address_label->TabIndex = 0;
 			this->program_counter_address_label->Text = L"Current Address:";
 			// 
+			// reset_pc
+			// 
+			this->reset_pc->Location = System::Drawing::Point(244, 22);
+			this->reset_pc->Name = L"reset_pc";
+			this->reset_pc->Size = System::Drawing::Size(64, 23);
+			this->reset_pc->TabIndex = 4;
+			this->reset_pc->Text = L"Reset";
+			this->reset_pc->UseVisualStyleBackColor = true;
+			this->reset_pc->Click += gcnew System::EventHandler(this, &MainForm::reset_pc_Click);
+			// 
 			// fetch
 			// 
-			this->fetch->Location = System::Drawing::Point(280, 21);
+			this->fetch->Location = System::Drawing::Point(314, 21);
 			this->fetch->Name = L"fetch";
-			this->fetch->Size = System::Drawing::Size(98, 23);
+			this->fetch->Size = System::Drawing::Size(64, 23);
 			this->fetch->TabIndex = 4;
 			this->fetch->Text = L"Fetch";
 			this->fetch->UseVisualStyleBackColor = true;
+			this->fetch->Click += gcnew System::EventHandler(this, &MainForm::fetch_Click);
 			// 
 			// memory_label
 			// 
@@ -580,6 +603,7 @@ namespace VoleMachine {
 			this->reset_registers->TabIndex = 2;
 			this->reset_registers->Text = L"Reset Registers";
 			this->reset_registers->UseVisualStyleBackColor = true;
+			this->reset_registers->Click += gcnew System::EventHandler(this, &MainForm::reset_registers_Click);
 			// 
 			// play
 			// 
@@ -645,6 +669,8 @@ namespace VoleMachine {
 		System::Void OnMemoryUpdated();
 		System::Void memory_list_OnMemoryCellValueChanged(Object^ sender, DataGridViewCellEventArgs^ e);
 
+		System::Void OnFetchInstruction();
+
 		int memory_list_selected_cell_row = 0;
 		int memory_list_selected_cell_col = 1;
 		Machine* machine;
@@ -653,5 +679,8 @@ namespace VoleMachine {
 		ExecutionController^ exec_ctrl;
 		private: System::Void load_from_file_Click(System::Object^ sender, System::EventArgs^ e);
 		private: System::Void reset_memory_Click(System::Object^ sender, System::EventArgs^ e);
+		private: System::Void reset_registers_Click(System::Object^ sender, System::EventArgs^ e) {}
+		private: System::Void fetch_Click(System::Object^ sender, System::EventArgs^ e);
+		private: System::Void reset_pc_Click(System::Object^ sender, System::EventArgs^ e);
 };
 }

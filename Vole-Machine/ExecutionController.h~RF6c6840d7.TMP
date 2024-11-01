@@ -24,7 +24,7 @@ public:
 	void decodeInstruction() {}
 	void executeCurrentInstruction() {}
 
-	void resetProgram();
+	void resetProgramCounter();
 
 	System::String^ getCurrentAddress();
 	System::String^ getCurrentInstruction();

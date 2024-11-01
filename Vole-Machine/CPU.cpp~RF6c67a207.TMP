@@ -50,11 +50,6 @@ void CPU::halt() {
 	instruction_register.clear();
 }
 
-void CPU::resetProgram() {
-	this->program_counter = 0;
-	this->instruction_register.clear();
-}
-
 size_t& CPU::getProgramCounter() {
 	return program_counter;
 }

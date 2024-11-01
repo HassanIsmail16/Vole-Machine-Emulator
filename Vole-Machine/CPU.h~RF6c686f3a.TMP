@@ -24,7 +24,7 @@ public:
     bool isHalt();
     void halt();
 
-    void resetProgram();
+    void resetProgramCounter();
 
     size_t& getProgramCounter();
     std::string getCurrentInstruction();

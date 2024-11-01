@@ -1,5 +1,4 @@
 #include "ExecutionController.h"
-#include "Utilities.h"
 
 void ExecutionController::fetchedInstruction() {
 	if (this->is_fetching_instruction) {
@@ -36,15 +35,6 @@ void ExecutionController::fetchInstruction() {
 	fetchedInstruction();
 }
 
-void ExecutionController::resetProgram() {
-	this->machine->getCPU().resetProgram();
-	fetchedInstruction();
-}
-
-System::String^ ExecutionController::getCurrentAddress() {
-	return this->machine->getCPU().getProgramCounter().ToString("X2");
-}
-
-System::String^ ExecutionController::getCurrentInstruction() {
-	return Utilities::Conversion::convertStdStringToSystemString(this->machine->getCPU().getCurrentInstruction());
+System::String^ ExecutionController::convertProgramCounterToAddress(size_t program_counter) {
+	return program_counter.ToString("X2");
 }

@@ -50,7 +50,7 @@ void CPU::halt() {
 	instruction_register.clear();
 }
 
-void CPU::resetProgram() {
+void CPU::resetProgramCounter() {
 	this->program_counter = 0;
 	this->instruction_register.clear();
 }

@@ -37,8 +37,7 @@ void ExecutionController::fetchInstruction() {
 }
 
 void ExecutionController::resetProgram() {
-	this->machine->getCPU().resetProgram();
-	fetchedInstruction();
+	this->machine->getCPU().resetProgramCounter();
 }
 
 System::String^ ExecutionController::getCurrentAddress() {

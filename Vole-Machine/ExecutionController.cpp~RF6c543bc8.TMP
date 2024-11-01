@@ -1,0 +1,21 @@
+#include "ExecutionController.h"
+
+void ExecutionController::fetchedInstruction() {
+	if (this->is_fetching_instruction) {
+		return;
+	}
+
+	this->is_fetching_instruction = true;
+	fetched_instruction();
+	this->is_fetching_instruction = false;
+}
+
+void ExecutionController::decodedInstruction() {
+	if (this->is_decoding_instruction) {
+		return;
+	}
+
+	this->is_decoding_instruction = true;
+	decoded_instruction();
+	this->is_decoding_instruction = false;
+}

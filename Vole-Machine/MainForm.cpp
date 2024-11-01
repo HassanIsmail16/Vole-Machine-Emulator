@@ -189,6 +189,16 @@ System::Void VoleMachine::MainForm::memory_list_OnMemoryCellValueChanged(Object^
 	this->machine->displayMemory();
 }
 
+System::Void VoleMachine::MainForm::OnFetchInstruction() {
+	this->current_address_textbox->Clear();
+	String^ current_address = this->exec_ctrl->getCurrentAddress();
+	this->current_address_textbox->Text = current_address;
+
+	this->current_instruction_textbox->Clear();
+	String^ current_instruction = this->exec_ctrl->getCurrentInstruction();
+	this->current_instruction_textbox->Text = current_instruction;
+}
+
 System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e) {
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
 		e->AdvancedBorderStyle->Left = DataGridViewAdvancedCellBorderStyle::None;
@@ -231,4 +241,12 @@ System::Void VoleMachine::MainForm::reset_memory_Click(System::Object^ sender, S
 
 	this->mem_ctrl->resetMemory();
 	this->machine->displayMemory();
+}
+
+System::Void VoleMachine::MainForm::fetch_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->exec_ctrl->fetchInstruction();
+}
+
+System::Void VoleMachine::MainForm::reset_pc_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->exec_ctrl->resetProgram();
 }

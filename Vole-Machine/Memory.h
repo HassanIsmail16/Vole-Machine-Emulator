@@ -1,6 +1,7 @@
 #pragma once
 #include "StorageUnit.h"
 #include <array>
+#include <string>
 
 class Memory {
 public: // TODO: revert this to private
