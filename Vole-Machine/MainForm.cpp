@@ -233,6 +233,11 @@ System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender,
 }
 
 System::Void VoleMachine::MainForm::export_to_file_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (memoryController == nullptr) {
+		MessageBox::Show("MemoryController is not initialized!", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		return;
+	}
+
 	SaveFileDialog^ saveFileDialog = gcnew SaveFileDialog();
 	saveFileDialog->Filter = "Text Files|*.txt|All Files|*.*";
 	saveFileDialog->Title = "Export Memory to File";
@@ -240,8 +245,8 @@ System::Void VoleMachine::MainForm::export_to_file_Click(System::Object^ sender,
 	if (saveFileDialog->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
 		std::string filename = Utilities::Conversion::convertSystemStringToStdString(saveFileDialog->FileName);
 		memoryController->exportToFile(filename);
+		MessageBox::Show("File saved successfully.", "Export Complete", MessageBoxButtons::OK, MessageBoxIcon::Information);
 	}
-	MessageBox::Show("File saved successfully.", "Export Complete", MessageBoxButtons::OK, MessageBoxIcon::Information);
 }
 
 System::Void VoleMachine::MainForm::reset_memory_Click(System::Object^ sender, System::EventArgs^ e) {
