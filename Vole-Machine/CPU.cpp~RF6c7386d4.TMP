@@ -17,14 +17,14 @@ void CPU::runInstructions(Memory& memory) {
 }
 
 void CPU::fetch(Memory& memory) {
-	if (this->program_counter == 255) {
-		this->program_counter = 0;
+	if (this->program_counter == 256) {
+		
 	}
 
 	std::string instruction1 = memory.getValueAt(this->program_counter);
 	std::string instruction2 = memory.getValueAt(this->program_counter + 1);
 	this->instruction_register = instruction1 + instruction2;
-	this->program_counter += (this->program_counter == 254) ? 1 : 2;
+	this->program_counter += 2;
 }
 
 std::vector<int> CPU::decode() {
