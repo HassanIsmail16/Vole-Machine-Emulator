@@ -1,5 +1,4 @@
 #include "CU.h"
-#include "Utilities.h"
 #include <vector> 
 #include <iostream>
 
@@ -13,12 +12,12 @@ void CU::executeInstruction(const std::vector<int>& instruction, Registers& regi
         break;
     }
     case OP_CODE::LOAD_V: {
-        int value = instruction[2];
+        std::string value = std::to_string(instruction[2]) + std::to_string(instruction[3]);
         loadValue(instruction[1], value, registers);
         break;
     }
     case OP_CODE::STORE: {
-        int memory_address = instruction[2];
+        int memory_address = std::stoi(std::to_string(instruction[2]) + std::to_string(instruction[3]), nullptr, 16);
         storeInMemory(instruction[1], memory_address, registers, memory);
         break;
     }
@@ -47,16 +46,20 @@ void CU::executeInstruction(const std::vector<int>& instruction, Registers& regi
         break;
     }
     case OP_CODE::ROTATE: {
-        alu.rotateRight(instruction[1], instruction[3], registers);
+        alu.rotateRight(instruction[1], instruction[2], registers);
         break;
     }
     case OP_CODE::JUMP_EQ: {
-        int memory_address = instruction[2];
+        int memory_address = std::stoi(std::to_string(instruction[2]) + std::to_string(instruction[3]), nullptr, 16);
         jumpIfEqual(instruction[1], memory_address, registers, program_counter);
         break;
     }
+    case OP_CODE::HALT: {
+        program_counter = 0;
+        break;
+    }
     case OP_CODE::JUMP_GT: {
-        int memory_address = instruction[2];
+        int memory_address = std::stoi(std::to_string(instruction[2]) + std::to_string(instruction[3]), nullptr, 16);
         jumpIfGreater(instruction[1], memory_address, registers, program_counter);
         break;
     }
@@ -69,13 +72,13 @@ void CU::loadFromMemory(int reg, int memory_address, Registers& registers, Memor
     registers[reg].setValue(memory.getValueAt(memory_address));
 }
 
-void CU::loadValue(int reg, int value, Registers& registers) {
-    registers[reg].setValue(Utilities::Conversion::convertDecToHex(value));
+void CU::loadValue(int reg, const std::string& value, Registers& registers) {
+    registers[reg].setValue(value);
 }
 
 void CU::storeInMemory(int reg, int memory_address, Registers& registers, Memory& memory) {
     if (isScreen(reg, memory_address)) {
-        return;
+        // ??
     }
     else {
         memory.setValueAt(memory_address, registers[reg].getValue());

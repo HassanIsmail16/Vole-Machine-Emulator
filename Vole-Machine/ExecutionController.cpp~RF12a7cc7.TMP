@@ -42,10 +42,6 @@ void ExecutionController::screenUpdated(std::string value) {
 	this->is_updating_screen = false;
 }
 
-void ExecutionController::speedChanged() {
-	speed_changed();
-}
-
 void ExecutionController::fetchInstruction() {
 	this->machine->getCPU().fetch(this->machine->getMemory());
 	fetchedInstruction();

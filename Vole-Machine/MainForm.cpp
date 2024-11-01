@@ -205,6 +205,15 @@ System::Void VoleMachine::MainForm::OnExecuteInstruction() {
 	this->machine->displayMemory();
 }
 
+System::Void VoleMachine::MainForm::OnUpdateScreen(std::string value) {
+	this->screen_textbox->AppendText(Utilities::Conversion::convertStdStringToSystemString(value));
+	this->screen_textbox->ScrollToCaret();
+}
+
+System::Void VoleMachine::MainForm::OnChangeSpeed() {
+	return System::Void(); // TODO: implement;
+}
+
 System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e) {
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
 		e->AdvancedBorderStyle->Left = DataGridViewAdvancedCellBorderStyle::None;
@@ -280,4 +289,8 @@ System::Void VoleMachine::MainForm::clear_screen_Click(System::Object^ sender, S
 
 System::Void VoleMachine::MainForm::execute_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->exec_ctrl->executeCurrentInstruction();
+}
+
+System::Void VoleMachine::MainForm::steps_spinbox_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
+	return System::Void(); // TODO: implement;
 }

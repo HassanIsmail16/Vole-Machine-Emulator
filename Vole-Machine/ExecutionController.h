@@ -20,6 +20,16 @@ public:
 	void executedInstruction();
 	bool is_executing_instruction = false;
 
+	delegate void ScreenUpdatedEventHandler(std::string value);
+	event ScreenUpdatedEventHandler^ screen_updated;
+	void screenUpdated(std::string value);
+	bool is_updating_screen = false;
+
+
+	delegate void SpeedChangedEventHandler();
+	event SpeedChangedEventHandler^ speed_changed;
+	void speedChanged();
+
 	void fetchInstruction();
 	void decodeInstruction() {}
 	void executeCurrentInstruction();
@@ -29,7 +39,10 @@ public:
 	System::String^ getCurrentAddress();
 	System::String^ getCurrentInstruction();
 
-private:
+	int getInstructionsPerSecond();
+	void setInstructionsPerSecond(int value);
 
+private:
+	int instructions_per_sec = 5;
 };
 

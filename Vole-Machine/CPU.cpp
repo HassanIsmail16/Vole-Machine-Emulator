@@ -29,8 +29,19 @@ void CPU::fetch(Memory& memory) {
 
 std::vector<int> CPU::decode() {
 	std::vector<int> instruction;
-	instruction.push_back(std::stoi(instruction_register.substr(0, 2), nullptr, 16)); // op-code
-	instruction.push_back(std::stoi(instruction_register.substr(2, 2), nullptr, 16)); // operands
+	instruction.push_back(std::stoi(this->instruction_register.substr(0, 1), nullptr, 16));
+
+	if ((instruction[0] >= 1 && instruction[0] <= 3) || instruction[0] == 11 || instruction[0] == 13) {
+		instruction.push_back(std::stoi(this->instruction_register.substr(1, 1), nullptr, 16));
+		instruction.push_back(std::stoi(this->instruction_register.substr(2, 2), nullptr, 16));
+	} // handle RXY
+
+	if (instruction[0] >= 4 && instruction[0] <= 10) {
+		instruction.push_back(std::stoi(this->instruction_register.substr(1, 1), nullptr, 16));
+		instruction.push_back(std::stoi(this->instruction_register.substr(2, 1), nullptr, 16));
+		instruction.push_back(std::stoi(this->instruction_register.substr(3, 1), nullptr, 16));
+	} // handle RST
+
 	return instruction;
 }
 
@@ -61,6 +72,14 @@ bool CPU::isInstructionPending() {
 void CPU::resetProgram() {
 	this->program_counter = 0;
 	this->instruction_register.clear();
+}
+
+std::string CPU::getRegisterValueAt(int index) {
+	return this->registers[index].getValue();
+}
+
+void CPU::setRegisterValueAt(int index, std::string& value) {
+	this->registers[index].setValue(value);
 }
 
 size_t& CPU::getProgramCounter() {

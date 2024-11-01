@@ -56,7 +56,7 @@ void CU::executeInstruction(const std::vector<int>& instruction, Registers& regi
         break;
     }
     case OP_CODE::JUMP_GT: {
-        int memory_address = instruction[2];
+        int memory_address = std::stoi(std::to_string(instruction[2]) + std::to_string(instruction[3]), nullptr, 16);
         jumpIfGreater(instruction[1], memory_address, registers, program_counter);
         break;
     }
@@ -75,7 +75,7 @@ void CU::loadValue(int reg, int value, Registers& registers) {
 
 void CU::storeInMemory(int reg, int memory_address, Registers& registers, Memory& memory) {
     if (isScreen(reg, memory_address)) {
-        return;
+        // ??
     }
     else {
         memory.setValueAt(memory_address, registers[reg].getValue());

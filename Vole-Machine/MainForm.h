@@ -29,6 +29,8 @@ namespace VoleMachine {
 			this->mem_ctrl->memory_updated += gcnew MemoryController::MemoryUpdatedEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdated);
 			this->exec_ctrl->fetched_instruction += gcnew ExecutionController::InstructionFetchedEventHandler(this, &VoleMachine::MainForm::OnFetchInstruction);
 			this->exec_ctrl->executed_instruction += gcnew ExecutionController::InstructionExecutedEventHandler(this, &VoleMachine::MainForm::OnExecuteInstruction);
+			this->exec_ctrl->screen_updated += gcnew ExecutionController::ScreenUpdatedEventHandler(this, &VoleMachine::MainForm::OnUpdateScreen);
+			this->exec_ctrl->speed_changed += gcnew ExecutionController::SpeedChangedEventHandler(this, &VoleMachine::MainForm::OnChangeSpeed);
 		}
 
 	protected:
@@ -177,6 +179,7 @@ namespace VoleMachine {
 			// 
 			// main_panel
 			// 
+			this->main_panel->BackColor = System::Drawing::SystemColors::Control;
 			this->main_panel->Controls->Add(this->credits_label);
 			this->main_panel->Controls->Add(this->dark_mode);
 			this->main_panel->Controls->Add(this->clear_screen);
@@ -293,6 +296,7 @@ namespace VoleMachine {
 			this->instruction_decode_textbox->Location = System::Drawing::Point(17, 111);
 			this->instruction_decode_textbox->Multiline = true;
 			this->instruction_decode_textbox->Name = L"instruction_decode_textbox";
+			this->instruction_decode_textbox->ReadOnly = true;
 			this->instruction_decode_textbox->Size = System::Drawing::Size(242, 71);
 			this->instruction_decode_textbox->TabIndex = 5;
 			// 
@@ -564,9 +568,9 @@ namespace VoleMachine {
 			this->steps_label->AutoSize = true;
 			this->steps_label->Location = System::Drawing::Point(653, 23);
 			this->steps_label->Name = L"steps_label";
-			this->steps_label->Size = System::Drawing::Size(85, 13);
+			this->steps_label->Size = System::Drawing::Size(82, 13);
 			this->steps_label->TabIndex = 7;
-			this->steps_label->Text = L"instructions/step";
+			this->steps_label->Text = L"instructions/sec";
 			// 
 			// step
 			// 
@@ -580,9 +584,13 @@ namespace VoleMachine {
 			// steps_spinbox
 			// 
 			this->steps_spinbox->Location = System::Drawing::Point(549, 20);
+			this->steps_spinbox->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 256, 0, 0, 0 });
+			this->steps_spinbox->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
 			this->steps_spinbox->Name = L"steps_spinbox";
 			this->steps_spinbox->Size = System::Drawing::Size(98, 20);
 			this->steps_spinbox->TabIndex = 6;
+			this->steps_spinbox->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 5, 0, 0, 0 });
+			this->steps_spinbox->ValueChanged += gcnew System::EventHandler(this, &MainForm::steps_spinbox_ValueChanged);
 			// 
 			// export_to_file
 			// 
@@ -681,6 +689,8 @@ namespace VoleMachine {
 
 		System::Void OnFetchInstruction();
 		System::Void OnExecuteInstruction();
+		System::Void OnUpdateScreen(std::string value);
+		System::Void OnChangeSpeed();
 
 		int memory_list_selected_cell_row = 0;
 		int memory_list_selected_cell_col = 1;
@@ -698,5 +708,6 @@ namespace VoleMachine {
 	private: System::Void reset_pc_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void clear_screen_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void execute_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void steps_spinbox_ValueChanged(System::Object^ sender, System::EventArgs^ e);
 };
 }

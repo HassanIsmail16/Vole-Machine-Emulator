@@ -32,18 +32,14 @@ void ExecutionController::executedInstruction() {
 	this->is_executing_instruction = false;
 }
 
-void ExecutionController::screenUpdated(std::string value) {
+void ExecutionController::screenUpdated() {
 	if (this->is_updating_screen) {
 		return;
 	}
 
 	this->is_updating_screen = true;
-	screen_updated(value);
+	screen_updated();
 	this->is_updating_screen = false;
-}
-
-void ExecutionController::speedChanged() {
-	speed_changed();
 }
 
 void ExecutionController::fetchInstruction() {
@@ -56,13 +52,7 @@ void ExecutionController::executeCurrentInstruction() { // TODO: Handle Halt
 		return;
 	}
 
-	std::vector<int> instruction = this->machine->getCPU().decode();
-	this->machine->getCPU().execute(this->machine->getMemory(), instruction);
-
-	if (instruction[0] == 3 && instruction[2] == 0) {
-		screenUpdated(this->machine->getCPU().getRegisterValueAt(instruction[1]));
-	}
-
+	this->machine->getCPU().execute(this->machine->getMemory(), this->machine->getCPU().decode());
 	executedInstruction();
 }
 
@@ -77,12 +67,4 @@ System::String^ ExecutionController::getCurrentAddress() {
 
 System::String^ ExecutionController::getCurrentInstruction() {
 	return Utilities::Conversion::convertStdStringToSystemString(this->machine->getCPU().getCurrentInstruction());
-}
-
-int ExecutionController::getInstructionsPerSecond() {
-	return this->instructions_per_sec;
-}
-
-void ExecutionController::setInstructionsPerSecond(int value) {
-	this->instructions_per_sec = value;
 }
