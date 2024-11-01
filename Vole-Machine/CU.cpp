@@ -1,7 +1,8 @@
 #include "CU.h"
 #include <vector> 
+#include <iostream>
 
-void CU::executeInstruction(const std::vector<int>& instruction, Registers& registers, MainMemory& memory, ALU& alu, size_t& program_counter) {
+void CU::executeInstruction(const std::vector<int>& instruction, Registers& registers, Memory& memory, ALU& alu, size_t& program_counter) {
     OP_CODE operation_code = OP_CODE(instruction[0]);
 
     switch (operation_code) {
@@ -75,12 +76,12 @@ void CU::loadValue(int reg, const std::string& value, Registers& registers) {
     registers[reg].setValue(value);
 }
 
-void CU::storeInMemory(int reg, int memory_address, Registers& registers, MainMemory& memory) {
+void CU::storeInMemory(int reg, int memory_address, Registers& registers, Memory& memory) {
     if (isScreen(reg, memory_address)) {
         // ??
     }
     else {
-        memory[memory_address].setValue(registers[reg].getValue());
+        memory.setValueAt(memory_address, registers[reg].getValue());
     }
 }
 

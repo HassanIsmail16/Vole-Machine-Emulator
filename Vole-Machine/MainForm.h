@@ -1,5 +1,6 @@
 #pragma once
 #include "Machine.h"
+#include "Utilities.h"
 #include "MemoryController.h"
 #include "RegistersController.h"
 #include "ExecutionController.h"
@@ -16,15 +17,18 @@ namespace VoleMachine {
 
 	public:
 		MainForm(void) {
+
 			this->machine = new Machine();
 			this->mem_ctrl = gcnew MemoryController(this->machine);
 			this->reg_ctrl = gcnew RegistersController(this->machine);
 			this->exec_ctrl = gcnew ExecutionController(this->machine);
 			this->InitializeComponent();
+			this->memory_list->CellValueChanged += gcnew DataGridViewCellEventHandler(this, &MainForm::memory_list_OnMemoryCellValueChanged);
 			this->initializeRegistersList();
 			this->initializeMemoryList();
 			this->mem_ctrl->memory_updated += gcnew MemoryController::MemoryUpdatedEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdated);
-			this->memory_list->CellValueChanged += gcnew DataGridViewCellEventHandler(this, &MainForm::memory_list_OnMemoryCellValueChanged);
+			this->exec_ctrl->fetched_instruction += gcnew ExecutionController::InstructionFetchedEventHandler(this, &VoleMachine::MainForm::OnFetchInstruction);
+			this->exec_ctrl->executed_instruction += gcnew ExecutionController::InstructionExecutedEventHandler(this, &VoleMachine::MainForm::OnExecuteInstruction);
 		}
 
 	protected:
@@ -101,6 +105,8 @@ namespace VoleMachine {
 	private: System::Windows::Forms::TextBox^ instruction_decode_textbox;
 	private: System::Windows::Forms::Button^ dark_mode;
 	private: System::Windows::Forms::Label^ credits_label;
+	private: System::Windows::Forms::Button^ reset_pc;
+
 
 
 
@@ -113,6 +119,8 @@ namespace VoleMachine {
 		void InitializeComponent(void) {
 			this->components = (gcnew System::ComponentModel::Container());
 			this->main_panel = (gcnew System::Windows::Forms::Panel());
+			this->credits_label = (gcnew System::Windows::Forms::Label());
+			this->dark_mode = (gcnew System::Windows::Forms::Button());
 			this->clear_screen = (gcnew System::Windows::Forms::Button());
 			this->screen_label = (gcnew System::Windows::Forms::Label());
 			this->screen_panel = (gcnew System::Windows::Forms::Panel());
@@ -136,6 +144,7 @@ namespace VoleMachine {
 			this->program_counter_panel = (gcnew System::Windows::Forms::Panel());
 			this->current_address_textbox = (gcnew System::Windows::Forms::TextBox());
 			this->program_counter_address_label = (gcnew System::Windows::Forms::Label());
+			this->reset_pc = (gcnew System::Windows::Forms::Button());
 			this->fetch = (gcnew System::Windows::Forms::Button());
 			this->memory_label = (gcnew System::Windows::Forms::Label());
 			this->memory_panel = (gcnew System::Windows::Forms::Panel());
@@ -155,8 +164,6 @@ namespace VoleMachine {
 			this->play = (gcnew System::Windows::Forms::Button());
 			this->load_from_file = (gcnew System::Windows::Forms::Button());
 			this->contextMenuStrip1 = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
-			this->dark_mode = (gcnew System::Windows::Forms::Button());
-			this->credits_label = (gcnew System::Windows::Forms::Label());
 			this->main_panel->SuspendLayout();
 			this->screen_panel->SuspendLayout();
 			this->instruction_register_panel->SuspendLayout();
@@ -192,6 +199,24 @@ namespace VoleMachine {
 			this->main_panel->Size = System::Drawing::Size(957, 584);
 			this->main_panel->TabIndex = 0;
 			// 
+			// credits_label
+			// 
+			this->credits_label->AutoSize = true;
+			this->credits_label->Location = System::Drawing::Point(7, 560);
+			this->credits_label->Name = L"credits_label";
+			this->credits_label->Size = System::Drawing::Size(382, 13);
+			this->credits_label->TabIndex = 13;
+			this->credits_label->Text = L"Made with (not that much) love by: Hassan Ali, Abdullah Ali, Momen Abdelkader";
+			// 
+			// dark_mode
+			// 
+			this->dark_mode->Location = System::Drawing::Point(836, 555);
+			this->dark_mode->Name = L"dark_mode";
+			this->dark_mode->Size = System::Drawing::Size(110, 23);
+			this->dark_mode->TabIndex = 12;
+			this->dark_mode->Text = L"Dark Mode";
+			this->dark_mode->UseVisualStyleBackColor = true;
+			// 
 			// clear_screen
 			// 
 			this->clear_screen->Location = System::Drawing::Point(849, 316);
@@ -200,6 +225,7 @@ namespace VoleMachine {
 			this->clear_screen->TabIndex = 11;
 			this->clear_screen->Text = L"Clear Screen";
 			this->clear_screen->UseVisualStyleBackColor = true;
+			this->clear_screen->Click += gcnew System::EventHandler(this, &MainForm::clear_screen_Click);
 			// 
 			// screen_label
 			// 
@@ -225,6 +251,7 @@ namespace VoleMachine {
 			this->screen_textbox->Location = System::Drawing::Point(5, 15);
 			this->screen_textbox->Multiline = true;
 			this->screen_textbox->Name = L"screen_textbox";
+			this->screen_textbox->ReadOnly = true;
 			this->screen_textbox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
 			this->screen_textbox->Size = System::Drawing::Size(268, 198);
 			this->screen_textbox->TabIndex = 0;
@@ -273,28 +300,32 @@ namespace VoleMachine {
 			// 
 			this->third_operand_textbox->Location = System::Drawing::Point(233, 81);
 			this->third_operand_textbox->Name = L"third_operand_textbox";
-			this->third_operand_textbox->Size = System::Drawing::Size(27, 20);
+			this->third_operand_textbox->ReadOnly = true;
+			this->third_operand_textbox->Size = System::Drawing::Size(21, 20);
 			this->third_operand_textbox->TabIndex = 4;
 			// 
 			// second_operand_textbox
 			// 
 			this->second_operand_textbox->Location = System::Drawing::Point(180, 81);
 			this->second_operand_textbox->Name = L"second_operand_textbox";
-			this->second_operand_textbox->Size = System::Drawing::Size(27, 20);
+			this->second_operand_textbox->ReadOnly = true;
+			this->second_operand_textbox->Size = System::Drawing::Size(21, 20);
 			this->second_operand_textbox->TabIndex = 4;
 			// 
 			// first_operand_textbox
 			// 
 			this->first_operand_textbox->Location = System::Drawing::Point(127, 81);
 			this->first_operand_textbox->Name = L"first_operand_textbox";
-			this->first_operand_textbox->Size = System::Drawing::Size(27, 20);
+			this->first_operand_textbox->ReadOnly = true;
+			this->first_operand_textbox->Size = System::Drawing::Size(21, 20);
 			this->first_operand_textbox->TabIndex = 4;
 			// 
 			// opcode_textbox
 			// 
 			this->opcode_textbox->Location = System::Drawing::Point(65, 81);
 			this->opcode_textbox->Name = L"opcode_textbox";
-			this->opcode_textbox->Size = System::Drawing::Size(27, 20);
+			this->opcode_textbox->ReadOnly = true;
+			this->opcode_textbox->Size = System::Drawing::Size(21, 20);
 			this->opcode_textbox->TabIndex = 4;
 			// 
 			// third_operand_label
@@ -341,6 +372,7 @@ namespace VoleMachine {
 			this->execute->TabIndex = 2;
 			this->execute->Text = L"Execute";
 			this->execute->UseVisualStyleBackColor = true;
+			this->execute->Click += gcnew System::EventHandler(this, &MainForm::execute_Click);
 			// 
 			// decode
 			// 
@@ -355,7 +387,8 @@ namespace VoleMachine {
 			// 
 			this->current_instruction_textbox->Location = System::Drawing::Point(138, 18);
 			this->current_instruction_textbox->Name = L"current_instruction_textbox";
-			this->current_instruction_textbox->Size = System::Drawing::Size(121, 20);
+			this->current_instruction_textbox->ReadOnly = true;
+			this->current_instruction_textbox->Size = System::Drawing::Size(92, 20);
 			this->current_instruction_textbox->TabIndex = 1;
 			// 
 			// instruction_register_instruction_label
@@ -383,6 +416,7 @@ namespace VoleMachine {
 			this->program_counter_panel->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->program_counter_panel->Controls->Add(this->current_address_textbox);
 			this->program_counter_panel->Controls->Add(this->program_counter_address_label);
+			this->program_counter_panel->Controls->Add(this->reset_pc);
 			this->program_counter_panel->Controls->Add(this->fetch);
 			this->program_counter_panel->Location = System::Drawing::Point(10, 84);
 			this->program_counter_panel->Name = L"program_counter_panel";
@@ -393,7 +427,8 @@ namespace VoleMachine {
 			// 
 			this->current_address_textbox->Location = System::Drawing::Point(122, 23);
 			this->current_address_textbox->Name = L"current_address_textbox";
-			this->current_address_textbox->Size = System::Drawing::Size(152, 20);
+			this->current_address_textbox->ReadOnly = true;
+			this->current_address_textbox->Size = System::Drawing::Size(78, 20);
 			this->current_address_textbox->TabIndex = 1;
 			// 
 			// program_counter_address_label
@@ -407,14 +442,27 @@ namespace VoleMachine {
 			this->program_counter_address_label->TabIndex = 0;
 			this->program_counter_address_label->Text = L"Current Address:";
 			// 
+			// reset_pc
+			// 
+			this->reset_pc->Location = System::Drawing::Point(300, 21);
+			this->reset_pc->Margin = System::Windows::Forms::Padding(2);
+			this->reset_pc->Name = L"reset_pc";
+			this->reset_pc->Size = System::Drawing::Size(78, 23);
+			this->reset_pc->TabIndex = 4;
+			this->reset_pc->Text = L"Reset";
+			this->reset_pc->UseVisualStyleBackColor = true;
+			this->reset_pc->Click += gcnew System::EventHandler(this, &MainForm::reset_pc_Click);
+			// 
 			// fetch
 			// 
-			this->fetch->Location = System::Drawing::Point(280, 21);
+			this->fetch->Location = System::Drawing::Point(205, 22);
+			this->fetch->Margin = System::Windows::Forms::Padding(2);
 			this->fetch->Name = L"fetch";
-			this->fetch->Size = System::Drawing::Size(98, 23);
+			this->fetch->Size = System::Drawing::Size(91, 23);
 			this->fetch->TabIndex = 4;
 			this->fetch->Text = L"Fetch";
 			this->fetch->UseVisualStyleBackColor = true;
+			this->fetch->Click += gcnew System::EventHandler(this, &MainForm::fetch_Click);
 			// 
 			// memory_label
 			// 
@@ -441,6 +489,7 @@ namespace VoleMachine {
 			this->memory_list->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
 			this->memory_list->Location = System::Drawing::Point(7, 8);
 			this->memory_list->Name = L"memory_list";
+			this->memory_list->RowHeadersWidth = 51;
 			this->memory_list->Size = System::Drawing::Size(238, 449);
 			this->memory_list->TabIndex = 0;
 			this->memory_list->CellEndEdit += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_CellEndEdit);
@@ -543,6 +592,7 @@ namespace VoleMachine {
 			this->export_to_file->TabIndex = 5;
 			this->export_to_file->Text = L"Export To File";
 			this->export_to_file->UseVisualStyleBackColor = true;
+			this->export_to_file->Click += gcnew System::EventHandler(this, &MainForm::export_to_file_Click);
 			// 
 			// reset_memory
 			// 
@@ -552,6 +602,7 @@ namespace VoleMachine {
 			this->reset_memory->TabIndex = 3;
 			this->reset_memory->Text = L"Reset Memory";
 			this->reset_memory->UseVisualStyleBackColor = true;
+			this->reset_memory->Click += gcnew System::EventHandler(this, &MainForm::reset_memory_Click);
 			// 
 			// reset_registers
 			// 
@@ -561,6 +612,7 @@ namespace VoleMachine {
 			this->reset_registers->TabIndex = 2;
 			this->reset_registers->Text = L"Reset Registers";
 			this->reset_registers->UseVisualStyleBackColor = true;
+			this->reset_registers->Click += gcnew System::EventHandler(this, &MainForm::reset_registers_Click);
 			// 
 			// play
 			// 
@@ -583,26 +635,9 @@ namespace VoleMachine {
 			// 
 			// contextMenuStrip1
 			// 
+			this->contextMenuStrip1->ImageScalingSize = System::Drawing::Size(20, 20);
 			this->contextMenuStrip1->Name = L"contextMenuStrip1";
 			this->contextMenuStrip1->Size = System::Drawing::Size(61, 4);
-			// 
-			// dark_mode
-			// 
-			this->dark_mode->Location = System::Drawing::Point(836, 555);
-			this->dark_mode->Name = L"dark_mode";
-			this->dark_mode->Size = System::Drawing::Size(110, 23);
-			this->dark_mode->TabIndex = 12;
-			this->dark_mode->Text = L"Dark Mode";
-			this->dark_mode->UseVisualStyleBackColor = true;
-			// 
-			// credits_label
-			// 
-			this->credits_label->AutoSize = true;
-			this->credits_label->Location = System::Drawing::Point(7, 560);
-			this->credits_label->Name = L"credits_label";
-			this->credits_label->Size = System::Drawing::Size(382, 13);
-			this->credits_label->TabIndex = 13;
-			this->credits_label->Text = L"Made with (not that much) love by: Hassan Ali, Abdullah Ali, Momen Abdelkader";
 			// 
 			// MainForm
 			// 
@@ -640,9 +675,12 @@ namespace VoleMachine {
 		System::Void memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e);
 		System::Void memory_list_HandleCellSelection(int edited_cell_col, int edited_cell_row);
 		System::Void memory_list_KeyDown(Object^ sender, KeyEventArgs^ e);
-		
+
 		System::Void OnMemoryUpdated();
 		System::Void memory_list_OnMemoryCellValueChanged(Object^ sender, DataGridViewCellEventArgs^ e);
+
+		System::Void OnFetchInstruction();
+		System::Void OnExecuteInstruction();
 
 		int memory_list_selected_cell_row = 0;
 		int memory_list_selected_cell_col = 1;
@@ -650,6 +688,15 @@ namespace VoleMachine {
 		MemoryController^ mem_ctrl;
 		RegistersController^ reg_ctrl;
 		ExecutionController^ exec_ctrl;
-		private: System::Void load_from_file_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void load_from_file_Click(System::Object^ sender, System::EventArgs^ e);
+
+
+	private: System::Void export_to_file_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void reset_memory_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void reset_registers_Click(System::Object^ sender, System::EventArgs^ e) {}
+	private: System::Void fetch_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void reset_pc_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void clear_screen_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void execute_Click(System::Object^ sender, System::EventArgs^ e);
 };
 }

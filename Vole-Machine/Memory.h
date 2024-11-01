@@ -1,6 +1,7 @@
 #pragma once
 #include "StorageUnit.h"
 #include <array>
+#include <string>
 
 class Memory {
 public: // TODO: revert this to private
@@ -15,5 +16,6 @@ public:
 	void setValueAt(const size_t index, std::string& value);
 	void clearValueAt(const size_t index);
 	void clearMemory();
-
+	
+	bool isEmpty();
 };

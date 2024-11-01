@@ -39,6 +39,7 @@ System::Void VoleMachine::MainForm::initializeRegistersList() {
 
 System::Void VoleMachine::MainForm::initializeMemoryList() {
 	this->memory_list->Columns->Clear();
+	this->memory_list->Rows->Clear();
 
 	this->memory_list->ColumnCount = 4;
 	this->memory_list->RowHeadersVisible = false;
@@ -102,6 +103,10 @@ System::Void VoleMachine::MainForm::memory_list_CellEndEdit(Object^ sender, Data
 }
 
 System::Void VoleMachine::MainForm::memory_list_AddressCellStateChanged(Object^ sender, DataGridViewCellStateChangedEventArgs^ e) {
+	if (this->memory_list->RowCount != 128 || this->memory_list->ColumnCount != 4) {
+		return;
+	}
+
 	if (!e->Cell || e->StateChanged != DataGridViewElementStates::Selected) {
 		return;
 	}
@@ -160,33 +165,43 @@ System::Void VoleMachine::MainForm::memory_list_KeyDown(Object^ sender, KeyEvent
 }
 
 System::Void VoleMachine::MainForm::OnMemoryUpdated() {
-	this->mem_ctrl->is_updating_memory_list = true;
-
 	this->initializeMemoryList();
 
 	for (int i = 0; i < 128; i++) {
 		String^ first_value = Utilities::Conversion::convertStdStringToSystemString(this->machine->getMemory().getValueAt(i * 2));
 		String^ second_value = Utilities::Conversion::convertStdStringToSystemString(this->machine->getMemory().getValueAt(i * 2 + 1));
 		
-		//std::cout << i << std::endl;
-
 		this->memory_list->Rows[i]->Cells[1]->Value = first_value;
 		this->memory_list->Rows[i]->Cells[2]->Value = second_value;
 	}
-
-	this->mem_ctrl->is_updating_memory_list = false;
 }
 
 System::Void VoleMachine::MainForm::memory_list_OnMemoryCellValueChanged(Object^ sender, DataGridViewCellEventArgs^ e) {
 	if (this->mem_ctrl->is_updating_memory_list) {
 		return;
 	}
-
+	
 	int address = e->RowIndex * 2 + e->ColumnIndex - 1;
 	String^ value = this->memory_list->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Value->ToString();
 
 	this->mem_ctrl->updateMemoryValueAt(address, value);
 
+	this->machine->displayMemory();
+}
+
+System::Void VoleMachine::MainForm::OnFetchInstruction() {
+	this->current_address_textbox->Clear();
+	String^ current_address = this->exec_ctrl->getCurrentAddress();
+	this->current_address_textbox->Text = current_address;
+
+	this->current_instruction_textbox->Clear();
+	String^ current_instruction = this->exec_ctrl->getCurrentInstruction();
+	this->current_instruction_textbox->Text = current_instruction;
+}
+
+System::Void VoleMachine::MainForm::OnExecuteInstruction() {
+	this->mem_ctrl->memoryUpdated();
+	// TODO: update registers and screen
 	this->machine->displayMemory();
 }
 
@@ -200,6 +215,14 @@ System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, Dat
 }
 
 System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (!this->machine->getMemory().isEmpty()) {
+		Windows::Forms::DialogResult result = MessageBox::Show("Loading a file will overwrite the current memory. Are you sure you want to continue?", "Confirmation", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
+    
+		if (result == System::Windows::Forms::DialogResult::No) {
+			return;
+		}
+	}
+	
 	OpenFileDialog^ file_dialog = gcnew OpenFileDialog();
 
 	file_dialog->Filter = "Text Files (*.txt)|*.txt|All Files(*.*)|*.*";
@@ -209,9 +232,52 @@ System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender,
 	if (file_dialog->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
 		String^ filename = file_dialog->FileName;
 		std::string std_filename = Utilities::Conversion::convertSystemStringToStdString(filename); 
-		std::cout << "x1" << std::endl;
 		this->mem_ctrl->loadFromFile(std_filename);
 		MessageBox::Show("File loaded successfully!");
 		this->machine->displayMemory(); // TODO: remove 
 ;	}
+}
+
+System::Void VoleMachine::MainForm::export_to_file_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (mem_ctrl == nullptr) {
+		MessageBox::Show("MemoryController is not initialized!", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		return;
+	}
+
+	SaveFileDialog^ saveFileDialog = gcnew SaveFileDialog();
+	saveFileDialog->Filter = "Text Files|*.txt|All Files|*.*";
+	saveFileDialog->Title = "Export Memory to File";
+
+	if (saveFileDialog->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
+		std::string filename = Utilities::Conversion::convertSystemStringToStdString(saveFileDialog->FileName);
+		mem_ctrl->exportToFile(filename);
+		MessageBox::Show("File saved successfully.", "Export Complete", MessageBoxButtons::OK, MessageBoxIcon::Information);
+	}
+}
+
+System::Void VoleMachine::MainForm::reset_memory_Click(System::Object^ sender, System::EventArgs^ e) {
+	Windows::Forms::DialogResult result = MessageBox::Show("Are you sure you want to reset the memory?", "Confirmation", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
+
+	if (result == System::Windows::Forms::DialogResult::No) {
+		return;
+	}
+
+	this->mem_ctrl->resetMemory();
+	this->machine->displayMemory();
+}
+
+System::Void VoleMachine::MainForm::fetch_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->exec_ctrl->fetchInstruction();
+}
+
+System::Void VoleMachine::MainForm::reset_pc_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->exec_ctrl->resetProgram();
+}
+
+System::Void VoleMachine::MainForm::clear_screen_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->screen_textbox->Clear();
+}
+
+System::Void VoleMachine::MainForm::execute_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->exec_ctrl->executeCurrentInstruction();
 }

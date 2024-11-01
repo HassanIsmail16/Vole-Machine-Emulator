@@ -1,6 +1,7 @@
 #pragma once
 #include "StorageUnit.h"
-#include "ALU.h"          
+#include "ALU.h"  
+#include "memory.h"
 #include <array>
 #include <vector> 
 #include <map>
@@ -23,8 +24,8 @@ enum class OP_CODE : int {
 
 class CU {
 public:
-    void executeInstruction(const std::vector<int>& instruction, Registers& registers, MainMemory& memory, ALU& alu, size_t& program_counter);
-    void loadFromMemory(int reg, int memory_address, Registers& registers, MainMemory& memory);
+    void executeInstruction(const std::vector<int>& instruction, Registers& registers, Memory& memory, ALU& alu, size_t& program_counter);
+    void loadFromMemory(int reg, int memory_address, Registers& registers, Memory& memory);
     void loadValue(int reg, const std::string& value, Registers& registers);
     void storeInMemory(int reg, int memory_address, Registers& registers, MainMemory& memory);
     void jumpIfEqual(int reg, int memory_address, Registers& registers, size_t& program_counter);
