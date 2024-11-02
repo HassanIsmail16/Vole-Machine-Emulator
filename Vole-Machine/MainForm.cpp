@@ -256,8 +256,39 @@ System::Void VoleMachine::MainForm::OnExecuteInstruction() {
 	if (updated_address.HasValue) {
 		this->mem_ctrl->memoryUpdatedAtAddress(updated_address.Value);
 	}
+
+	this->reg_ctrl->registerUpdated();
+
 	// TODO: update registers and screen
-	this->machine->displayMemory();
+	this->machine->displayMemory(); // TODO: Remove
+}
+
+System::Void VoleMachine::MainForm::OnRegisterUpdated() {
+	// Get Updated Register Number
+	auto updated_register = this->reg_ctrl->getUpdatedRegister();
+
+	if (updated_register.HasValue) {
+		// Reset Highlight From Previous Update
+		for (int i = 0; i < 16; i++) {
+			this->registers_list->Items[i]->BackColor = System::Drawing::Color::White;
+		}
+
+		// Highlight Updated Register
+		this->registers_list->Items[updated_register.Value]->BackColor = System::Drawing::Color::LightGreen;
+
+		// Get Values
+		System::String^ hex_value = "0x" + this->reg_ctrl->getHexRegisterValueAt(updated_register.Value);
+		System::String^ binary_value = this->reg_ctrl->getBinRegisterValueAt(updated_register.Value);
+		System::String^ int_value = this->reg_ctrl->getIntRegisterValueAt(updated_register.Value);
+		System::String^ float_value = this->reg_ctrl->getFloatRegisterValueAt(updated_register.Value);
+
+		// Update Values
+		this->registers_list->Items[updated_register.Value]->SubItems[1]->Text = hex_value;
+		this->registers_list->Items[updated_register.Value]->SubItems[2]->Text = binary_value;
+		this->registers_list->Items[updated_register.Value]->SubItems[3]->Text = int_value;
+		this->registers_list->Items[updated_register.Value]->SubItems[4]->Text = float_value;
+		this->registers_list->Refresh();
+	}
 }
 
 System::Void VoleMachine::MainForm::OnUpdateScreen(std::string value) {
