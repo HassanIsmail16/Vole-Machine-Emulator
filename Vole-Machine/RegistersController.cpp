@@ -4,6 +4,10 @@ void RegistersController::registerUpdated() {
 	this->register_updated();
 }
 
+void RegistersController::resetRegisters() {
+	this->machine->getCPU().clearRegisters();
+}
+
 System::String^ RegistersController::getHexRegisterValueAt(int index) {
 	return Utilities::Conversion::convertStdStringToSystemString(this->machine->getCPU().getRegisterValueAt(index));
 }

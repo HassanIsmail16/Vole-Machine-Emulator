@@ -734,6 +734,8 @@ namespace VoleMachine {
 		System::Void initializeRegistersList();
 		System::Void initializeMemoryList();
 
+		System::Void resetRegistersColor();
+
 		System::Void memory_list_CellEndEdit(Object^ sender, DataGridViewCellEventArgs^ e);
 		System::Void memory_list_AddressCellStateChanged(Object^ sender, DataGridViewCellStateChangedEventArgs^ e);
 		System::Void memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e);
@@ -766,7 +768,7 @@ namespace VoleMachine {
 	private: System::Void load_from_file_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void export_to_file_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void reset_memory_Click(System::Object^ sender, System::EventArgs^ e);
-	private: System::Void reset_registers_Click(System::Object^ sender, System::EventArgs^ e) {}
+	private: System::Void reset_registers_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void fetch_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void reset_pc_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void clear_screen_Click(System::Object^ sender, System::EventArgs^ e);
