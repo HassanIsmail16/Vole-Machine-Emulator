@@ -14,7 +14,7 @@ public:
 	void registerUpdated();
 
 	delegate void RegisterResetEvenHandler();
-	event RegisterResetEvenHandler^ regesters_reset;
+	event RegisterResetEvenHandler^ register_reset;
 
 	void resetRegisters();
 

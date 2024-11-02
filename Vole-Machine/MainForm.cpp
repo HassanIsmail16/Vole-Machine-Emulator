@@ -408,7 +408,7 @@ System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, Dat
 
 System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (!this->machine->getMemory().isEmpty()) {
-		Windows::Forms::DialogResult result = MessageBox::Show("Loading a file will overwrite the current memory. Are you sure you want to continue?", "Confirmation", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
+		Windows::Forms::DialogResult result = MessageBox::Show("Loading a file will overwrite the current memory and reset registers. Are you sure you want to continue?", "Confirmation", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
     
 		if (result == System::Windows::Forms::DialogResult::No) {
 			return;
@@ -425,6 +425,7 @@ System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender,
 		String^ filename = file_dialog->FileName;
 		std::string std_filename = Utilities::Conversion::convertSystemStringToStdString(filename); 
 		this->mem_ctrl->loadFromFile(std_filename);
+		this->reg_ctrl->resetRegisters();
 		MessageBox::Show("File loaded successfully!", "File Loaded", MessageBoxButtons::OK, MessageBoxIcon::Information);
 		this->machine->displayMemory(); // TODO: remove 
 ;	}
@@ -459,6 +460,17 @@ System::Void VoleMachine::MainForm::reset_memory_Click(System::Object^ sender, S
 }
 
 System::Void VoleMachine::MainForm::reset_registers_Click(System::Object^ sender, System::EventArgs^ e) {
+
+	Windows::Forms::DialogResult result = MessageBox::Show("Are you sure you want to reset registers?", "Confirmation", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
+
+	if (result == System::Windows::Forms::DialogResult::No) {
+		return;
+	}
+
+	this->reg_ctrl->resetRegisters();
+}
+
+System::Void VoleMachine::MainForm::OnResetRegisters() {
 	// Reset Displayed Registers
 	this->resetRegistersColor();
 
@@ -468,9 +480,6 @@ System::Void VoleMachine::MainForm::reset_registers_Click(System::Object^ sender
 		this->registers_list->Items[i]->SubItems[3]->Text = "0";
 		this->registers_list->Items[i]->SubItems[4]->Text = "0";
 	}
-
-	// Reset Registers
-	this->reg_ctrl-> resetRegisters();
 }
 
 System::Void VoleMachine::MainForm::fetch_Click(System::Object^ sender, System::EventArgs^ e) {
