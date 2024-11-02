@@ -4,6 +4,10 @@
 #include <iostream>
 
 void CU::executeInstruction(const std::vector<int>& instruction, Registers& registers, Memory& memory, ALU& alu, size_t& program_counter) {
+    if (instruction.empty()) {
+        return;
+    }
+
     OP_CODE operation_code = OP_CODE(instruction[0]);
 
     switch (operation_code) {
@@ -18,6 +22,7 @@ void CU::executeInstruction(const std::vector<int>& instruction, Registers& regi
         break;
     }
     case OP_CODE::STORE: {
+        std::cout << "t1" << std::endl;
         int memory_address = instruction[2];
         storeInMemory(instruction[1], memory_address, registers, memory);
         break;

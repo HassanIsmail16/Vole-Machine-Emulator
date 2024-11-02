@@ -17,7 +17,6 @@ namespace VoleMachine {
 
 	public:
 		MainForm(void) {
-
 			this->machine = new Machine();
 			this->mem_ctrl = gcnew MemoryController(this->machine);
 			this->reg_ctrl = gcnew RegistersController(this->machine);
@@ -27,10 +26,18 @@ namespace VoleMachine {
 			this->initializeRegistersList();
 			this->initializeMemoryList();
 			this->mem_ctrl->memory_updated += gcnew MemoryController::MemoryUpdatedEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdated);
+			this->mem_ctrl->memory_updated_at_address += gcnew MemoryController::MemoryUpdatedAtAddressEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdatedAtAddress);
 			this->exec_ctrl->fetched_instruction += gcnew ExecutionController::InstructionFetchedEventHandler(this, &VoleMachine::MainForm::OnFetchInstruction);
 			this->exec_ctrl->executed_instruction += gcnew ExecutionController::InstructionExecutedEventHandler(this, &VoleMachine::MainForm::OnExecuteInstruction);
 			this->exec_ctrl->screen_updated += gcnew ExecutionController::ScreenUpdatedEventHandler(this, &VoleMachine::MainForm::OnUpdateScreen);
 			this->exec_ctrl->speed_changed += gcnew ExecutionController::SpeedChangedEventHandler(this, &VoleMachine::MainForm::OnChangeSpeed);
+			this->exec_ctrl->program_halted += gcnew ExecutionController::ProgramHaltedEventHandler(this, &VoleMachine::MainForm::OnHaltProgram);
+			this->exec_ctrl->reached_end_of_memory += gcnew ExecutionController::ReachedEndOfMemoryEventHandler(this, &VoleMachine::MainForm::OnReachedEndOfMemory);
+			this->exec_ctrl->all_instructions_executed += gcnew ExecutionController::AllInstructionsExecutedEventHandler(this, &VoleMachine::MainForm::OnExecutedAllInstructions);
+			this->reset_color_timer = gcnew System::Windows::Forms::Timer();
+			this->reset_color_timer->Interval = 500;
+			this->reset_color_timer->Tick += gcnew System::EventHandler(this, &MainForm::memory_list_ResetCellColor);
+			this->color_reset_queue = gcnew System::Collections::Generic::Queue<System::Tuple<System::DateTime, int, int>^>();
 		}
 
 	protected:
@@ -108,10 +115,6 @@ namespace VoleMachine {
 	private: System::Windows::Forms::Button^ dark_mode;
 	private: System::Windows::Forms::Label^ credits_label;
 	private: System::Windows::Forms::Button^ reset_pc;
-
-
-
-
 
 	private: System::ComponentModel::IContainer^ components;
 
@@ -562,6 +565,7 @@ namespace VoleMachine {
 			this->run_until_halt->TabIndex = 8;
 			this->run_until_halt->Text = L"Run Until Halt";
 			this->run_until_halt->UseVisualStyleBackColor = true;
+			this->run_until_halt->Click += gcnew System::EventHandler(this, &MainForm::run_until_halt_Click);
 			// 
 			// steps_label
 			// 
@@ -580,6 +584,7 @@ namespace VoleMachine {
 			this->step->TabIndex = 4;
 			this->step->Text = L"Step";
 			this->step->UseVisualStyleBackColor = true;
+			this->step->Click += gcnew System::EventHandler(this, &MainForm::step_Click);
 			// 
 			// steps_spinbox
 			// 
@@ -630,6 +635,7 @@ namespace VoleMachine {
 			this->play->TabIndex = 1;
 			this->play->Text = L"Play";
 			this->play->UseVisualStyleBackColor = true;
+			this->play->Click += gcnew System::EventHandler(this, &MainForm::play_Click);
 			// 
 			// load_from_file
 			// 
@@ -685,22 +691,27 @@ namespace VoleMachine {
 		System::Void memory_list_KeyDown(Object^ sender, KeyEventArgs^ e);
 
 		System::Void OnMemoryUpdated();
+		System::Void OnMemoryUpdatedAtAddress(int index);
 		System::Void memory_list_OnMemoryCellValueChanged(Object^ sender, DataGridViewCellEventArgs^ e);
-
 		System::Void OnFetchInstruction();
 		System::Void OnExecuteInstruction();
 		System::Void OnUpdateScreen(std::string value);
 		System::Void OnChangeSpeed();
-
+		System::Void OnHaltProgram();
+		System::Void OnReachedEndOfMemory();
+		System::Void OnExecutedAllInstructions();
+		System::Void memory_list_ResetCellColor(Object^ sender, EventArgs^ e);
 		int memory_list_selected_cell_row = 0;
 		int memory_list_selected_cell_col = 1;
 		Machine* machine;
 		MemoryController^ mem_ctrl;
 		RegistersController^ reg_ctrl;
 		ExecutionController^ exec_ctrl;
+		Timer^ reset_color_timer;
+		Generic::Queue<System::Tuple<System::DateTime, int, int>^>^ color_reset_queue;
+
+
 	private: System::Void load_from_file_Click(System::Object^ sender, System::EventArgs^ e);
-
-
 	private: System::Void export_to_file_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void reset_memory_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void reset_registers_Click(System::Object^ sender, System::EventArgs^ e) {}
@@ -709,5 +720,8 @@ namespace VoleMachine {
 	private: System::Void clear_screen_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void execute_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void steps_spinbox_ValueChanged(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void play_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void run_until_halt_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void step_Click(System::Object^ sender, System::EventArgs^ e);
 };
 }

@@ -1,6 +1,7 @@
 #include "CPU.h"
 #include "Memory.h"
-
+#include "Utilities.h"
+#include <iostream>
 CPU::CPU() {
 	this->program_counter = 0;
 	this->instruction_register = "";
@@ -8,7 +9,7 @@ CPU::CPU() {
 }
 
 void CPU::runInstructions(Memory& memory) {
-	while (!this->isHalt()) {
+	while (!this->isHalt() && this->program_counter < 256) {
 		this->fetch(memory);
 		std::vector<int> instruction = this->decode();
 		this->execute(memory, instruction);
@@ -28,6 +29,10 @@ void CPU::fetch(Memory& memory) {
 }
 
 std::vector<int> CPU::decode() {
+	if (!Utilities::InstructionValidation::isValidInstruction(this->instruction_register)) {
+		return {};
+	}
+
 	std::vector<int> instruction;
 	instruction.push_back(std::stoi(this->instruction_register.substr(0, 1), nullptr, 16));
 
@@ -56,13 +61,11 @@ void CPU::clearRegisters() {
 }
 
 bool CPU::isHalt() {
-	return instruction_register == "Cxxx";
+	return instruction_register == "C000";
 }
 
 void CPU::halt() {
-	program_counter = 0;
-	clearRegisters();
-	instruction_register.clear();
+	return;
 }
 
 bool CPU::isInstructionPending() {
