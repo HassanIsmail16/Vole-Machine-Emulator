@@ -1,6 +1,7 @@
 #include "ExecutionController.h"
 #include "Utilities.h"
 #include <iostream>
+#include <vector>
 
 void ExecutionController::fetchedInstruction() {
 	if (this->is_fetching_instruction) {
@@ -149,4 +150,9 @@ System::Nullable<int> ExecutionController::getUpdatedAddress() {
 	}
 
 	return System::Nullable<int>();
+}
+
+
+std::vector<int> ExecutionController::decodeInstruction() {
+	return this->machine->getCPU().decode();
 }

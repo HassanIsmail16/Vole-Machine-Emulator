@@ -2,6 +2,7 @@
 #include "Controller.h"
 #include "ExecutionController.h"
 #include <iostream>
+#include <vector>
 
 ref class ExecutionController : public Controller {
 public:
@@ -41,7 +42,7 @@ public:
 
 	void runAllInstructions();
 	void fetchInstruction();
-	void decodeInstruction() {}
+	std::vector<int> decodeInstruction();
 	void executeCurrentInstruction();
 	void step();
 	void playInstructions();

@@ -457,3 +457,126 @@ System::Void VoleMachine::MainForm::run_until_halt_Click(System::Object^ sender,
 System::Void VoleMachine::MainForm::step_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->exec_ctrl->step();
 }
+
+System::Void VoleMachine::MainForm::decode_Click(System::Object^ sender, System::EventArgs^ e) {
+
+
+	std::vector<int> decodedInstruction = exec_ctrl->decodeInstruction();
+
+
+	this->opcode_textbox->Text = Utilities::Conversion::convertStdStringToSystemString(
+		Utilities::Conversion::convertDecToHex(decodedInstruction[0]));
+
+
+	System::String^ firstOperand = "";
+	System::String^ secondOperand = "";
+	System::String^ thirdOperand = "";
+
+	OP_CODE opcode = static_cast<OP_CODE>(decodedInstruction[0]);
+
+	switch (opcode) {
+	case OP_CODE::LOAD_M:
+	case OP_CODE::LOAD_V:
+	case OP_CODE::STORE:
+	case OP_CODE::JUMP_EQ:
+	case OP_CODE::JUMP_GT:
+		// RXY format: Register R, followed by memory address XY
+		this->first_operand_label->Text = "R:";
+		this->second_operand_label->Text = "X:";
+		this->third_operand_label->Text = "Y:";
+
+		if (decodedInstruction.size() > 1) {
+			firstOperand = Utilities::Conversion::convertStdStringToSystemString(
+				Utilities::Conversion::convertDecToHex(decodedInstruction[1]));
+		}
+		if (decodedInstruction.size() > 2) {
+			secondOperand = Utilities::Conversion::convertStdStringToSystemString(
+				Utilities::Conversion::convertDecToHex((decodedInstruction[2] >> 4) & 0xF)); // X
+			thirdOperand = Utilities::Conversion::convertStdStringToSystemString(
+				Utilities::Conversion::convertDecToHex(decodedInstruction[2] & 0xF));         // Y
+		}
+		break;
+
+	case OP_CODE::MOVE:
+		// xRS format: Unused x, followed by registers R and S
+		this->first_operand_label->Text = "x:";
+		this->second_operand_label->Text = "R:";
+		this->third_operand_label->Text = "S:";
+
+		if (decodedInstruction.size() > 1) {
+			firstOperand = Utilities::Conversion::convertStdStringToSystemString(
+				Utilities::Conversion::convertDecToHex(decodedInstruction[1]));
+		}
+		if (decodedInstruction.size() > 2) {
+			secondOperand = Utilities::Conversion::convertStdStringToSystemString(
+				Utilities::Conversion::convertDecToHex(decodedInstruction[2]));
+		}
+		if (decodedInstruction.size() > 3) {
+			thirdOperand = Utilities::Conversion::convertStdStringToSystemString(
+				Utilities::Conversion::convertDecToHex(decodedInstruction[3]));
+		}
+		break;
+
+	case OP_CODE::ADD:
+	case OP_CODE::ADD_F:
+	case OP_CODE::BIT_OR:
+	case OP_CODE::BIT_AND:
+	case OP_CODE::BIT_XOR:
+		// RST format: Three registers R, S, T
+		this->first_operand_label->Text = "R:";
+		this->second_operand_label->Text = "S:";
+		this->third_operand_label->Text = "T:";
+
+		if (decodedInstruction.size() > 1) {
+			firstOperand = Utilities::Conversion::convertStdStringToSystemString(
+				Utilities::Conversion::convertDecToHex(decodedInstruction[1]));
+		}
+		if (decodedInstruction.size() > 2) {
+			secondOperand = Utilities::Conversion::convertStdStringToSystemString(
+				Utilities::Conversion::convertDecToHex(decodedInstruction[2]));
+		}
+		if (decodedInstruction.size() > 3) {
+			thirdOperand = Utilities::Conversion::convertStdStringToSystemString(
+				Utilities::Conversion::convertDecToHex(decodedInstruction[3]));
+		}
+		break;
+
+	case OP_CODE::ROTATE:
+		// RxX format: Register R, rotation steps X
+		this->first_operand_label->Text = "R:";
+		this->second_operand_label->Text = "x:";
+		this->third_operand_label->Text = "X:";
+
+		if (decodedInstruction.size() > 1) {
+			firstOperand = Utilities::Conversion::convertStdStringToSystemString(
+				Utilities::Conversion::convertDecToHex(decodedInstruction[1]));
+		}
+		if (decodedInstruction.size() > 2) {
+			secondOperand = Utilities::Conversion::convertStdStringToSystemString(
+				Utilities::Conversion::convertDecToHex(decodedInstruction[2]));
+		}
+		if (decodedInstruction.size() > 3) {
+			thirdOperand = Utilities::Conversion::convertStdStringToSystemString(
+				Utilities::Conversion::convertDecToHex(decodedInstruction[3]));
+		}
+		break;
+
+	case OP_CODE::HALT:
+
+		this->first_operand_label->Text = "";
+		this->second_operand_label->Text = "";
+		this->third_operand_label->Text = "";
+		break;
+
+	default:
+
+		MessageBox::Show("Unknown opcode.", "Decode Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		return;
+	}
+
+	
+	this->first_operand_textbox->Text = firstOperand;
+	this->second_operand_textbox->Text = secondOperand;
+	this->third_operand_textbox->Text = thirdOperand;
+}
+
