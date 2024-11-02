@@ -251,6 +251,8 @@ System::Void VoleMachine::MainForm::OnFetchInstruction() {
 	String^ current_address = this->exec_ctrl->getCurrentAddress();
 	this->current_address_textbox->Text = current_address;
 
+	this->highlightAddress(current_address);
+
 	this->current_instruction_textbox->Clear();
 	String^ current_instruction = this->exec_ctrl->getCurrentInstruction();
 	this->current_instruction_textbox->Text = current_instruction;
@@ -360,6 +362,39 @@ System::Void VoleMachine::MainForm::memory_list_ResetCellColor(Object^ sender, E
 	if (this->color_reset_queue->Count == 0) {
 		this->reset_color_timer->Stop();
 	}
+}
+
+System::Void VoleMachine::MainForm::highlightAddress(String^ address) {
+	this->unHiglightLastAdderss();
+	int numeric_address = stoi(
+		Utilities::Conversion::convertHexToDec(
+			Utilities::Conversion::convertSystemStringToStdString(address)
+		)
+	);
+
+	int row = numeric_address / 2;
+	
+	this->memory_list->Rows[row]->Cells[0]->Style->BackColor = Color::LightBlue;
+	this->memory_list->Rows[row]->Cells[3]->Style->BackColor = Color::LightBlue;
+
+	this->last_highlighted_address = address;
+}
+
+System::Void VoleMachine::MainForm::unHiglightLastAdderss() {
+	if (this->last_highlighted_address->Length == 0) {
+		return;
+	}
+
+	int numeric_address = stoi(
+		Utilities::Conversion::convertHexToDec(
+			Utilities::Conversion::convertSystemStringToStdString(this->last_highlighted_address)
+		)
+	);
+
+	int row = numeric_address / 2;
+
+	this->memory_list->Rows[row]->Cells[0]->Style->BackColor = SystemColors::Control;
+	this->memory_list->Rows[row]->Cells[3]->Style->BackColor = SystemColors::Control;
 }
 
 System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e) {
