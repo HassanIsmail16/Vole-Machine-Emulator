@@ -13,6 +13,16 @@ void MemoryController::memoryUpdated() {
 	this->is_updating_memory_list = false;
 }
 
+void MemoryController::memoryUpdatedAtAddress(int index) {
+    if (this->is_updating_memory_list) {
+        return;
+    }
+
+    this->is_updating_memory_list = true;
+    this->memory_updated_at_address(index);
+	this->is_updating_memory_list = false;
+}
+
 System::String^ MemoryController::getMemoryValueAt(int& index) {
 	return Utilities::Conversion::convertStdStringToSystemString(this->machine->getMemory().getValueAt(index));
 }
@@ -32,18 +42,24 @@ void MemoryController::resetMemory() {
 }
 
 void MemoryController::exportToFile(std::string filename) {
-	std::ofstream outfile(filename);
+    if (!machine) {
+        throw std::runtime_error("Machine object is not initialized.");
+    }
 
-	if (!outfile.is_open()) {
-		throw std::runtime_error("Could not open file for writing");
-	}
+    std::ofstream outfile(filename);
 
-	for (int i = 0; i < 128; i += 2) {
-		auto opcode = this->machine->getMemory().getValueAt(i);
-		auto operand = this->machine->getMemory().getValueAt(i + 1);
-		outfile << opcode << operand << " ";
-	}
+    if (!outfile.is_open()) {
+        throw std::runtime_error("Could not open file for writing");
+    }
 
-	outfile.close();
+    for (int i = 0; i < 128; i += 2) {
+        std::string opcode = machine->getMemory().getValueAt(i);
+        std::string operand = machine->getMemory().getValueAt(i + 1);
+        outfile << opcode << operand << " ";
+    }
+
+    outfile.close();
 }
+
+
 

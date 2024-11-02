@@ -1,6 +1,7 @@
 #include "CPU.h"
 #include "Memory.h"
-
+#include "Utilities.h"
+#include <iostream>
 CPU::CPU() {
 	this->program_counter = 0;
 	this->instruction_register = "";
@@ -8,10 +9,10 @@ CPU::CPU() {
 }
 
 void CPU::runInstructions(Memory& memory) {
-	while (!this->isHalt()) {
+	while (!this->isHalt() && this->program_counter < 256) {
 		this->fetch(memory);
 		std::vector<int> instruction = this->decode();
-		this->execute(this->registers, memory, instruction);
+		this->execute(memory, instruction);
 	}
 	this->halt();
 }
@@ -28,13 +29,28 @@ void CPU::fetch(Memory& memory) {
 }
 
 std::vector<int> CPU::decode() {
+	if (!Utilities::InstructionValidation::isValidInstruction(this->instruction_register)) {
+		return {};
+	}
+
 	std::vector<int> instruction;
-	instruction.push_back(std::stoi(instruction_register.substr(0, 2), nullptr, 16)); // op-code
-	instruction.push_back(std::stoi(instruction_register.substr(2, 2), nullptr, 16)); // operands
+	instruction.push_back(std::stoi(this->instruction_register.substr(0, 1), nullptr, 16));
+
+	if ((instruction[0] >= 1 && instruction[0] <= 3) || instruction[0] == 11 || instruction[0] == 13) {
+		instruction.push_back(std::stoi(this->instruction_register.substr(1, 1), nullptr, 16));
+		instruction.push_back(std::stoi(this->instruction_register.substr(2, 2), nullptr, 16));
+	} // handle RXY
+
+	if (instruction[0] >= 4 && instruction[0] <= 10) {
+		instruction.push_back(std::stoi(this->instruction_register.substr(1, 1), nullptr, 16));
+		instruction.push_back(std::stoi(this->instruction_register.substr(2, 1), nullptr, 16));
+		instruction.push_back(std::stoi(this->instruction_register.substr(3, 1), nullptr, 16));
+	} // handle RST
+
 	return instruction;
 }
 
-void CPU::execute(Registers& registers, Memory& memory, std::vector<int> instruction) {
+void CPU::execute(Memory& memory, std::vector<int> instruction) {
 	this->cu.executeInstruction(instruction, registers, memory, alu, program_counter);
 }
 
@@ -49,14 +65,24 @@ bool CPU::isHalt() {
 }
 
 void CPU::halt() {
-	program_counter = 0;
-	clearRegisters();
-	instruction_register.clear();
+	return;
+}
+
+bool CPU::isInstructionPending() {
+	return !this->instruction_register.empty();
 }
 
 void CPU::resetProgram() {
 	this->program_counter = 0;
 	this->instruction_register.clear();
+}
+
+std::string CPU::getRegisterValueAt(int index) {
+	return this->registers[index].getValue();
+}
+
+void CPU::setRegisterValueAt(int index, std::string& value) {
+	this->registers[index].setValue(value);
 }
 
 size_t& CPU::getProgramCounter() {
