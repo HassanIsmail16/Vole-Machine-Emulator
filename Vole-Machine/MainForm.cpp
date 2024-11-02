@@ -5,7 +5,7 @@
 
 using namespace System;
 using namespace System::Windows::Forms;
-
+using namespace System::Threading::Tasks;
 [STAThread]
 int main(array<System::String^>^ args) {
 	Application::EnableVisualStyles();
@@ -81,6 +81,8 @@ System::Void VoleMachine::MainForm::initializeMemoryList() {
 
 		this->memory_list->Rows->Add(address1_hex, value, value, address2_hex);
 	}
+
+	this->memory_list->CurrentCell = this->memory_list->Rows[0]->Cells[1];
 }
 
 System::Void VoleMachine::MainForm::memory_list_CellEndEdit(Object^ sender, DataGridViewCellEventArgs^ e) {
@@ -165,14 +167,63 @@ System::Void VoleMachine::MainForm::memory_list_KeyDown(Object^ sender, KeyEvent
 }
 
 System::Void VoleMachine::MainForm::OnMemoryUpdated() {
-	this->initializeMemoryList();
+	if (this->memory_list->InvokeRequired) {
+		this->Invoke(gcnew MemoryController::MemoryUpdatedEventHandler(this,
+			&MainForm::OnMemoryUpdated));
+		return;
+	}
 
+	this->initializeMemoryList();
 	for (int i = 0; i < 128; i++) {
-		String^ first_value = Utilities::Conversion::convertStdStringToSystemString(this->machine->getMemory().getValueAt(i * 2));
-		String^ second_value = Utilities::Conversion::convertStdStringToSystemString(this->machine->getMemory().getValueAt(i * 2 + 1));
-		
+		String^ first_value = Utilities::Conversion::convertStdStringToSystemString(
+			this->machine->getMemory().getValueAt(i * 2));
+		String^ second_value = Utilities::Conversion::convertStdStringToSystemString(
+			this->machine->getMemory().getValueAt(i * 2 + 1));
+
 		this->memory_list->Rows[i]->Cells[1]->Value = first_value;
 		this->memory_list->Rows[i]->Cells[2]->Value = second_value;
+		this->memory_list->Rows[i]->Cells[1]->Style->BackColor = Color::Coral;
+		this->memory_list->Rows[i]->Cells[2]->Style->BackColor = Color::Coral;
+	}
+
+	this->color_reset_queue->Enqueue(
+		gcnew System::Tuple<System::DateTime, int, int>(
+			System::DateTime::Now,
+			-1,  // special value for full reset
+			-1
+		)
+	);
+
+	if (!this->reset_color_timer->Enabled) {
+		this->reset_color_timer->Start();
+	}
+}
+
+System::Void VoleMachine::MainForm::OnMemoryUpdatedAtAddress(int index) {
+	if (this->memory_list->InvokeRequired) {
+		this->Invoke(gcnew MemoryController::MemoryUpdatedAtAddressEventHandler(this,
+			&MainForm::OnMemoryUpdatedAtAddress), index);
+		return;
+	}
+
+	int row = index / 2;
+	int col = index % 2 + 1;
+
+	this->memory_list->Rows[row]->Cells[col]->Value =
+		Utilities::Conversion::convertStdStringToSystemString(
+			this->machine->getMemory().getValueAt(index));
+	this->memory_list->Rows[row]->Cells[col]->Style->BackColor = Color::Coral;
+
+	this->color_reset_queue->Enqueue(
+		gcnew System::Tuple<System::DateTime, int, int>(
+			System::DateTime::Now,
+			row,
+			col
+		)
+	);
+
+	if (!this->reset_color_timer->Enabled) {
+		this->reset_color_timer->Start();
 	}
 }
 
@@ -200,9 +251,77 @@ System::Void VoleMachine::MainForm::OnFetchInstruction() {
 }
 
 System::Void VoleMachine::MainForm::OnExecuteInstruction() {
-	this->mem_ctrl->memoryUpdated();
+	auto updated_address = this->exec_ctrl->getUpdatedAddress();
+	
+	if (updated_address.HasValue) {
+		this->mem_ctrl->memoryUpdatedAtAddress(updated_address.Value);
+	}
 	// TODO: update registers and screen
 	this->machine->displayMemory();
+}
+
+System::Void VoleMachine::MainForm::OnUpdateScreen(std::string value) {
+	this->screen_textbox->AppendText(Utilities::Conversion::convertStdStringToSystemString(value));
+	this->screen_textbox->ScrollToCaret();
+}
+
+System::Void VoleMachine::MainForm::OnChangeSpeed() {
+	if (this->InvokeRequired) {
+		this->Invoke(gcnew ExecutionController::SpeedChangedEventHandler(this,
+			&MainForm::OnChangeSpeed));
+		return;
+	}
+
+	if (this->steps_spinbox->Value != this->exec_ctrl->InstructionsPerSecond) {
+		this->steps_spinbox->Value = this->exec_ctrl->InstructionsPerSecond;
+	}
+}
+
+System::Void VoleMachine::MainForm::OnHaltProgram() {
+	this->play->Text = "Play";
+	this->exec_ctrl->pauseInstructions();
+	this->exec_ctrl->resetProgram();
+	MessageBox::Show("Program halted.", "Program Halted", MessageBoxButtons::OK, MessageBoxIcon::Information);
+}
+
+System::Void VoleMachine::MainForm::OnReachedEndOfMemory() {
+	this->play->Text = "Play";
+	this->exec_ctrl->pauseInstructions();
+	this->exec_ctrl->resetProgram();
+	MessageBox::Show("Program reached end of memory.", "Reached End of Memory", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+}
+
+System::Void VoleMachine::MainForm::OnExecutedAllInstructions() {
+	this->mem_ctrl->memoryUpdated();
+	//TODO: Add update registers
+}
+
+System::Void VoleMachine::MainForm::memory_list_ResetCellColor(Object^ sender, EventArgs^ e) {
+	System::DateTime now = System::DateTime::Now;
+
+	while (this->color_reset_queue->Count > 0) {
+		auto reset_info = this->color_reset_queue->Peek();
+		TimeSpan duration = now - reset_info->Item1;
+
+		if (duration.TotalMilliseconds >= 200) {
+			this->color_reset_queue->Dequeue();
+
+			if (reset_info->Item2 == -1 && reset_info->Item3 == -1) {
+				for (int i = 0; i < 128; i++) {
+					this->memory_list->Rows[i]->Cells[1]->Style->BackColor = Color::White;
+					this->memory_list->Rows[i]->Cells[2]->Style->BackColor = Color::White;
+				}
+			} else {
+				this->memory_list->Rows[reset_info->Item2]->Cells[reset_info->Item3]->Style->BackColor = Color::White;
+			}
+		} else {
+			break;
+		}
+	}
+
+	if (this->color_reset_queue->Count == 0) {
+		this->reset_color_timer->Stop();
+	}
 }
 
 System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e) {
@@ -233,7 +352,7 @@ System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender,
 		String^ filename = file_dialog->FileName;
 		std::string std_filename = Utilities::Conversion::convertSystemStringToStdString(filename); 
 		this->mem_ctrl->loadFromFile(std_filename);
-		MessageBox::Show("File loaded successfully!");
+		MessageBox::Show("File loaded successfully!", "File Loaded", MessageBoxButtons::OK, MessageBoxIcon::Information);
 		this->machine->displayMemory(); // TODO: remove 
 ;	}
 }
@@ -280,4 +399,30 @@ System::Void VoleMachine::MainForm::clear_screen_Click(System::Object^ sender, S
 
 System::Void VoleMachine::MainForm::execute_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->exec_ctrl->executeCurrentInstruction();
+}
+
+System::Void VoleMachine::MainForm::steps_spinbox_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
+	int new_speed = static_cast<int>(this->steps_spinbox->Value);
+
+	if (this->exec_ctrl->InstructionsPerSecond != new_speed) {
+		this->exec_ctrl->updateSpeed(new_speed);
+	}
+}
+
+System::Void VoleMachine::MainForm::play_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (this->play->Text == "Play") {
+		this->exec_ctrl->playInstructions();
+		this->play->Text = "Stop";
+	} else if (this->play->Text == "Stop") {
+		this->exec_ctrl->pauseInstructions();
+		this->play->Text = "Play";
+	}
+}
+
+System::Void VoleMachine::MainForm::run_until_halt_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->exec_ctrl->runAllInstructions();
+}
+
+System::Void VoleMachine::MainForm::step_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->exec_ctrl->step();
 }

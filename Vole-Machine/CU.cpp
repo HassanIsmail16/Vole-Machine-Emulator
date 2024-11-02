@@ -1,23 +1,29 @@
 #include "CU.h"
+#include "Utilities.h"
 #include <vector> 
 #include <iostream>
 
 void CU::executeInstruction(const std::vector<int>& instruction, Registers& registers, Memory& memory, ALU& alu, size_t& program_counter) {
+    if (instruction.empty()) {
+        return;
+    }
+
     OP_CODE operation_code = OP_CODE(instruction[0]);
 
     switch (operation_code) {
     case OP_CODE::LOAD_M: {
-        int memory_address = std::stoi(std::to_string(instruction[2]) + std::to_string(instruction[3]), nullptr, 16);
+        int memory_address = instruction[2];
         loadFromMemory(instruction[1], memory_address, registers, memory);
         break;
     }
     case OP_CODE::LOAD_V: {
-        std::string value = std::to_string(instruction[2]) + std::to_string(instruction[3]);
+        int value = instruction[2];
         loadValue(instruction[1], value, registers);
         break;
     }
     case OP_CODE::STORE: {
-        int memory_address = std::stoi(std::to_string(instruction[2]) + std::to_string(instruction[3]), nullptr, 16);
+        std::cout << "t1" << std::endl;
+        int memory_address = instruction[2];
         storeInMemory(instruction[1], memory_address, registers, memory);
         break;
     }
@@ -46,20 +52,16 @@ void CU::executeInstruction(const std::vector<int>& instruction, Registers& regi
         break;
     }
     case OP_CODE::ROTATE: {
-        alu.rotateRight(instruction[1], instruction[2], registers);
+        alu.rotateRight(instruction[1], instruction[3], registers);
         break;
     }
     case OP_CODE::JUMP_EQ: {
-        int memory_address = std::stoi(std::to_string(instruction[2]) + std::to_string(instruction[3]), nullptr, 16);
+        int memory_address = instruction[2];
         jumpIfEqual(instruction[1], memory_address, registers, program_counter);
         break;
     }
-    case OP_CODE::HALT: {
-        program_counter = 0;
-        break;
-    }
     case OP_CODE::JUMP_GT: {
-        int memory_address = std::stoi(std::to_string(instruction[2]) + std::to_string(instruction[3]), nullptr, 16);
+        int memory_address = instruction[2];
         jumpIfGreater(instruction[1], memory_address, registers, program_counter);
         break;
     }
@@ -68,17 +70,17 @@ void CU::executeInstruction(const std::vector<int>& instruction, Registers& regi
     }
 }
 
-void CU::loadFromMemory(int reg, int memory_address, Registers& registers, MainMemory& memory) {
-    registers[reg].setValue(memory[memory_address].getValue());
+void CU::loadFromMemory(int reg, int memory_address, Registers& registers, Memory& memory) {
+    registers[reg].setValue(memory.getValueAt(memory_address));
 }
 
-void CU::loadValue(int reg, const std::string& value, Registers& registers) {
-    registers[reg].setValue(value);
+void CU::loadValue(int reg, int value, Registers& registers) {
+    registers[reg].setValue(Utilities::Conversion::convertDecToHex(value));
 }
 
 void CU::storeInMemory(int reg, int memory_address, Registers& registers, Memory& memory) {
     if (isScreen(reg, memory_address)) {
-        // ??
+        return;
     }
     else {
         memory.setValueAt(memory_address, registers[reg].getValue());
@@ -92,9 +94,9 @@ void CU::jumpIfEqual(int reg, int memory_address, Registers& registers, size_t& 
 }
 
 void CU::jumpIfGreater(int reg, int memory_address, Registers& registers, size_t& program_counter) {
-    int regValue = std::stoi(registers[reg].getValue(), nullptr, 16);
-    int zeroRegValue = std::stoi(registers[0].getValue(), nullptr, 16);
-    if (regValue > zeroRegValue) {
+    int reg_value = std::stoi(registers[reg].getValue(), nullptr, 16);
+    int zero_reg_value = std::stoi(registers[0].getValue(), nullptr, 16);
+    if (reg_value > zero_reg_value) {
         program_counter = memory_address;
     }
 }

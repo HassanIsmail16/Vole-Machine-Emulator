@@ -1,4 +1,10 @@
 #include "Utilities.h"
+#include <algorithm>
+#include <sstream>
+#include <iomanip>
+#include <cmath>
+#include <array>
+#include <string>
 using namespace Utilities;
 
 bool InstructionValidation::isValidInstruction(std::string& instruction_string) {
@@ -50,4 +56,18 @@ System::String^ Conversion::convertStdStringToSystemString(std::string& string) 
 
 std::string Utilities::Conversion::convertSystemStringToStdString(System::String^ string) {
 	return msclr::interop::marshal_as<std::string>(string);
+}
+
+
+std::string Utilities::Conversion::convertHexToDec(const std::string& hex) {
+	int decimalValue = std::stoi(hex, nullptr, 16);
+	return std::to_string(decimalValue);
+}
+
+std::string Utilities::Conversion::convertDecToHex(const int integer) {
+	std::stringstream stream;
+	stream << std::hex << (integer & 0xFF);
+	std::string result = stream.str();
+	std::transform(result.begin(), result.end(), result.begin(), ::toupper);
+	return result;
 }

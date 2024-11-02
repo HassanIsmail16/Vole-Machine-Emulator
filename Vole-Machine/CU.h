@@ -26,8 +26,8 @@ class CU {
 public:
     void executeInstruction(const std::vector<int>& instruction, Registers& registers, Memory& memory, ALU& alu, size_t& program_counter);
     void loadFromMemory(int reg, int memory_address, Registers& registers, Memory& memory);
-    void loadValue(int reg, const std::string& value, Registers& registers);
-    void storeInMemory(int reg, int memory_address, Registers& registers, MainMemory& memory);
+    void loadValue(int reg, int value, Registers& registers);
+    void storeInMemory(int reg, int memory_address, Registers& registers, Memory& memory);
     void jumpIfEqual(int reg, int memory_address, Registers& registers, size_t& program_counter);
     void jumpIfGreater(int reg, int memory_address, Registers& registers, size_t& program_counter);
     bool isScreen(int reg, int memory_address);

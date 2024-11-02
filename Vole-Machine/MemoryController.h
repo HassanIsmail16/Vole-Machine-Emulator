@@ -10,6 +10,10 @@ public:
 	event MemoryUpdatedEventHandler^ memory_updated;
 	void memoryUpdated();
 
+	delegate void MemoryUpdatedAtAddressEventHandler(int index);
+	event MemoryUpdatedAtAddressEventHandler^ memory_updated_at_address;
+	void memoryUpdatedAtAddress(int index);
+
 	System::String^ getMemoryValueAt(int& index);
 	void updateMemoryValueAt(int index, System::String^ new_value);
 

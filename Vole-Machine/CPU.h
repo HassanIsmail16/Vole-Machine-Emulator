@@ -23,10 +23,11 @@ public:
     void clearRegisters();
     bool isHalt();
     void halt();
-
     bool isInstructionPending();
-
     void resetProgram();
+
+    std::string getRegisterValueAt(int index);
+    void setRegisterValueAt(int index, std::string& value);
 
     size_t& getProgramCounter();
     std::string getCurrentInstruction();

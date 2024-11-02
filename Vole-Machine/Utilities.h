@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <msclr/marshal_cppstd.h>
+#include <wincrypt.h>
 
 namespace Utilities {
 	class InstructionValidation {
@@ -15,5 +16,8 @@ namespace Utilities {
 	public:
 		static System::String^ convertStdStringToSystemString(std::string& string);
 		static std::string convertSystemStringToStdString(System::String^ string);
+		
+		static std::string convertHexToDec(const std::string& hex);
+		static std::string convertDecToHex(const int integer);
 	};
 }

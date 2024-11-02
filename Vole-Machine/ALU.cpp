@@ -1,4 +1,5 @@
 #include "ALU.h"
+#include "Utilities.h"
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
@@ -48,23 +49,10 @@ void ALU::addFloatingPoint(int regR, int regS, int regT, Registers& registers) {
     int valueR = std::stoi(floating_point_representationR, nullptr, 2);
 
     // int to hex
-    std::string final_result = decToHex(valueR);
+    std::string final_result = Utilities::Conversion::convertDecToHex(valueR);
 
     // store the result in regeister R
     registers[regR].setValue(final_result);
-}
-
-std::string ALU::hexToDec(const std::string& hex) {
-    int decimalValue = std::stoi(hex, nullptr, 16);
-    return std::to_string(decimalValue);
-}
-
-std::string ALU::decToHex(int integer) {
-    std::stringstream stream;
-    stream << std::hex << (integer & 0xFF);
-    std::string result = stream.str();
-    std::transform(result.begin(), result.end(), result.begin(), ::toupper);
-    return result;
 }
 
 std::string ALU::integerToBinary(int integer) {
@@ -188,7 +176,7 @@ void ALU::clampFloatingValue(double& floating_point_value) {
 }
 
 int ALU::hexToInt(std::string hex) {
-    std::string dec = hexToDec(hex);
+    std::string dec = Utilities::Conversion::convertHexToDec(hex);
 
     std::string binary = integerToBinary(std::stoi(dec));
 
@@ -216,26 +204,26 @@ void ALU::bitwiseOr(int regR, int regS, int regT, Registers& registers) {
     int valueS = std::stoi(registers[regS].getValue(), nullptr, 16);
     int valueT = std::stoi(registers[regT].getValue(), nullptr, 16);
     int result = valueS | valueT;
-    registers[regR].setValue(decToHex(result));
+    registers[regR].setValue(Utilities::Conversion::convertDecToHex(result));
 }
 
 void ALU::bitwiseAnd(int regR, int regS, int regT, Registers& registers) {
     int valueS = std::stoi(registers[regS].getValue(), nullptr, 16);
     int valueT = std::stoi(registers[regT].getValue(), nullptr, 16);
     int result = valueS & valueT;
-    registers[regR].setValue(decToHex(result));
+    registers[regR].setValue(Utilities::Conversion::convertDecToHex(result));
 }
 
 void ALU::bitwiseXor(int regR, int regS, int regT, Registers& registers) {
     int valueS = std::stoi(registers[regS].getValue(), nullptr, 16);
     int valueT = std::stoi(registers[regT].getValue(), nullptr, 16);
     int result = valueS ^ valueT;
-    registers[regR].setValue(decToHex(result));
+    registers[regR].setValue(Utilities::Conversion::convertDecToHex(result));
 }
 
 void ALU::rotateRight(int regR, int steps, Registers& registers) {
     int value = std::stoi(registers[regR].getValue(), nullptr, 16);
     value = (value >> steps) | (value << (8 - steps)) & 0xFF;
-    registers[regR].setValue(decToHex(value));
+    registers[regR].setValue(Utilities::Conversion::convertDecToHex(value));
 }
 

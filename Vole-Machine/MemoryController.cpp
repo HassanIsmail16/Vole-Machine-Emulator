@@ -13,6 +13,16 @@ void MemoryController::memoryUpdated() {
 	this->is_updating_memory_list = false;
 }
 
+void MemoryController::memoryUpdatedAtAddress(int index) {
+    if (this->is_updating_memory_list) {
+        return;
+    }
+
+    this->is_updating_memory_list = true;
+    this->memory_updated_at_address(index);
+	this->is_updating_memory_list = false;
+}
+
 System::String^ MemoryController::getMemoryValueAt(int& index) {
 	return Utilities::Conversion::convertStdStringToSystemString(this->machine->getMemory().getValueAt(index));
 }
