@@ -85,6 +85,12 @@ System::Void VoleMachine::MainForm::initializeMemoryList() {
 	this->memory_list->CurrentCell = this->memory_list->Rows[0]->Cells[1];
 }
 
+System::Void VoleMachine::MainForm::resetRegistersColor() {
+	for (int i = 0; i < 16; i++) {
+		this->registers_list->Items[i]->BackColor = System::Drawing::Color::White;
+	}
+}
+
 System::Void VoleMachine::MainForm::memory_list_CellEndEdit(Object^ sender, DataGridViewCellEventArgs^ e) {
 	int edited_cell_col = e->ColumnIndex;
 	int edited_cell_row = e->RowIndex;
@@ -269,9 +275,7 @@ System::Void VoleMachine::MainForm::OnRegisterUpdated() {
 
 	if (updated_register.HasValue) {
 		// Reset Highlight From Previous Update
-		for (int i = 0; i < 16; i++) {
-			this->registers_list->Items[i]->BackColor = System::Drawing::Color::White;
-		}
+		this->resetRegistersColor();
 
 		// Highlight Updated Register
 		this->registers_list->Items[updated_register.Value]->BackColor = System::Drawing::Color::LightGreen;
@@ -312,6 +316,7 @@ System::Void VoleMachine::MainForm::OnHaltProgram() {
 	this->play->Text = "Play";
 	this->exec_ctrl->pauseInstructions();
 	this->exec_ctrl->resetProgram();
+	this->resetRegistersColor();
 	MessageBox::Show("Program halted.", "Program Halted", MessageBoxButtons::OK, MessageBoxIcon::Information);
 }
 
@@ -319,12 +324,14 @@ System::Void VoleMachine::MainForm::OnReachedEndOfMemory() {
 	this->play->Text = "Play";
 	this->exec_ctrl->pauseInstructions();
 	this->exec_ctrl->resetProgram();
+	this->resetRegistersColor();
 	MessageBox::Show("Program reached end of memory.", "Reached End of Memory", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 }
 
 System::Void VoleMachine::MainForm::OnExecutedAllInstructions() {
 	this->mem_ctrl->memoryUpdated();
 	//TODO: Add update registers
+	this->resetRegistersColor();
 }
 
 System::Void VoleMachine::MainForm::memory_list_ResetCellColor(Object^ sender, EventArgs^ e) {
@@ -414,6 +421,21 @@ System::Void VoleMachine::MainForm::reset_memory_Click(System::Object^ sender, S
 
 	this->mem_ctrl->resetMemory();
 	this->machine->displayMemory();
+}
+
+System::Void VoleMachine::MainForm::reset_registers_Click(System::Object^ sender, System::EventArgs^ e) {
+	// Reset Displayed Registers
+	this->resetRegistersColor();
+
+	for (int i = 0; i < 16; i++) {
+		this->registers_list->Items[i]->SubItems[1]->Text = "0x00";
+		this->registers_list->Items[i]->SubItems[2]->Text = "00000000";
+		this->registers_list->Items[i]->SubItems[3]->Text = "0";
+		this->registers_list->Items[i]->SubItems[4]->Text = "0";
+	}
+
+	// Reset Registers
+	this->reg_ctrl-> resetRegisters();
 }
 
 System::Void VoleMachine::MainForm::fetch_Click(System::Object^ sender, System::EventArgs^ e) {
