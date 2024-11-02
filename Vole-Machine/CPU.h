@@ -19,12 +19,15 @@ public:
     void runInstructions(Memory& memory);
     void fetch(Memory& memory);
     std::vector<int> decode();
-    void execute(Registers& registers, Memory& memory, std::vector<int> instruction);
+    void execute(Memory& memory, std::vector<int> instruction);
     void clearRegisters();
     bool isHalt();
     void halt();
-
+    bool isInstructionPending();
     void resetProgram();
+
+    std::string getRegisterValueAt(int index);
+    void setRegisterValueAt(int index, std::string& value);
 
     size_t& getProgramCounter();
     std::string getCurrentInstruction();
