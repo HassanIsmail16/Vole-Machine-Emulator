@@ -777,6 +777,11 @@ namespace VoleMachine {
 	private: System::Void step_Click(System::Object^ sender, System::EventArgs^ e);
 
 	private: System::Void dark_mode_Click(System::Object^ sender, System::EventArgs^ e){}
+
 	private: System::Void decode_Click(System::Object^ sender, System::EventArgs^ e);
+
+	private: System::String^ GetInstructionDescription(OP_CODE opcode, System::String^ firstOperand, System::String^ secondOperand, System::String^ thirdOperand);
+	private: void UpdateOperandLabels(OP_CODE opcode);
+	private: void UpdateOperandsAndDescription(const std::vector<int>& decodedInstruction, OP_CODE opcode);
 };
 }
