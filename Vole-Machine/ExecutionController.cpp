@@ -72,13 +72,18 @@ void ExecutionController::fetchInstruction() {
 	fetchedInstruction();
 }
 
-void ExecutionController::executeCurrentInstruction() { // TODO: Handle Halt
+void ExecutionController::executeCurrentInstruction() {
 	if (!this->machine->getCPU().isInstructionPending()) {
 		return;
 	}
 
 	std::vector<int> instruction = this->machine->getCPU().decode();
 	
+	if (!Utilities::InstructionValidation::isValidInstruction(this->machine->getCPU().getCurrentInstruction())) {
+		return;
+	}
+
+
 	if (this->machine->getCPU().isHalt()) {
 		program_halted();
 	}

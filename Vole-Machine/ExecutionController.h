@@ -7,7 +7,7 @@
 ref class ExecutionController : public Controller {
 public:
 	ExecutionController(Machine* machine): Controller(machine) {}
-	
+
 	delegate void InstructionFetchedEventHandler();
 	event InstructionFetchedEventHandler^ fetched_instruction;
 	void fetchedInstruction();
@@ -59,13 +59,13 @@ public:
 			if (value <= 0) return;
 
 			instructions_per_sec = value;
-			
+
 			if (instruction_timer != nullptr) {
-				instruction_timer->Stop(); 
+				instruction_timer->Stop();
 				instruction_timer->Interval = 1000 / instructions_per_sec;
 
 				if (is_running) {
-					instruction_timer->Start(); 
+					instruction_timer->Start();
 				}
 			}
 
@@ -78,7 +78,7 @@ public:
 	void updateSpeed(int new_speed);
 
 	System::Nullable<int> getUpdatedAddress();
-	
+
 
 private:
 	System::Windows::Forms::Timer^ instruction_timer;
@@ -88,4 +88,3 @@ private:
 	bool is_running = false;
 
 };
-

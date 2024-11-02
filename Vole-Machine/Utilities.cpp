@@ -13,20 +13,24 @@ bool InstructionValidation::isValidInstruction(std::string& instruction_string) 
 	}
 
 	if ((instruction_string[0] >= '1' && instruction_string[0] <= '3')
-		|| (toupper(instruction_string[0]) == 'B')) {
+		|| (toupper(instruction_string[0]) == 'B') || (toupper(instruction_string[0]) == 'D')) {
 		return isValidRegisterIndex(instruction_string[1]) && isValidMemoryAddress(instruction_string.substr(2));
 	} // validate LOAD, STORE, and JUMP
 
-	if (instruction_string.substr(0, 2) == "40") {
+	if (instruction_string[0] == '4') {
 		return isValidRegisterIndex(instruction_string[2]) && isValidRegisterIndex(instruction_string[4]);
 	} // validate MOVE 
 
-	if (instruction_string[0] == '5' || instruction_string[0] == '6') {
+	if (instruction_string[0] >= '5' && instruction_string[0] <= '9') {
 		return isValidRegisterIndex(instruction_string[1]) &&
 			isValidRegisterIndex(instruction_string[2]) && isValidRegisterIndex(instruction_string[3]);
 	} // validate ADD
 
-	if (instruction_string == "C000") {
+	if (toupper(instruction_string[0]) == 'A') {
+		return isValidRegisterIndex(instruction_string[1]) && isValidHexChar(instruction_string[3]);
+	} // validate MOVE 
+
+	if (toupper(instruction_string[0]) == 'C') {
 		return true;
 	} // validate HALT
 
