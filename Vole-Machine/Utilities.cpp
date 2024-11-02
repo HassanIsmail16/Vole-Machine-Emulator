@@ -69,5 +69,7 @@ std::string Utilities::Conversion::convertDecToHex(const int integer) {
 	stream << std::hex << (integer & 0xFF);
 	std::string result = stream.str();
 	std::transform(result.begin(), result.end(), result.begin(), ::toupper);
-	return result;
+
+	return result.length() == 1 ? "0" + result : result;
 }
+
