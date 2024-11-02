@@ -38,6 +38,7 @@ namespace VoleMachine {
 			this->reset_color_timer->Interval = 500;
 			this->reset_color_timer->Tick += gcnew System::EventHandler(this, &MainForm::memory_list_ResetCellColor);
 			this->color_reset_queue = gcnew System::Collections::Generic::Queue<System::Tuple<System::DateTime, int, int>^>();
+			this->reg_ctrl->register_updated += gcnew RegistersController::RegisterUpdatedEventHandler(this, &VoleMachine::MainForm::OnRegisterUpdated);
 		}
 
 	protected:
@@ -695,6 +696,8 @@ namespace VoleMachine {
 		System::Void memory_list_OnMemoryCellValueChanged(Object^ sender, DataGridViewCellEventArgs^ e);
 		System::Void OnFetchInstruction();
 		System::Void OnExecuteInstruction();
+
+		System::Void OnRegisterUpdated();
 		System::Void OnUpdateScreen(std::string value);
 		System::Void OnChangeSpeed();
 		System::Void OnHaltProgram();
