@@ -23,7 +23,7 @@ System::String^ RegistersController::getBinRegisterValueAt(int index) {
 	std::string hex_value = this->machine->getCPU().getRegisterValueAt(index);
 	int dec_value = std::stoi(hex_value, nullptr, 16);
 	std::string binary_value = Utilities::Conversion::convertIntToBin(dec_value);
-	binary_value.insert(binary_value.end(), 8 - binary_value.size(), '0');
+	binary_value.insert(binary_value.begin(), 8 - binary_value.size(), '0');
 	return Utilities::Conversion::convertStdStringToSystemString(binary_value);
 }
 
