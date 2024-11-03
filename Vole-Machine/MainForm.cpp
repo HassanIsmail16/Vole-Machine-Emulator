@@ -1,6 +1,8 @@
 #include "MainForm.h"
 #include <msclr/marshal_cppstd.h>
 #include <iostream>
+#include <sstream>
+#include <vector>
 #include "Utilities.h"
 
 using namespace System;
@@ -481,8 +483,9 @@ System::Void VoleMachine::MainForm::step_Click(System::Object^ sender, System::E
 }
 
 System::Void VoleMachine::MainForm::decode_Click(System::Object^ sender, System::EventArgs^ e) {
-	std::vector<int> decodedInstruction = exec_ctrl->decodeInstruction();
-
+	auto  decodedInstruction = exec_ctrl->decodeInstruction();
+	if (decodedInstruction->Count == 0) return;
+	
 	this->opcode_textbox->Text = Utilities::Conversion::convertStdStringToSystemString(
 		Utilities::Conversion::convertDecToHex(decodedInstruction[0]));
 
@@ -537,28 +540,30 @@ void VoleMachine::MainForm::UpdateOperandLabels(OP_CODE opcode) {
 	}
 }
 
-void VoleMachine::MainForm::UpdateOperandsAndDescription(const std::vector<int>& decodedInstruction, OP_CODE opcode) {
+void VoleMachine::MainForm::UpdateOperandsAndDescription(System::Collections::Generic::List<int>^ decodedInstruction, OP_CODE opcode) {
 	System::String^ firstOperand = "";
 	System::String^ secondOperand = "";
 	System::String^ thirdOperand = "";
 	System::String^ instructionDescription;
 
-	if (decodedInstruction.size() > 1) {
+	if (decodedInstruction->Count > 1) {
 		firstOperand = Utilities::Conversion::convertStdStringToSystemString(
 			Utilities::Conversion::convertDecToHex(decodedInstruction[1]));
+
+		std::cout << Utilities::Conversion::convertSystemStringToStdString(firstOperand) << std::endl;
 	}
-	if (decodedInstruction.size() > 2) {
+	if (decodedInstruction->Count > 2) {
 		secondOperand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex((decodedInstruction[2] >> 4) & 0xF)); // X
+			Utilities::Conversion::convertDecToHex(decodedInstruction[2])); // X
 		thirdOperand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex(decodedInstruction[2] & 0xF));         // Y
+			Utilities::Conversion::convertDecToHex(decodedInstruction[2]));         // Y
 	}
 
-	if (opcode == OP_CODE::MOVE && decodedInstruction.size() > 2) {
+	if (opcode == OP_CODE::MOVE && decodedInstruction->Count > 2) {
 		secondOperand = Utilities::Conversion::convertStdStringToSystemString(
 			Utilities::Conversion::convertDecToHex(decodedInstruction[2]));
 	}
-	if (decodedInstruction.size() > 3) {
+	if (decodedInstruction->Count > 3) {
 		thirdOperand = Utilities::Conversion::convertStdStringToSystemString(
 			Utilities::Conversion::convertDecToHex(decodedInstruction[3]));
 	}

@@ -42,7 +42,7 @@ public:
 
 	void runAllInstructions();
 	void fetchInstruction();
-	std::vector<int> decodeInstruction();
+	System::Collections::Generic::List<int>^ decodeInstruction();
 	void executeCurrentInstruction();
 	void step();
 	void playInstructions();
