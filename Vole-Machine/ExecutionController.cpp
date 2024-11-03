@@ -158,6 +158,20 @@ System::Nullable<int> ExecutionController::getUpdatedAddress() {
 }
 
 
-std::vector<int> ExecutionController::decodeInstruction() {
-	return this->machine->getCPU().decode();
+System::Collections::Generic::List<int>^ ExecutionController::decodeInstruction() {
+	if (!this->machine->getCPU().isInstructionPending()) {
+		return {};
+	}
+
+	if (!Utilities::InstructionValidation::isValidInstruction(this->machine->getCPU().getCurrentInstruction())) {
+		return {};
+	}
+	System::Collections::Generic::List<int>^ result = gcnew System::Collections::Generic::List<int>();
+
+	std::vector<int> temp = machine->getCPU().decode();
+
+	for (auto& it : temp) {
+		result->Add(it);
+	}
+	return result;
 }
