@@ -79,12 +79,7 @@ void CU::loadValue(int reg, int value, Registers& registers) {
 }
 
 void CU::storeInMemory(int reg, int memory_address, Registers& registers, Memory& memory) {
-    if (isScreen(reg, memory_address)) {
-        return;
-    }
-    else {
-        memory.setValueAt(memory_address, registers[reg].getValue());
-    }
+    memory.setValueAt(memory_address, registers[reg].getValue());
 }
 
 void CU::jumpIfEqual(int reg, int memory_address, Registers& registers, size_t& program_counter) {

@@ -20,65 +20,26 @@ namespace VoleMachine {
 
 		#pragma region Initialize Main Components and Controllers
 			this->machine = new Machine();
-			this->mem_ctrl = gcnew MemoryController(this->machine);
-			this->reg_ctrl = gcnew RegistersController(this->machine);
-			this->exec_ctrl = gcnew ExecutionController(this->machine);
 			this->InitializeComponent();
-			this->memory_list->CellValueChanged += gcnew DataGridViewCellEventHandler(this, &MainForm::memory_list_OnMemoryCellValueChanged);
+			this->initializeControllers();
 			this->initializeRegistersList();
 			this->initializeMemoryList();
 		#pragma endregion
 	
-		#pragma region Memory List Events Subsctriptions
-			this->memory_list->EditingControlShowing += gcnew System::Windows::Forms::DataGridViewEditingControlShowingEventHandler(this, &MainForm::memory_list_EditingControlShowing);
-			this->memory_list->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MainForm::memory_list_KeyPress);
-			this->memory_list->CellClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_OnCellClick);
-			this->memory_list->CellMouseEnter += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_OnCellMouseEnter);
-			this->memory_list->CellMouseLeave += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_OnCellMouseLeave);
-			this->memory_list->DefaultCellStyle->SelectionBackColor = Color::FromArgb(255, 255, 220, 180);
-			this->memory_list->DefaultCellStyle->SelectionForeColor = Color::Black;
-			this->mem_ctrl->memory_updated += gcnew MemoryController::MemoryUpdatedEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdated);
-			this->mem_ctrl->memory_updated_at_address += gcnew MemoryController::MemoryUpdatedAtAddressEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdatedAtAddress);
-		#pragma endregion
-
-		#pragma region Register Controller Events Subscriptions
-				this->reg_ctrl->register_updated += gcnew RegistersController::RegisterUpdatedEventHandler(this, &VoleMachine::MainForm::OnRegisterUpdated);
-				this->reg_ctrl->register_reset += gcnew RegistersController::RegisterResetEvenHandler(this, &VoleMachine::MainForm::OnResetRegisters);
-				this->reg_ctrl->all_registers_updated += gcnew RegistersController::AllRegistersUpdatedEventHandler(this, &VoleMachine::MainForm::OnAllRegistersUpdated);
-		#pragma endregion
-
-		#pragma region Execution Controller Events Subscriptions
-			this->exec_ctrl->fetched_instruction += gcnew ExecutionController::InstructionFetchedEventHandler(this, &VoleMachine::MainForm::OnFetchInstruction);
-			this->exec_ctrl->executed_instruction += gcnew ExecutionController::InstructionExecutedEventHandler(this, &VoleMachine::MainForm::OnExecuteInstruction);
-			this->exec_ctrl->screen_updated += gcnew ExecutionController::ScreenUpdatedEventHandler(this, &VoleMachine::MainForm::OnUpdateScreen);
-			this->exec_ctrl->speed_changed += gcnew ExecutionController::SpeedChangedEventHandler(this, &VoleMachine::MainForm::OnChangeSpeed);
-			this->exec_ctrl->program_halted += gcnew ExecutionController::ProgramHaltedEventHandler(this, &VoleMachine::MainForm::OnHaltProgram);
-			this->exec_ctrl->reached_end_of_memory += gcnew ExecutionController::ReachedEndOfMemoryEventHandler(this, &VoleMachine::MainForm::OnReachedEndOfMemory);
-			this->exec_ctrl->all_instructions_executed += gcnew ExecutionController::AllInstructionsExecutedEventHandler(this, &VoleMachine::MainForm::OnExecutedAllInstructions);
+		#pragma region Memory Update Highlight Timer
 			this->reset_color_timer = gcnew System::Windows::Forms::Timer();
 			this->reset_color_timer->Interval = 500;
 			this->reset_color_timer->Tick += gcnew System::EventHandler(this, &MainForm::memory_list_ResetCellColor);
 			this->color_reset_queue = gcnew System::Collections::Generic::Queue<System::Tuple<System::DateTime, int, int>^>();
 		#pragma endregion
 
-		#pragma region Decode and Start Address Events Subscriptions
-			this->decode->Click += gcnew System::EventHandler(this, &VoleMachine::MainForm::decode_Click);
-			this->starting_address_textbox->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &VoleMachine::MainForm::starting_address_textbox_KeyPress);
-			this->starting_address_textbox->CharacterCasing = CharacterCasing::Upper;
-			this->starting_address_textbox->Click += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Click);
-			this->starting_address_textbox->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MainForm::starting_address_textbox_KeyDown);
-			this->starting_address_textbox->Leave += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Leave);
-			this->starting_address_textbox->Enter += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Enter);
-			exec_ctrl->resetInstructionReg += gcnew ExecutionController::ResetInstructionRegEventHandler(this, &MainForm::ResetInstructionReg);
-			this->starting_address_textbox->MaxLength = 2;
+		#pragma region Starting Address Textbox Tooltip
 			this->starting_address_textbox_tooltip->AutoPopDelay = 5000;
 			this->starting_address_textbox_tooltip->InitialDelay = 500;
 			this->starting_address_textbox_tooltip->ReshowDelay = 500;
-
 			String^ tooltip_text = "Enter the starting address in hex (0-9, A-F).\nThis will change the address that the program counter starts at\nand the address that the instructions will start loading from file at.";
 			this->starting_address_textbox_tooltip->SetToolTip(this->starting_address_textbox, tooltip_text);
 			this->starting_address_textbox_tooltip->SetToolTip(this->starting_address_label, tooltip_text);
-			this->highlightAddress("00");
 		#pragma endregion
 
 		}
@@ -275,6 +236,13 @@ namespace VoleMachine {
 				this->starting_address_textbox->Size = System::Drawing::Size(44, 22);
 				this->starting_address_textbox->TabIndex = 14;
 				this->starting_address_textbox->Text = L"00";
+				this->starting_address_textbox->MaxLength = 2;
+				this->starting_address_textbox->CharacterCasing = CharacterCasing::Upper;
+				this->starting_address_textbox->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &VoleMachine::MainForm::starting_address_textbox_KeyPress);
+				this->starting_address_textbox->Click += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Click);
+				this->starting_address_textbox->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MainForm::starting_address_textbox_KeyDown);
+				this->starting_address_textbox->Leave += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Leave);
+				this->starting_address_textbox->Enter += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Enter);
 				// 
 				// credits_label
 				// 
@@ -590,10 +558,18 @@ namespace VoleMachine {
 				this->memory_list->RowHeadersWidth = 51;
 				this->memory_list->Size = System::Drawing::Size(278, 484);
 				this->memory_list->TabIndex = 0;
+				this->memory_list->DefaultCellStyle->SelectionBackColor = Color::FromArgb(255, 255, 220, 180);
+				this->memory_list->DefaultCellStyle->SelectionForeColor = Color::Black;
 				this->memory_list->CellEndEdit += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_CellEndEdit);
 				this->memory_list->CellPainting += gcnew System::Windows::Forms::DataGridViewCellPaintingEventHandler(this, &MainForm::memory_list_CellPainting);
 				this->memory_list->CellStateChanged += gcnew System::Windows::Forms::DataGridViewCellStateChangedEventHandler(this, &MainForm::memory_list_AddressCellStateChanged);
 				this->memory_list->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MainForm::memory_list_KeyDown);
+				this->memory_list->EditingControlShowing += gcnew System::Windows::Forms::DataGridViewEditingControlShowingEventHandler(this, &MainForm::memory_list_EditingControlShowing);
+				this->memory_list->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MainForm::memory_list_KeyPress);
+				this->memory_list->CellClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_OnCellClick);
+				this->memory_list->CellMouseEnter += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_OnCellMouseEnter);
+				this->memory_list->CellValueChanged += gcnew DataGridViewCellEventHandler(this, &MainForm::memory_list_OnMemoryCellValueChanged);
+				this->memory_list->CellMouseLeave += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_OnCellMouseLeave);
 				// 
 				// label1
 				// 
@@ -784,6 +760,10 @@ namespace VoleMachine {
 	private:
 		System::Void initializeRegistersList();
 		System::Void initializeMemoryList();
+		System::Void initializeControllers();
+		System::Void initializeMemoryController();
+		System::Void initializeRegistersController();
+		System::Void initializeExecutionController();
 
 	#pragma region Memory List Event Handlers
 			System::Void memory_list_CellEndEdit(Object^ sender, DataGridViewCellEventArgs^ e);

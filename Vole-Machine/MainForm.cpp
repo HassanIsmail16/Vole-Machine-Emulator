@@ -87,6 +87,44 @@ System::Void VoleMachine::MainForm::initializeMemoryList() {
 	}
 
 	this->memory_list->CurrentCell = this->memory_list->Rows[0]->Cells[1];
+	this->highlightAddress(this->starting_address_textbox->Text);
+}
+
+System::Void VoleMachine::MainForm::initializeControllers() {
+	this->initializeMemoryController();
+	this->initializeRegistersController();
+	this->initializeExecutionController();
+}
+
+System::Void VoleMachine::MainForm::initializeMemoryController() {
+	this->mem_ctrl = gcnew MemoryController(this->machine);
+
+	// events
+	this->mem_ctrl->memory_updated += gcnew MemoryController::MemoryUpdatedEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdated);
+	this->mem_ctrl->memory_updated_at_address += gcnew MemoryController::MemoryUpdatedAtAddressEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdatedAtAddress);
+}
+
+System::Void VoleMachine::MainForm::initializeRegistersController() {
+	this->reg_ctrl = gcnew RegistersController(this->machine);
+
+	// events
+	this->reg_ctrl->register_updated += gcnew RegistersController::RegisterUpdatedEventHandler(this, &VoleMachine::MainForm::OnRegisterUpdated);
+	this->reg_ctrl->register_reset += gcnew RegistersController::RegisterResetEvenHandler(this, &VoleMachine::MainForm::OnResetRegisters);
+	this->reg_ctrl->all_registers_updated += gcnew RegistersController::AllRegistersUpdatedEventHandler(this, &VoleMachine::MainForm::OnAllRegistersUpdated);
+}
+
+System::Void VoleMachine::MainForm::initializeExecutionController() {
+	this->exec_ctrl = gcnew ExecutionController(this->machine);
+
+	// events
+	this->exec_ctrl->fetched_instruction += gcnew ExecutionController::InstructionFetchedEventHandler(this, &VoleMachine::MainForm::OnFetchInstruction);
+	this->exec_ctrl->executed_instruction += gcnew ExecutionController::InstructionExecutedEventHandler(this, &VoleMachine::MainForm::OnExecuteInstruction);
+	this->exec_ctrl->screen_updated += gcnew ExecutionController::ScreenUpdatedEventHandler(this, &VoleMachine::MainForm::OnUpdateScreen);
+	this->exec_ctrl->speed_changed += gcnew ExecutionController::SpeedChangedEventHandler(this, &VoleMachine::MainForm::OnChangeSpeed);
+	this->exec_ctrl->program_halted += gcnew ExecutionController::ProgramHaltedEventHandler(this, &VoleMachine::MainForm::OnHaltProgram);
+	this->exec_ctrl->reached_end_of_memory += gcnew ExecutionController::ReachedEndOfMemoryEventHandler(this, &VoleMachine::MainForm::OnReachedEndOfMemory);
+	this->exec_ctrl->all_instructions_executed += gcnew ExecutionController::AllInstructionsExecutedEventHandler(this, &VoleMachine::MainForm::OnExecutedAllInstructions);
+	this->exec_ctrl->resetInstructionReg += gcnew ExecutionController::ResetInstructionRegEventHandler(this, &MainForm::ResetInstructionReg);
 }
 
 #pragma region MemoryList Events
@@ -286,7 +324,7 @@ System::Void VoleMachine::MainForm::OnMemoryUpdated() {
 	this->initializeMemoryList();
 	for (int i = 0; i < 128; i++) {
 		String^ first_value = Utilities::Conversion::convertStdStringToSystemString(
-			this->machine->getMemory().getValueAt(i * 2));
+			this->machine->getMemory().getValueAt(i * 2)); // TODO: move to memory controller
 		String^ second_value = Utilities::Conversion::convertStdStringToSystemString(
 			this->machine->getMemory().getValueAt(i * 2 + 1));
 
@@ -319,9 +357,8 @@ System::Void VoleMachine::MainForm::OnMemoryUpdatedAtAddress(int index) {
 	int row = index / 2;
 	int col = index % 2 + 1;
 
-	this->memory_list->Rows[row]->Cells[col]->Value =
-		Utilities::Conversion::convertStdStringToSystemString(
-			this->machine->getMemory().getValueAt(index));
+	this->memory_list->Rows[row]->Cells[col]->Value = Utilities::Conversion::convertStdStringToSystemString(this->machine->getMemory().getValueAt(index)); // TODO: move to memory controller
+
 	this->memory_list->Rows[row]->Cells[col]->Style->BackColor = Color::Coral;
 
 	this->color_reset_queue->Enqueue(
@@ -347,7 +384,7 @@ System::Void VoleMachine::MainForm::memory_list_OnMemoryCellValueChanged(Object^
 
 	this->mem_ctrl->updateMemoryValueAt(address, value);
 
-	this->machine->displayMemory();
+	this->machine->displayMemory(); // TODO: remove
 }
 
 System::Void VoleMachine::MainForm::memory_list_ResetCellColor(Object^ sender, EventArgs^ e) {
@@ -520,6 +557,7 @@ System::Void VoleMachine::MainForm::OnUpdateScreen(std::string value) {
 	this->screen_textbox->AppendText(Utilities::Conversion::convertStdStringToSystemString(value));
 	this->screen_textbox->ScrollToCaret();
 }
+
 System::Void VoleMachine::MainForm::OnChangeSpeed() {
 	if (this->InvokeRequired) {
 		this->Invoke(gcnew ExecutionController::SpeedChangedEventHandler(this,
@@ -560,7 +598,7 @@ System::Void VoleMachine::MainForm::OnExecutedAllInstructions() {
 #pragma region Button Click Events
 
 System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (!this->machine->getMemory().isEmpty()) {
+	if (!this->machine->getMemory().isEmpty()) { // TODO: move to execution controller
 		Windows::Forms::DialogResult result = MessageBox::Show("Loading a file will overwrite the current memory and reset everything. Are you sure you want to continue?", "Confirmation", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
     
 		if (result == System::Windows::Forms::DialogResult::No) {
@@ -612,7 +650,7 @@ System::Void VoleMachine::MainForm::reset_memory_Click(System::Object^ sender, S
 	}
 
 	this->mem_ctrl->resetMemory();
-	this->machine->displayMemory();
+	this->machine->displayMemory(); // TODO: remove
 }
 
 System::Void VoleMachine::MainForm::reset_registers_Click(System::Object^ sender, System::EventArgs^ e) {
