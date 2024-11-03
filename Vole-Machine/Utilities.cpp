@@ -58,17 +58,17 @@ System::String^ Conversion::convertStdStringToSystemString(std::string& string) 
 	return result;
 }
 
-std::string Utilities::Conversion::convertSystemStringToStdString(System::String^ string) {
+std::string Conversion::convertSystemStringToStdString(System::String^ string) {
 	return msclr::interop::marshal_as<std::string>(string);
 }
 
 
-std::string Utilities::Conversion::convertHexToDec(const std::string& hex) {
+std::string Conversion::convertHexToDec(const std::string& hex) {
 	int decimalValue = std::stoi(hex, nullptr, 16);
 	return std::to_string(decimalValue);
 }
 
-std::string convertDecToHex(const int integer) {
+std::string Conversion::convertDecToHex(const int integer) {
 	std::stringstream stream;
 	stream << std::hex << (integer & 0xFF);
 	std::string result = stream.str();
@@ -77,7 +77,7 @@ std::string convertDecToHex(const int integer) {
 	return result;
 }
 
-std::string Utilities::Conversion::convertIntToBin(int integer) {
+std::string Conversion::convertIntToBin(int integer) {
 	if (integer == 0) {
 		return "0";
 	}
@@ -91,7 +91,7 @@ std::string Utilities::Conversion::convertIntToBin(int integer) {
 	return binary;
 }
 
-std::string Utilities::Conversion::convertFracToBin(double fraction, int precision) {
+std::string Conversion::convertFracToBin(double fraction, int precision) {
 	std::string binary_fraction = ".";
 	while (fraction > 0 && precision-- > 0) {
 		fraction *= 2;
@@ -107,15 +107,15 @@ std::string Utilities::Conversion::convertFracToBin(double fraction, int precisi
 }
 
 
-std::string Utilities::Conversion::convertDecToBin(double decimal) {
+std::string Conversion::convertDecToBin(double decimal) {
 	int integer = int(decimal);
 	double fraction = decimal - integer;
 
-	std::string binary = Utilities::Conversion::convertIntToBin(integer) + Utilities::Conversion::convertFracToBin(fraction);
+	std::string binary = Conversion::convertIntToBin(integer) + Conversion::convertFracToBin(fraction);
 	return binary;
 }
 
-double Utilities::Conversion::convvertBinToFloat(std::string& binary) {
+double Conversion::convvertBinToFloat(std::string& binary) {
 	// make sure it's 8-bits
 	binary.insert(0, 8 - binary.size(), '0');
 
@@ -137,16 +137,16 @@ double Utilities::Conversion::convvertBinToFloat(std::string& binary) {
 	// Get float value using explicit normalization
 	const int bias = 4;
 	double result = sign * mantissa * pow(2, exponent - bias);
-	Utilities::Conversion::clampFloatingValue(result);
+	Conversion::clampFloatingValue(result);
 	return result;
 }
 
-std::string Utilities::Conversion::convertFloatToBin(double decimal) {
+std::string Conversion::convertFloatToBin(double decimal) {
 	// extract the sign
 	char sign_bit = (decimal >= 0 ? '0' : '1');
 
 	// extract the exponent bits
-	std::string normal_binary = Utilities::Conversion::convertDecToBin(abs(decimal));
+	std::string normal_binary = Conversion::convertDecToBin(abs(decimal));
 	int radix_point_position = normal_binary.find('.');
 	int significant_bit_position = normal_binary.find('1');
 
@@ -163,7 +163,7 @@ std::string Utilities::Conversion::convertFloatToBin(double decimal) {
 
 	// normalize
 	const int bias = 4;
-	std::string exponent_bits = Utilities::Conversion::convertIntToBin(exponent + bias);
+	std::string exponent_bits = Conversion::convertIntToBin(exponent + bias);
 	exponent_bits.insert(0, 3 - exponent_bits.size(), '0'); // make sure the exponent is 3-bits
 
 	// extract mantissa
@@ -188,7 +188,7 @@ std::string Utilities::Conversion::convertFloatToBin(double decimal) {
 	return floating_point_representation;
 }
 
-void Utilities::Conversion::clampFloatingValue(double& floating_point_value) {
+void Conversion::clampFloatingValue(double& floating_point_value) {
 	if (floating_point_value > 7.5) {
 		floating_point_value = 7.5;
 	}
@@ -198,10 +198,10 @@ void Utilities::Conversion::clampFloatingValue(double& floating_point_value) {
 	}
 }
 
-int Utilities::Conversion::convertHexToTwosComplementInt(const std::string& hex) {
-	std::string dec = Utilities::Conversion::convertHexToDec(hex);
+int Conversion::convertHexToTwosComplementInt(const std::string& hex) {
+	std::string dec = Conversion::convertHexToDec(hex);
 
-	std::string binary = Utilities::Conversion::convertIntToBin(std::stoi(dec));
+	std::string binary = Conversion::convertIntToBin(std::stoi(dec));
 
 	// fill the 8-bits for two's comp
 	binary.insert(0, 8 - binary.size(), '0');
