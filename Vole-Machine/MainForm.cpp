@@ -18,6 +18,7 @@ int main(array<System::String^>^ args) {
 	return 0;
 }
 
+#pragma region Intialize Main Components
 System::Void VoleMachine::MainForm::initializeRegistersList() {
 	// registers list attributes
 	this->registers_list->View = View::Details;
@@ -139,6 +140,8 @@ System::Void VoleMachine::MainForm::initializeExecutionController() {
 	this->exec_ctrl->all_instructions_executed += gcnew ExecutionController::AllInstructionsExecutedEventHandler(this, &VoleMachine::MainForm::OnExecutedAllInstructions);
 	this->exec_ctrl->resetInstructionReg += gcnew ExecutionController::ResetInstructionRegEventHandler(this, &MainForm::ResetInstructionReg);
 }
+
+#pragma endregion
 
 #pragma region memory_list Events
 System::Void VoleMachine::MainForm::memory_list_CellEndEdit(Object^ sender, DataGridViewCellEventArgs^ e) {
@@ -562,7 +565,6 @@ System::Void VoleMachine::MainForm::OnExecuteInstruction() {
 	}
 
 	this->reg_ctrl->registerUpdated();
-	// TODO: Update screen
 	this->machine->displayMemory(); // TODO: Remove
 }
 
@@ -911,11 +913,6 @@ System::Void VoleMachine::MainForm::starting_address_textbox_KeyPress(Object^ se
 	if (!isHex || !withinLength) {
 		e->Handled = true;  // Suppress the keypress
 	}
-}
-
-System::Void VoleMachine::MainForm::starting_address_textbox_Click(System::Object^ sender, System::EventArgs^ e) {
-	//this->starting_address_textbox->Clear();
-	return;
 }
 
 System::Void VoleMachine::MainForm::starting_address_textbox_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {
