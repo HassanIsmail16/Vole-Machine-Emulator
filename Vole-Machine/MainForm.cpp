@@ -251,6 +251,7 @@ System::Void VoleMachine::MainForm::memory_list_EditingControlShowing(Object^ se
 		}
 	}
 }
+
 System::Void VoleMachine::MainForm::memory_list_KeyPress(Object^ sender, KeyPressEventArgs^ e) {
 	TextBox^ text_box = dynamic_cast<TextBox^>(sender); // cast sender to textbox for easier handling
 

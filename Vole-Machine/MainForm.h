@@ -12,7 +12,6 @@ namespace VoleMachine {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
-
 	public ref class MainForm : public System::Windows::Forms::Form {
 
 	public:
@@ -20,6 +19,7 @@ namespace VoleMachine {
 
 		#pragma region Initialize Main Components and Controllers
 			this->machine = new Machine();
+			this->MaximizeBox = false;
 			this->InitializeComponent();
 			this->initializeControllers();
 			this->initializeRegistersList();
