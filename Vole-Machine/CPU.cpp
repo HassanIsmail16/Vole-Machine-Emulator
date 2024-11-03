@@ -2,6 +2,8 @@
 #include "Memory.h"
 #include "Utilities.h"
 #include <iostream>
+#include <algorithm>
+
 CPU::CPU() {
 	this->program_counter = 0;
 	this->instruction_register = "";
@@ -19,13 +21,13 @@ void CPU::runInstructions(Memory& memory) {
 
 void CPU::fetch(Memory& memory) {
 	if (this->program_counter == 255) {
-		this->program_counter = 0;
+		this->program_counter = this->starting_address;
 	}
 
 	std::string instruction1 = memory.getValueAt(this->program_counter);
 	std::string instruction2 = memory.getValueAt(this->program_counter + 1);
 	this->instruction_register = instruction1 + instruction2;
-	this->program_counter += (this->program_counter == 254) ? 1 : 2; // TODO: starting address
+	this->program_counter += (this->program_counter == 254) ? 1 : 2;
 }
 
 std::vector<int> CPU::decode() {
@@ -80,6 +82,11 @@ void CPU::resetProgram(int starting_address) {
 
 int CPU::getStartingAddress() {
 	return this->starting_address;
+}
+
+void CPU::setStartingAddress(int starting_address) {
+	this->starting_address = starting_address;
+	this->program_counter = max(this->program_counter, starting_address);
 }
 
 std::string CPU::getRegisterValueAt(int index) {

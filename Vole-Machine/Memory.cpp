@@ -1,7 +1,7 @@
 #include "Memory.h"
 #include <iostream>
 
-void Memory::addInstruction(std::string& instruction) {
+void Memory::addInstruction(std::string instruction) {
 	if (this->last_added_instruction_index == 256) {
 		return;
 	}
@@ -38,6 +38,10 @@ void Memory::clearMemory() {
 	}
 
 	this->last_added_instruction_index = 0;		
+}
+
+int Memory::getSize() {
+	return this->last_added_instruction_index;
 }
 
 bool Memory::isEmpty() {

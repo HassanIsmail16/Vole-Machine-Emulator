@@ -6,6 +6,12 @@
 void Machine::loadProgram(std::string& filename) {
 	this->memory.clearMemory();
 
+	int starting_address = this->processor.getStartingAddress();
+
+	for (int i = 0; i < starting_address / 2; i++) {
+		this->memory.addInstruction("0000");
+	}
+
 	std::fstream file(filename);
 
 	std::string current_instruction;

@@ -55,7 +55,7 @@ void ExecutionController::runAllInstructions() {
 			break;
 		}
 
-		if (this->getCurrentAddress() == "FF") { // TODO: add validation for FE if starting address is odd
+		if (this->getCurrentAddress() == "FF") {
 			reached_end_of_memory();
 			break;
 		}
@@ -66,7 +66,7 @@ void ExecutionController::runAllInstructions() {
 }
 
 void ExecutionController::fetchInstruction() {
-	if (this->getCurrentAddress() == "FF") { // TODO: add validation for FE if starting address is odd
+	if (this->getCurrentAddress() == "FF") {
 		reached_end_of_memory();
 	}
 
@@ -122,7 +122,7 @@ void ExecutionController::pauseInstructions() {
 }
 
 void ExecutionController::resetProgram() {
-	this->machine->getCPU().resetProgram(); // TODO: starting address
+	this->machine->getCPU().resetProgram(this->starting_address);
 	fetchedInstruction();
 }
 
@@ -169,6 +169,8 @@ void ExecutionController::setStartingAddress(System::String^ address) {
 			Utilities::Conversion::convertSystemStringToStdString(address)
 		)
 	);
+
+	this->machine->getCPU().setStartingAddress(this->starting_address);
 }
 
 System::Collections::Generic::List<int>^ ExecutionController::decodeInstruction() {
@@ -187,4 +189,4 @@ System::Collections::Generic::List<int>^ ExecutionController::decodeInstruction(
 		result->Add(it);
 	}
 	return result;
-}
+} // TODO: make return type nullable

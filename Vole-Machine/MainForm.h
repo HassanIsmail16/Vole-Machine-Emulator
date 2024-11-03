@@ -51,6 +51,7 @@ namespace VoleMachine {
 			this->starting_address_textbox->Leave += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Leave);
 			this->starting_address_textbox->Enter += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Enter);
 			this->starting_address_textbox->MaxLength = 2;
+			this->highlightAddress("00");
 		}
 
 	protected:
@@ -232,6 +233,7 @@ private: System::Windows::Forms::Label^ label2;
 			this->starting_address_textbox->Name = L"starting_address_textbox";
 			this->starting_address_textbox->Size = System::Drawing::Size(38, 20);
 			this->starting_address_textbox->TabIndex = 14;
+			this->starting_address_textbox->Text = "00";
 			//this->starting_address_textbox->TextChanged += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_TextChanged);
 			// 
 			// credits_label
@@ -465,6 +467,7 @@ private: System::Windows::Forms::Label^ label2;
 			// 
 			this->current_address_textbox->Location = System::Drawing::Point(122, 23);
 			this->current_address_textbox->Name = L"current_address_textbox";
+			this->current_address_textbox->Text = "00";
 			this->current_address_textbox->ReadOnly = true;
 			this->current_address_textbox->Size = System::Drawing::Size(78, 20);
 			this->current_address_textbox->TabIndex = 1;

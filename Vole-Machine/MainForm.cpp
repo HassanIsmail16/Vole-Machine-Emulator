@@ -473,7 +473,9 @@ System::Void VoleMachine::MainForm::starting_address_textbox_KeyDown(System::Obj
 		e->KeyCode != System::Windows::Forms::Keys::Back &&
 		e->KeyCode != System::Windows::Forms::Keys::Delete &&
 		e->KeyCode != System::Windows::Forms::Keys::Left &&
-		e->KeyCode != System::Windows::Forms::Keys::Right) {
+		e->KeyCode != System::Windows::Forms::Keys::Right &&
+		e->KeyCode != System::Windows::Forms::Keys::Enter &&
+		e->KeyCode != System::Windows::Forms::Keys::Escape) {
 		this->starting_address_textbox->Text = "";  // Clear text to allow overwriting
 	}
 
@@ -483,7 +485,6 @@ System::Void VoleMachine::MainForm::starting_address_textbox_KeyDown(System::Obj
 		this->ActiveControl = nullptr;
 	}
 }
-
 System::Void VoleMachine::MainForm::starting_address_textbox_Leave(System::Object^ sender, System::EventArgs^ e) {
 	this->updateStartingAddress();
 }
@@ -492,7 +493,7 @@ System::Void VoleMachine::MainForm::starting_address_textbox_Enter(System::Objec
 	this->BeginInvoke(
 		gcnew System::Action(
 			this, &VoleMachine::MainForm::starting_address_textbox_SelectStartingAddressText
-	)
+		)
 	);
 }
 
@@ -500,6 +501,40 @@ System::Void VoleMachine::MainForm::updateStartingAddress() {
 	String^ text = this->starting_address_textbox->Text;
 	
 	if (text->Length == 2) {
+		int decimal_value = stoi(
+			Utilities::Conversion::convertHexToDec(
+				Utilities::Conversion::convertSystemStringToStdString(text)
+			)
+		);
+
+		if (decimal_value % 2 != 0) {
+			decimal_value--;
+
+			text = Utilities::Conversion::convertStdStringToSystemString(
+				Utilities::Conversion::convertDecToHex(decimal_value)
+			);
+
+
+			if (text->Length == 1) {
+				text = "0" + text;
+			}
+
+			this->starting_address_textbox->Text = text;
+		} // handle odd addresses
+
+		int current_execution_address = stoi(
+			Utilities::Conversion::convertHexToDec(
+				Utilities::Conversion::convertSystemStringToStdString(
+					this->exec_ctrl->getCurrentAddress()
+				)
+			)
+		);
+		
+		if (current_execution_address < decimal_value) {
+			this->current_address_textbox->Text = text;
+			this->highlightAddress(text);
+		} // update program counter
+
 		this->exec_ctrl->setStartingAddress(text);
 		return;
 	}

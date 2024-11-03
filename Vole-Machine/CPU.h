@@ -27,6 +27,7 @@ public:
     bool isInstructionPending();
     void resetProgram(int starting_address = 0);
     int getStartingAddress();
+    void setStartingAddress(int starting_address);
 
     std::string getRegisterValueAt(int index);
     void setRegisterValueAt(int index, std::string& value);
