@@ -34,7 +34,12 @@ System::Void VoleMachine::MainForm::initializeRegistersList() {
 
 	// populate registers list
 	for (int i = 0; i < 16; i++) {
-		ListViewItem^ item = gcnew ListViewItem("R" + i.ToString());
+		ListViewItem^ item = gcnew ListViewItem(
+			Utilities::Conversion::convertStdStringToSystemString(
+				Utilities::Conversion::convertDecToHex(i)
+			)
+		);
+
 		item->SubItems->Add("0x00");
 		item->SubItems->Add("00000000");
 		item->SubItems->Add("0");
@@ -281,8 +286,7 @@ System::Void VoleMachine::MainForm::memory_list_OnCellMouseEnter(Object^ sender,
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
 		// highlight address cells on hover
 		this->memory_list->Cursor = Cursors::Hand;
-		this->memory_list->Rows[e->RowIndex]->Cells[0]->Style->BackColor = Color::Azure;
-		this->memory_list->Rows[e->RowIndex]->Cells[3]->Style->BackColor = Color::Azure;
+		this->setMemoryListAddressCellColorsAtRow(e->RowIndex, Color::Azure);
 	} else {
 		// highlight value cells on hover
 		this->memory_list->Cursor = Cursors::IBeam;
@@ -295,10 +299,10 @@ System::Void VoleMachine::MainForm::memory_list_OnCellMouseLeave(Object^ sender,
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
 		if (last_highlighted_address == this->memory_list->Rows[e->RowIndex]->Cells[0]->Value->ToString()) {
 			// reset program counter highlight on leave
-			this->updateMemoryListValueCellColorsAtRow(e->RowIndex, Color::LightBlue);
+			this->setMemoryListAddressCellColorsAtRow(e->RowIndex, Color::LightBlue);
 		} else {
 			// reset address highlight on leave
-			this->updateMemoryListValueCellColorsAtRow(e->RowIndex, SystemColors::Control);
+			this->setMemoryListAddressCellColorsAtRow(e->RowIndex, SystemColors::Control);
 		}
 	} else {
 		// reset value highlight on leave
@@ -328,7 +332,7 @@ System::Void VoleMachine::MainForm::syncAllMemoryListCells() {
 		// update memory list && higlight on update
 		this->memory_list->Rows[i]->Cells[1]->Value = first_value;
 		this->memory_list->Rows[i]->Cells[2]->Value = second_value;
-		this->updateMemoryListValueCellColorsAtRow(i, Color::Coral);
+		this->setMemoryListValueCellColorsAtRow(i, Color::Coral);
 	}
 }
 
@@ -394,7 +398,7 @@ System::Void VoleMachine::MainForm::memory_list_ResetCellColor(Object^ sender, E
 
 			if (reset_info->Item2 == -1 && reset_info->Item3 == -1) {
 				for (int i = 0; i < 128; i++) {
-					this->updateMemoryListValueCellColorsAtRow(i, Color::White);
+					this->setMemoryListValueCellColorsAtRow(i, Color::White);
 				} // reset all memory_list cells back to white
 			}
 			else {
@@ -418,7 +422,7 @@ System::Void VoleMachine::MainForm::highlightAddress(String^ address) {
 
 	int row = numeric_address / 2;
 
-	this->updateMemoryListValueCellColorsAtRow(row, Color::LightBlue);
+	this->setMemoryListAddressCellColorsAtRow(row, Color::LightBlue);
 
 	this->last_highlighted_address = address;
 }
@@ -432,7 +436,7 @@ System::Void VoleMachine::MainForm::unHiglightLastAdderss() {
 
 	int row = numeric_address / 2;
 
-	this->updateMemoryListValueCellColorsAtRow(row, SystemColors::Control);
+	this->setMemoryListAddressCellColorsAtRow(row, SystemColors::Control);
 }
 
 System::Void VoleMachine::MainForm::addCellToResetQueue(int index) {
@@ -449,9 +453,14 @@ System::Void VoleMachine::MainForm::addCellToResetQueue(int row, int col) {
 	);
 }
 
-System::Void VoleMachine::MainForm::updateMemoryListValueCellColorsAtRow(int row, Color color) {
+System::Void VoleMachine::MainForm::setMemoryListValueCellColorsAtRow(int row, Color color) {
 	this->memory_list->Rows[row]->Cells[1]->Style->BackColor = color;
 	this->memory_list->Rows[row]->Cells[2]->Style->BackColor = color;
+}
+
+System::Void VoleMachine::MainForm::setMemoryListAddressCellColorsAtRow(int row, Color color) {
+	this->memory_list->Rows[row]->Cells[0]->Style->BackColor = color;
+	this->memory_list->Rows[row]->Cells[3]->Style->BackColor = color;
 }
 
 System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e) {

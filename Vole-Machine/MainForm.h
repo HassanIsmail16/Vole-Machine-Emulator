@@ -789,7 +789,8 @@ namespace VoleMachine {
 			System::Void unHiglightLastAdderss();
 			System::Void addCellToResetQueue(int index);
 			System::Void addCellToResetQueue(int row, int col);
-			System::Void updateMemoryListValueCellColorsAtRow(int row, Color color);
+			System::Void setMemoryListValueCellColorsAtRow(int row, Color color);
+			System::Void setMemoryListAddressCellColorsAtRow(int row, Color color);
 	#pragma endregion
 
 	#pragma region Registers
