@@ -6,9 +6,7 @@
 void Machine::loadProgram(std::string& filename) {
 	this->memory.clearMemory();
 
-	int starting_address = this->processor.getStartingAddress();
-
-	for (int i = 0; i < starting_address / 2; i++) {
+	for (int i = 0; this->processor.getStartingAddress(); i++) {
 		this->memory.addInstruction("0000");
 	}
 

@@ -19,7 +19,8 @@ enum class OP_CODE : int {
     ROTATE = 10,     // RxX: Rotate register R right by X steps
     JUMP_EQ = 11,    // RXY: Jump to RAM cell XY if register R equals register 0
     HALT = 12,       // xxx: Halt execution
-    JUMP_GT = 13     // RXY: Jump to RAM cell XY if register R > register 0 (two's complement)
+    JUMP_GT = 13,     // RXY: Jump to RAM cell XY if register R > register 0 (two's complement)
+    UNKNOWN = 0       // 0xxx: undefined instruction
 };
 
 class CU {

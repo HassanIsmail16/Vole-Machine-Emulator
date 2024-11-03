@@ -68,6 +68,7 @@ void ExecutionController::runAllInstructions() {
 void ExecutionController::fetchInstruction() {
 	if (this->getCurrentAddress() == "FF") {
 		reached_end_of_memory();
+		return;
 	}
 
 	this->machine->getCPU().fetch(this->machine->getMemory());
@@ -175,18 +176,27 @@ void ExecutionController::setStartingAddress(System::String^ address) {
 
 System::Collections::Generic::List<int>^ ExecutionController::decodeInstruction() {
 	if (!this->machine->getCPU().isInstructionPending()) {
-		return {};
+		return nullptr;
 	}
 
-	if (!Utilities::Validation::isValidInstruction(this->machine->getCPU().getCurrentInstruction())) {
-		return {};
-	}
 	System::Collections::Generic::List<int>^ result = gcnew System::Collections::Generic::List<int>();
+	std::string current_instruction = this->machine->getCPU().getCurrentInstruction();
+
+	if (!Utilities::Validation::isValidInstruction(current_instruction)) {
+		
+		for (int i = 0; i < 4; i++) {
+			result->Add(stoi(current_instruction.substr(i, 1), nullptr, 16));
+		}
+
+		return result;
+	} // handle invalid instructions
+
 
 	std::vector<int> temp = machine->getCPU().decode();
 
 	for (auto& it : temp) {
 		result->Add(it);
 	}
+
 	return result;
 } // TODO: make return type nullable

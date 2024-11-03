@@ -111,7 +111,7 @@ System::Void VoleMachine::MainForm::memory_list_CellEndEdit(Object^ sender, Data
 		this->memory_list->Rows[edited_cell_row]->Cells[edited_cell_col]->Value = entered_value;
 
 		// Special case if "C0" is entered in column 1
-		if (entered_value == "C0" && edited_cell_col == 1) {
+		if (entered_value[0] == 'C' && edited_cell_col == 1) {
 			this->memory_list->ClearSelection();
 			return;
 		}
@@ -679,15 +679,19 @@ System::Void VoleMachine::MainForm::step_Click(System::Object^ sender, System::E
 }
 
 System::Void VoleMachine::MainForm::decode_Click(System::Object^ sender, System::EventArgs^ e) {
-	auto  decodedInstruction = exec_ctrl->decodeInstruction();
-	if (decodedInstruction->Count == 0) return;
-	
-	this->opcode_textbox->Text = Utilities::Conversion::convertStdStringToSystemString(
-		Utilities::Conversion::convertDecToHex(decodedInstruction[0]));
+	auto decoded_instruction = exec_ctrl->decodeInstruction();
 
-	OP_CODE opcode = static_cast<OP_CODE>(decodedInstruction[0]);
+	if (decoded_instruction == nullptr) {
+		return;
+	}
+
+	this->opcode_textbox->Text = Utilities::Conversion::convertStdStringToSystemString(
+		Utilities::Conversion::convertDecToHex(decoded_instruction[0])
+	);
+
+	OP_CODE opcode = static_cast<OP_CODE>(decoded_instruction[0]);
 	UpdateOperandLabels(opcode);
-	UpdateOperandsAndDescription(decodedInstruction, opcode);
+	UpdateOperandsAndDescription(decoded_instruction, opcode);
 }
 
 void VoleMachine::MainForm::UpdateOperandLabels(OP_CODE opcode) {
@@ -725,9 +729,15 @@ void VoleMachine::MainForm::UpdateOperandLabels(OP_CODE opcode) {
 		break;
 
 	case OP_CODE::HALT:
-		this->first_operand_label->Text = "";
-		this->second_operand_label->Text = "";
-		this->third_operand_label->Text = "";
+		this->first_operand_label->Text = "x";
+		this->second_operand_label->Text = "x";
+		this->third_operand_label->Text = "x";
+		break;
+
+	case OP_CODE::UNKNOWN:
+		this->first_operand_label->Text = "?";
+		this->second_operand_label->Text = "?";
+		this->third_operand_label->Text = "?";
 		break;
 
 	default:
@@ -736,49 +746,49 @@ void VoleMachine::MainForm::UpdateOperandLabels(OP_CODE opcode) {
 	}
 }
 
-void VoleMachine::MainForm::UpdateOperandsAndDescription(System::Collections::Generic::List<int>^ decodedInstruction, OP_CODE opcode) {
-	System::String^ firstOperand = "";
-	System::String^ secondOperand = "";
-	System::String^ thirdOperand = "";
-	System::String^ instructionDescription;
+void VoleMachine::MainForm::UpdateOperandsAndDescription(System::Collections::Generic::List<int>^ decoded_instruction, OP_CODE opcode) {
+	System::String^ first_operand = "";
+	System::String^ second_operand = "";
+	System::String^ third_operand = "";
+	System::String^ instruction_description;
 
-	if (decodedInstruction->Count > 1) {
-		firstOperand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex(decodedInstruction[1]));
-
-		std::cout << Utilities::Conversion::convertSystemStringToStdString(firstOperand) << std::endl;
+	if (decoded_instruction->Count > 1) {
+		first_operand = Utilities::Conversion::convertStdStringToSystemString(
+			Utilities::Conversion::convertDecToHex(decoded_instruction[1])
+		);
 	}
-	if (decodedInstruction->Count > 2) {
 
-		System::String^ second_third_opreand = Utilities::Conversion::convertStdStringToSystemString(Utilities::Conversion::convertDecToHex(decodedInstruction[2]));
-		if (second_third_opreand->Length > 1) {
-			secondOperand += second_third_opreand[0]; // X
-			thirdOperand += second_third_opreand[1]; // Y
+	if (decoded_instruction->Count > 2) {
+		System::String^ second_third_operand = Utilities::Conversion::convertStdStringToSystemString(
+			Utilities::Conversion::convertDecToHex(decoded_instruction[2])
+		);
+
+		if (second_third_operand->Length > 1) {
+			second_operand += second_third_operand[0]; // X
+			third_operand += second_third_operand[1]; // Y
+		} else {
+			second_operand = "0"; // X
+			third_operand = second_third_operand; // Y
 		}
-		else {
-			secondOperand = "0"; // X
-			thirdOperand = second_third_opreand; // Y
-		}
 	}
 
-	if (opcode == OP_CODE::MOVE && decodedInstruction->Count > 2) {
-		secondOperand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex(decodedInstruction[2]));
+	if (opcode == OP_CODE::MOVE && decoded_instruction->Count > 2) {
+		second_operand = Utilities::Conversion::convertStdStringToSystemString(
+			Utilities::Conversion::convertDecToHex(decoded_instruction[2]));
 	}
-	if (decodedInstruction->Count > 3) {
-		thirdOperand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex(decodedInstruction[3]));
+	if (decoded_instruction->Count > 3) {
+		third_operand = Utilities::Conversion::convertStdStringToSystemString(
+			Utilities::Conversion::convertDecToHex(decoded_instruction[3]));
 	}
+	
+	instruction_description = GetInstructionDescription(opcode, first_operand, second_operand, third_operand);
 
-	instructionDescription = GetInstructionDescription(opcode, firstOperand, secondOperand, thirdOperand);
+	this->first_operand_textbox->Text = first_operand;
+	this->second_operand_textbox->Text = second_operand;
+	this->third_operand_textbox->Text = third_operand;
 
 	
-	this->first_operand_textbox->Text = firstOperand;
-	this->second_operand_textbox->Text = secondOperand;
-	this->third_operand_textbox->Text = thirdOperand;
-
-	
-	this->instruction_decode_textbox->Text = instructionDescription;
+	this->instruction_decode_textbox->Text = instruction_description;
 }
 
 System::Void VoleMachine::MainForm::starting_address_textbox_TextChanged(System::Object^ sender, System::EventArgs^ e) {
@@ -799,36 +809,37 @@ System::Void VoleMachine::MainForm::starting_address_textbox_TextChanged(System:
 	}
 }
 
-System::String^ VoleMachine::MainForm::GetInstructionDescription(OP_CODE opcode, System::String^ firstOperand, System::String^ secondOperand, System::String^ thirdOperand) {
+System::String^ VoleMachine::MainForm::GetInstructionDescription(OP_CODE opcode, System::String^ first_operand, System::String^ second_operand, System::String^ third_operand) {
 	switch (opcode) {
 	case OP_CODE::LOAD_M:
-		return "Copy from memory " + secondOperand + thirdOperand + " to register " + firstOperand;
+		return "Copy the content from memory address " + second_operand + third_operand + " to register " + first_operand;
 	case OP_CODE::LOAD_V:
-		return "Copy bit-string " + secondOperand + thirdOperand + " to register " + firstOperand;
+		return "Copy the value " + second_operand + third_operand + " to register " + first_operand;
 	case OP_CODE::STORE:
-		return "Store register " + firstOperand + " in memory " + secondOperand + thirdOperand;
-	case OP_CODE::JUMP_EQ:
-		return "Jump to " + secondOperand + thirdOperand + " if register " + firstOperand + " == 0";
-	case OP_CODE::JUMP_GT:
-		return "Jump to " + secondOperand + thirdOperand + " if register " + firstOperand + " > 0";
+		return "Store the content of register " + first_operand + " in memory address " + second_operand + third_operand;
 	case OP_CODE::MOVE:
-		return "Move register " + secondOperand + " to register " + thirdOperand;
+		return "Move the content of register " + second_operand + " to register " + third_operand;
 	case OP_CODE::ADD:
-		return "Add registers " + secondOperand + " and " + thirdOperand + " to register " + firstOperand;
+		return "Add (in two's complement representation) the contents of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
 	case OP_CODE::ADD_F:
-		return "Add (float) registers " + secondOperand + " and " + thirdOperand + " to register " + firstOperand;
+		return "Add (in floating point representation) the contents of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
 	case OP_CODE::BIT_OR:
-		return "OR registers " + secondOperand + " and " + thirdOperand + " to register " + firstOperand;
+		return "Bitwise OR the contents of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
 	case OP_CODE::BIT_AND:
-		return "AND registers " + secondOperand + " and " + thirdOperand + " to register " + firstOperand;
+		return "Bitwise AND the contents of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
 	case OP_CODE::BIT_XOR:
-		return "XOR registers " + secondOperand + " and " + thirdOperand + " to register " + firstOperand;
+		return "Bitwise XOR the conetnts of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
 	case OP_CODE::ROTATE:
-		return "Rotate register " + firstOperand + " by " + secondOperand + " steps";
+		return "Rotate register " + first_operand + " by " + second_operand + " steps cyclically right";
+	case OP_CODE::JUMP_EQ:
+		return "Jump to the instruction at memory address " + second_operand + third_operand + " if register " + first_operand + " contains the value 00";
 	case OP_CODE::HALT:
 		return "Halt execution";
+	case OP_CODE::JUMP_GT:
+		return "Jump to the instruction at memory address" + second_operand + third_operand + " if register " + first_operand + " contains a value greater than 00";
+	case OP_CODE::UNKNOWN:
 	default:
-		return "Unknown opcode.";
+		return "Unknown instruction. Do nothing and advance to the next instruction.";
 	}
 }
 

@@ -40,10 +40,6 @@ void Memory::clearMemory() {
 	this->last_added_instruction_index = 0;		
 }
 
-int Memory::getSize() {
-	return this->last_added_instruction_index;
-}
-
 bool Memory::isEmpty() {
 	return this->last_added_instruction_index == 0;
 }

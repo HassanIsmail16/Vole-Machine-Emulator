@@ -51,6 +51,13 @@ namespace VoleMachine {
 			this->starting_address_textbox->Leave += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Leave);
 			this->starting_address_textbox->Enter += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Enter);
 			this->starting_address_textbox->MaxLength = 2;
+			this->starting_address_textbox_tooltip->AutoPopDelay = 5000;
+			this->starting_address_textbox_tooltip->InitialDelay = 500;
+			this->starting_address_textbox_tooltip->ReshowDelay = 500;
+
+			String^ tooltip_text = "Enter the starting address in hex (0-9, A-F).\nThis will change the address that the program counter starts at\nand the address that the instructions will start loading from file at.";
+			this->starting_address_textbox_tooltip->SetToolTip(this->starting_address_textbox, tooltip_text);
+			this->starting_address_textbox_tooltip->SetToolTip(this->starting_address_label, tooltip_text);
 			this->highlightAddress("00");
 		}
 
@@ -103,7 +110,7 @@ namespace VoleMachine {
 	private: System::Windows::Forms::Label^ screen_label;
 	private: System::Windows::Forms::Panel^ screen_panel;
 	private: System::Windows::Forms::Button^ clear_screen;
-	private: System::Windows::Forms::ContextMenuStrip^ contextMenuStrip1;
+
 	private: System::Windows::Forms::TextBox^ screen_textbox;
 	private: System::Windows::Forms::TextBox^ current_address_textbox;
 
@@ -130,7 +137,10 @@ namespace VoleMachine {
 	private: System::Windows::Forms::Label^ credits_label;
 	private: System::Windows::Forms::Button^ reset_pc;
 private: System::Windows::Forms::TextBox^ starting_address_textbox;
-private: System::Windows::Forms::Label^ label2;
+private: System::Windows::Forms::Label^ starting_address_label;
+
+private: System::Windows::Forms::ToolTip^ starting_address_textbox_tooltip;
+
 
 
 
@@ -142,6 +152,7 @@ private: System::Windows::Forms::Label^ label2;
 		void InitializeComponent(void) {
 			this->components = (gcnew System::ComponentModel::Container());
 			this->main_panel = (gcnew System::Windows::Forms::Panel());
+			this->starting_address_label = (gcnew System::Windows::Forms::Label());
 			this->starting_address_textbox = (gcnew System::Windows::Forms::TextBox());
 			this->credits_label = (gcnew System::Windows::Forms::Label());
 			this->dark_mode = (gcnew System::Windows::Forms::Button());
@@ -187,8 +198,7 @@ private: System::Windows::Forms::Label^ label2;
 			this->reset_registers = (gcnew System::Windows::Forms::Button());
 			this->play = (gcnew System::Windows::Forms::Button());
 			this->load_from_file = (gcnew System::Windows::Forms::Button());
-			this->contextMenuStrip1 = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
-			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->starting_address_textbox_tooltip = (gcnew System::Windows::Forms::ToolTip(this->components));
 			this->main_panel->SuspendLayout();
 			this->screen_panel->SuspendLayout();
 			this->instruction_register_panel->SuspendLayout();
@@ -203,7 +213,7 @@ private: System::Windows::Forms::Label^ label2;
 			// main_panel
 			// 
 			this->main_panel->BackColor = System::Drawing::SystemColors::Control;
-			this->main_panel->Controls->Add(this->label2);
+			this->main_panel->Controls->Add(this->starting_address_label);
 			this->main_panel->Controls->Add(this->starting_address_textbox);
 			this->main_panel->Controls->Add(this->credits_label);
 			this->main_panel->Controls->Add(this->dark_mode);
@@ -227,14 +237,22 @@ private: System::Windows::Forms::Label^ label2;
 			this->main_panel->Size = System::Drawing::Size(957, 584);
 			this->main_panel->TabIndex = 0;
 			// 
+			// starting_address_label
+			// 
+			this->starting_address_label->AutoSize = true;
+			this->starting_address_label->Location = System::Drawing::Point(455, 561);
+			this->starting_address_label->Name = L"starting_address_label";
+			this->starting_address_label->Size = System::Drawing::Size(84, 13);
+			this->starting_address_label->TabIndex = 15;
+			this->starting_address_label->Text = L"Starting Address";
+			// 
 			// starting_address_textbox
 			// 
 			this->starting_address_textbox->Location = System::Drawing::Point(411, 557);
 			this->starting_address_textbox->Name = L"starting_address_textbox";
 			this->starting_address_textbox->Size = System::Drawing::Size(38, 20);
 			this->starting_address_textbox->TabIndex = 14;
-			this->starting_address_textbox->Text = "00";
-			//this->starting_address_textbox->TextChanged += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_TextChanged);
+			this->starting_address_textbox->Text = L"00";
 			// 
 			// credits_label
 			// 
@@ -467,10 +485,10 @@ private: System::Windows::Forms::Label^ label2;
 			// 
 			this->current_address_textbox->Location = System::Drawing::Point(122, 23);
 			this->current_address_textbox->Name = L"current_address_textbox";
-			this->current_address_textbox->Text = "00";
 			this->current_address_textbox->ReadOnly = true;
 			this->current_address_textbox->Size = System::Drawing::Size(78, 20);
 			this->current_address_textbox->TabIndex = 1;
+			this->current_address_textbox->Text = L"00";
 			// 
 			// program_counter_address_label
 			// 
@@ -681,21 +699,6 @@ private: System::Windows::Forms::Label^ label2;
 			this->load_from_file->UseVisualStyleBackColor = true;
 			this->load_from_file->Click += gcnew System::EventHandler(this, &MainForm::load_from_file_Click);
 			// 
-			// contextMenuStrip1
-			// 
-			this->contextMenuStrip1->ImageScalingSize = System::Drawing::Size(20, 20);
-			this->contextMenuStrip1->Name = L"contextMenuStrip1";
-			this->contextMenuStrip1->Size = System::Drawing::Size(61, 4);
-			// 
-			// label2
-			// 
-			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(455, 561);
-			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(84, 13);
-			this->label2->TabIndex = 15;
-			this->label2->Text = L"Starting Address";
-			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -794,5 +797,6 @@ private: System::Windows::Forms::Label^ label2;
 	private: void UpdateOperandLabels(OP_CODE opcode);
 	private: void UpdateOperandsAndDescription(System::Collections::Generic::List<int>^ decodedInstruction, OP_CODE opcode);
 	private: System::Void starting_address_textbox_TextChanged(System::Object^ sender, System::EventArgs^ e);
+
 };
 }
