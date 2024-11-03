@@ -14,6 +14,7 @@ private:
     std::string instruction_register;
     ALU alu;
     CU cu;
+    int starting_address = 0;
 public:
     CPU();
     void runInstructions(Memory& memory);
@@ -24,11 +25,14 @@ public:
     bool isHalt();
     void halt();
     bool isInstructionPending();
-    void resetProgram();
+    void resetProgram(int starting_address = 0);
+    int getStartingAddress();
+    void setStartingAddress(int starting_address);
 
     std::string getRegisterValueAt(int index);
     void setRegisterValueAt(int index, std::string& value);
 
+    void setProgramCounter(int address);
     size_t& getProgramCounter();
     std::string getCurrentInstruction();
 };

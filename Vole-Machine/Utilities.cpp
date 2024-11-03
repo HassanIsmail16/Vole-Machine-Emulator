@@ -7,7 +7,7 @@
 #include <string>
 using namespace Utilities;
 
-bool InstructionValidation::isValidInstruction(std::string& instruction_string) {
+bool Validation::isValidInstruction(std::string& instruction_string) {
 	if (instruction_string.size() != 4) {
 		return false;
 	}
@@ -37,7 +37,7 @@ bool InstructionValidation::isValidInstruction(std::string& instruction_string) 
 	return false;
 }
 
-bool InstructionValidation::isValidMemoryAddress(std::string& address) {
+bool Validation::isValidMemoryAddress(std::string& address) {
 	if (address.size() != 2) {
 		return false;
 	}
@@ -45,12 +45,28 @@ bool InstructionValidation::isValidMemoryAddress(std::string& address) {
 	return isValidHexChar(address[0]) && isValidHexChar(address[1]);
 }
 
-bool InstructionValidation::isValidRegisterIndex(char& index) {
+bool Validation::isValidRegisterIndex(char& index) {
 	return (index >= '0' && index <= '9') || (toupper(index) >= 'A' && toupper(index) <= 'F');
 }
 
-bool InstructionValidation::isValidHexChar(char& ch) {
+bool Validation::isValidHexChar(char& ch) {
 	return (ch >= '0' && ch <= '9') || (toupper(ch) >= 'A' && toupper(ch) <= 'F');
+}
+
+bool Utilities::Validation::isValidMemoryCellValue(std::string& cell_value) {
+	if (cell_value.size() == 2) {
+		return isValidHexChar(cell_value[0]) && isValidHexChar(cell_value[1]);
+	}
+
+	if (cell_value.size() == 1) {
+		return isValidHexChar(cell_value[0]);
+	}
+
+	if (cell_value.size() == 0) {
+		return true;
+	}
+	
+	return false;
 }
 
 System::String^ Conversion::convertStdStringToSystemString(std::string& string) {
