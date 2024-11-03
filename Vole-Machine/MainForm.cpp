@@ -28,7 +28,7 @@ System::Void VoleMachine::MainForm::initializeRegistersList() {
 	this->registers_list->Columns->Add("Hex", 50, HorizontalAlignment::Left);
 	this->registers_list->Columns->Add("Binary", 100, HorizontalAlignment::Left);
 	this->registers_list->Columns->Add("Integer", 80, HorizontalAlignment::Left);
-	this->registers_list->Columns->Add("Floating Point", 80, HorizontalAlignment::Left);
+	this->registers_list->Columns->Add("Floating Point", 100, HorizontalAlignment::Left);
 
 	for (int i = 0; i < 16; i++) {
 		ListViewItem^ item = gcnew ListViewItem("R" + i.ToString());
@@ -561,7 +561,7 @@ System::Void VoleMachine::MainForm::OnExecutedAllInstructions() {
 
 System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (!this->machine->getMemory().isEmpty()) {
-		Windows::Forms::DialogResult result = MessageBox::Show("Loading a file will overwrite the current memory and reset registers. Are you sure you want to continue?", "Confirmation", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
+		Windows::Forms::DialogResult result = MessageBox::Show("Loading a file will overwrite the current memory and reset everything. Are you sure you want to continue?", "Confirmation", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
     
 		if (result == System::Windows::Forms::DialogResult::No) {
 			return;
@@ -580,6 +580,8 @@ System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender,
 		this->mem_ctrl->loadFromFile(std_filename);
 		this->exec_ctrl->resetProgram();
 		this->reg_ctrl->resetRegisters();
+		this->screen_textbox->Clear();
+		// TODO: Reset Decoded Instruction
 		MessageBox::Show("File loaded successfully!", "File Loaded", MessageBoxButtons::OK, MessageBoxIcon::Information);
 		this->machine->displayMemory(); // TODO: remove 
 ;	}
