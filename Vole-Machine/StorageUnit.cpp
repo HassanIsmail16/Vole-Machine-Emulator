@@ -1,4 +1,5 @@
 #include "StorageUnit.h"
+#include <iostream>
 
 StorageUnit::StorageUnit() : value("00") {}
 

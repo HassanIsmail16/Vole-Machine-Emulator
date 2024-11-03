@@ -4,6 +4,8 @@
 #include <iostream>
 
 void Machine::loadProgram(std::string& filename) {
+	this->memory.clearMemory();
+
 	std::fstream file(filename);
 
 	std::string current_instruction;

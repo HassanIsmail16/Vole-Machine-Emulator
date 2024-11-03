@@ -8,11 +8,20 @@ public:
 	
 	delegate void MemoryUpdatedEventHandler();
 	event MemoryUpdatedEventHandler^ memory_updated;
+	void memoryUpdated();
+
+	delegate void MemoryUpdatedAtAddressEventHandler(int index);
+	event MemoryUpdatedAtAddressEventHandler^ memory_updated_at_address;
+	void memoryUpdatedAtAddress(int index);
 
 	System::String^ getMemoryValueAt(int& index);
 	void updateMemoryValueAt(int index, System::String^ new_value);
 
 	void loadFromFile(std::string filename);
+
+	void exportToFile(std::string filename);
+
+	void resetMemory();
 
 	bool is_updating_memory_list = false;
 };

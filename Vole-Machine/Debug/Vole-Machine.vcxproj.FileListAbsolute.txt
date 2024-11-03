@@ -1,0 +1,3 @@
+C:\Users\hassa\Source\Repos\Vole-Machine-Emulator\Vole-Machine\Debug\Vole-Machine.vcxproj.AssemblyReference.cache
+C:\Users\hassa\Source\Repos\Vole-Machine-Emulator\Vole-Machine\Debug\VoleMachine.MainForm.resources
+C:\Users\hassa\Source\Repos\Vole-Machine-Emulator\Vole-Machine\Debug\Vole-Machine.vcxproj.GenerateResource.cache

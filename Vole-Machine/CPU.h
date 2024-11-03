@@ -2,6 +2,7 @@
 #include "StorageUnit.h"
 #include "ALU.h"
 #include "CU.h"
+#include "Memory.h"
 #include <array>
 #include <vector>
 #include <string>
@@ -15,13 +16,19 @@ private:
     CU cu;
 public:
     CPU();
-    void runInstructions(MainMemory& memory);
-    void fetch(MainMemory& memory);
+    void runInstructions(Memory& memory);
+    void fetch(Memory& memory);
     std::vector<int> decode();
-    void execute(Registers& registers, MainMemory& memory, std::vector<int> instruction);
+    void execute(Memory& memory, std::vector<int> instruction);
     void clearRegisters();
     bool isHalt();
     void halt();
+    bool isInstructionPending();
+    void resetProgram();
+
+    std::string getRegisterValueAt(int index);
+    void setRegisterValueAt(int index, std::string& value);
 
     size_t& getProgramCounter();
+    std::string getCurrentInstruction();
 };
