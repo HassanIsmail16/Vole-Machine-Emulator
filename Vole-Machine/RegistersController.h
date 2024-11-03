@@ -13,6 +13,11 @@ public:
 
 	void registerUpdated();
 
+	delegate void AllRegistersUpdatedEventHandler();
+	event AllRegistersUpdatedEventHandler^ all_registers_updated;
+
+	void updateAllRegisters();
+
 	delegate void RegisterResetEvenHandler();
 	event RegisterResetEvenHandler^ register_reset;
 

@@ -40,6 +40,7 @@ namespace VoleMachine {
 			this->color_reset_queue = gcnew System::Collections::Generic::Queue<System::Tuple<System::DateTime, int, int>^>();
 			this->reg_ctrl->register_updated += gcnew RegistersController::RegisterUpdatedEventHandler(this, &VoleMachine::MainForm::OnRegisterUpdated);
 			this->reg_ctrl->register_reset += gcnew RegistersController::RegisterResetEvenHandler(this, &VoleMachine::MainForm::OnResetRegisters);
+			this->reg_ctrl->all_registers_updated += gcnew RegistersController::AllRegistersUpdatedEventHandler(this, &VoleMachine::MainForm::OnAllRegistersUpdated);
 			this->dark_mode->Click += gcnew System::EventHandler(this, &MainForm::dark_mode_Click);
 			this->decode->Click += gcnew System::EventHandler(this, &VoleMachine::MainForm::decode_Click);
 
@@ -719,6 +720,8 @@ private: System::Windows::Forms::TextBox^ starting_address_textbox;
 		System::Void OnExecuteInstruction();
 
 		System::Void OnRegisterUpdated();
+
+		System::Void OnAllRegistersUpdated();
 
 		System::Void OnResetRegisters();
 		System::Void OnUpdateScreen(std::string value);

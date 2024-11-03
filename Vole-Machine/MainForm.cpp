@@ -299,6 +299,25 @@ System::Void VoleMachine::MainForm::OnRegisterUpdated() {
 	}
 }
 
+System::Void VoleMachine::MainForm::OnAllRegistersUpdated() {
+	for (int i = 0; i < 16; i++) {
+		this->resetRegistersColor();
+
+		// Get Values
+		System::String^ hex_value = "0x" + this->reg_ctrl->getHexRegisterValueAt(i);
+		System::String^ binary_value = this->reg_ctrl->getBinRegisterValueAt(i);
+		System::String^ int_value = this->reg_ctrl->getIntRegisterValueAt(i);
+		System::String^ float_value = this->reg_ctrl->getFloatRegisterValueAt(i);
+
+		// Update Values
+		this->registers_list->Items[i]->SubItems[1]->Text = hex_value;
+		this->registers_list->Items[i]->SubItems[2]->Text = binary_value;
+		this->registers_list->Items[i]->SubItems[3]->Text = int_value;
+		this->registers_list->Items[i]->SubItems[4]->Text = float_value;
+		this->registers_list->Refresh();
+	}
+}
+
 System::Void VoleMachine::MainForm::OnUpdateScreen(std::string value) {
 	this->screen_textbox->AppendText(Utilities::Conversion::convertStdStringToSystemString(value));
 	this->screen_textbox->ScrollToCaret();
@@ -334,7 +353,7 @@ System::Void VoleMachine::MainForm::OnReachedEndOfMemory() {
 
 System::Void VoleMachine::MainForm::OnExecutedAllInstructions() {
 	this->mem_ctrl->memoryUpdated();
-	//TODO: Add update registers
+	this->reg_ctrl->updateAllRegisters();
 	this->resetRegistersColor();
 }
 

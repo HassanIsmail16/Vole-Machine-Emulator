@@ -4,6 +4,10 @@ void RegistersController::registerUpdated() {
 	this->register_updated();
 }
 
+void RegistersController::updateAllRegisters() {
+	this->all_registers_updated();
+}
+
 void RegistersController::resetRegisters() {
 	this->machine->getCPU().clearRegisters();
 	this->register_reset();
