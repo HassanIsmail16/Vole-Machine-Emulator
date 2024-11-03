@@ -19,17 +19,20 @@ int main(array<System::String^>^ args) {
 }
 
 System::Void VoleMachine::MainForm::initializeRegistersList() {
+	// registers list attributes
 	this->registers_list->View = View::Details;
 	this->registers_list->FullRowSelect = true;
 	this->registers_list->GridLines = false;
 	this->registers_list->HeaderStyle = ColumnHeaderStyle::Nonclickable;
 
+	// registers list columns
 	this->registers_list->Columns->Add("Register", 60, HorizontalAlignment::Left);
 	this->registers_list->Columns->Add("Hex", 50, HorizontalAlignment::Left);
 	this->registers_list->Columns->Add("Binary", 100, HorizontalAlignment::Left);
 	this->registers_list->Columns->Add("Integer", 80, HorizontalAlignment::Left);
 	this->registers_list->Columns->Add("Floating Point", 100, HorizontalAlignment::Left);
 
+	// populate registers list
 	for (int i = 0; i < 16; i++) {
 		ListViewItem^ item = gcnew ListViewItem("R" + i.ToString());
 		item->SubItems->Add("0x00");
@@ -41,9 +44,11 @@ System::Void VoleMachine::MainForm::initializeRegistersList() {
 }
 
 System::Void VoleMachine::MainForm::initializeMemoryList() {
+	// reset if	already initialized
 	this->memory_list->Columns->Clear();
 	this->memory_list->Rows->Clear();
 
+	// memory list attributes
 	this->memory_list->ColumnCount = 4;
 	this->memory_list->RowHeadersVisible = false;
 	this->memory_list->AllowUserToAddRows = false;
@@ -54,6 +59,7 @@ System::Void VoleMachine::MainForm::initializeMemoryList() {
 	this->memory_list->ColumnHeadersVisible = false;
 	this->memory_list->MultiSelect = false;
 
+	// memory list columns
 	this->memory_list->Columns[0]->Name = "Address";
 	this->memory_list->Columns[0]->ReadOnly = true;
 	this->memory_list->Columns[0]->Width = 60;
@@ -74,6 +80,7 @@ System::Void VoleMachine::MainForm::initializeMemoryList() {
 	this->memory_list->Columns[3]->DefaultCellStyle->Alignment = DataGridViewContentAlignment::MiddleCenter;
 	this->memory_list->Columns[3]->DefaultCellStyle->BackColor = SystemColors::Control;
 
+	// populate memory list
 	for (int i = 0; i < 128; i++) {
 		int address1 = i * 2;
 		int address2 = address1 + 1;
@@ -86,6 +93,7 @@ System::Void VoleMachine::MainForm::initializeMemoryList() {
 		this->memory_list->Rows->Add(address1_hex, value, value, address2_hex);
 	}
 
+	// highlight starting address & select first cell
 	this->memory_list->CurrentCell = this->memory_list->Rows[0]->Cells[1];
 	this->highlightAddress(this->starting_address_textbox->Text);
 }
@@ -127,30 +135,31 @@ System::Void VoleMachine::MainForm::initializeExecutionController() {
 	this->exec_ctrl->resetInstructionReg += gcnew ExecutionController::ResetInstructionRegEventHandler(this, &MainForm::ResetInstructionReg);
 }
 
-#pragma region MemoryList Events
+#pragma region memory_list Events
 System::Void VoleMachine::MainForm::memory_list_CellEndEdit(Object^ sender, DataGridViewCellEventArgs^ e) {
 	int edited_cell_col = e->ColumnIndex;
 	int edited_cell_row = e->RowIndex;
 
+	// input validation
 	if (edited_cell_col == 1 || edited_cell_col == 2) {
 		String^ entered_value = this->memory_list->Rows[edited_cell_row]->Cells[edited_cell_col]->Value->ToString();
 
 		if (entered_value->Length == 1) {
-			entered_value = "0" + entered_value; // Pad single-digit hex values
+			entered_value = "0" + entered_value; // pad single-digit hex values
 		}
 
-		// Ensure the text is in uppercase
+		// ensure the text is in uppercase
 		entered_value = entered_value->ToUpper();
 
 		this->memory_list->Rows[edited_cell_row]->Cells[edited_cell_col]->Value = entered_value;
 
-		// Special case if "C0" is entered in column 1
+		// special case if "C" is entered in column 1
 		if (entered_value[0] == 'C' && edited_cell_col == 1) {
 			this->memory_list->ClearSelection();
 			return;
 		}
 	}
-
+	
 	this->memory_list->BeginInvoke(gcnew Action<int, int>(
 		this,
 		&MainForm::memory_list_HandleCellSelection),
@@ -160,24 +169,26 @@ System::Void VoleMachine::MainForm::memory_list_CellEndEdit(Object^ sender, Data
 System::Void VoleMachine::MainForm::memory_list_AddressCellStateChanged(Object^ sender, DataGridViewCellStateChangedEventArgs^ e) {
 	if (this->memory_list->RowCount != 128 || this->memory_list->ColumnCount != 4) {
 		return;
-	}
+	} // exit if memory list is not alerady populated
 
 	if (!e->Cell || e->StateChanged != DataGridViewElementStates::Selected) {
 		return;
-	}
+	} // exit if cell is not selected
 
 	if (e->Cell->RowIndex == this->memory_list_selected_cell_row && e->Cell->ColumnIndex == this->memory_list_selected_cell_col) {
 		return;
-	}
+	} // exit if cell is already selected
 
 	if (!e->Cell->Selected) {
 		return;
-	}
+	} // exit if nothing is selected
 
 	if (e->Cell->ColumnIndex == 0 || e->Cell->ColumnIndex == 3) {
+		// forbid user from selecting address cells
 		e->Cell->Selected = false;
 		this->memory_list->Rows[this->memory_list_selected_cell_row]->Cells[this->memory_list_selected_cell_col]->Selected = true;
 	} else {
+		// select value cells
 		this->memory_list_selected_cell_row = e->Cell->RowIndex;
 		this->memory_list_selected_cell_col = e->Cell->ColumnIndex;
 	}
@@ -185,12 +196,14 @@ System::Void VoleMachine::MainForm::memory_list_AddressCellStateChanged(Object^ 
 
 System::Void VoleMachine::MainForm::memory_list_HandleCellSelection(int edited_cell_col, int edited_cell_row) {
 	if (edited_cell_col == 1) {
+		// go to the adjacent value cell
 		int target_col = edited_cell_col + 1;
 		if (target_col < this->memory_list->Columns->Count) {
 			this->memory_list->CurrentCell = this->memory_list->Rows[edited_cell_row]->Cells[target_col];
 			this->memory_list->BeginEdit(true);
 		}
 	} else if (edited_cell_col == 2) {
+		// end edit if no adjacent cell
 		this->memory_list->CurrentCell = this->memory_list->Rows[edited_cell_row]->Cells[edited_cell_col];
 		this->memory_list->EndEdit();
 	}
@@ -220,38 +233,36 @@ System::Void VoleMachine::MainForm::memory_list_KeyDown(Object^ sender, KeyEvent
 }
 
 System::Void VoleMachine::MainForm::memory_list_EditingControlShowing(Object^ sender, DataGridViewEditingControlShowingEventArgs^ e) {
-	// Ensure we only attach the event to columns 1 and 2
+	// ensure event is only attached to value cells
 	if (this->memory_list->CurrentCell->ColumnIndex == 1 || this->memory_list->CurrentCell->ColumnIndex == 2) {
-		// Cast the editing control to TextBox
+		// cast the editing control to a textbox
 		TextBox^ editingTextBox = dynamic_cast<TextBox^>(e->Control);
 
 		if (editingTextBox != nullptr) {
-			// Remove any existing handler first to avoid duplicate handlers
+			// remove any existing handler first to avoid duplicate handlers
 			editingTextBox->KeyPress -= gcnew KeyPressEventHandler(this, &VoleMachine::MainForm::memory_list_KeyPress);
-			// Add KeyPress event handler for hex validation
+			// add KeyPress event handler for input validation
 			editingTextBox->KeyPress += gcnew KeyPressEventHandler(this, &VoleMachine::MainForm::memory_list_KeyPress);
 		}
 	}
 }
 System::Void VoleMachine::MainForm::memory_list_KeyPress(Object^ sender, KeyPressEventArgs^ e) {
-	TextBox^ textBox = dynamic_cast<TextBox^>(sender);
+	TextBox^ text_box = dynamic_cast<TextBox^>(sender); // cast sender to textbox for easier handling
 
 	if (e->KeyChar == '\b') {
-		return; // Allow backspace
-	}
+		return; 
+	} // allow backspace
 
-	// Convert to uppercase
-	e->KeyChar = Char::ToUpper(e->KeyChar);
+	e->KeyChar = Char::ToUpper(e->KeyChar); // convert input to uppercase
 
-	// Check if the key is a valid hex digit
-	bool isHex = (e->KeyChar >= '0' && e->KeyChar <= '9') || (e->KeyChar >= 'A' && e->KeyChar <= 'F');
-	bool withinLength = textBox->Text->Length < 2 || textBox->SelectionLength == textBox->Text->Length;
+	// check if the key is a valid hex digit
+	bool is_key = (e->KeyChar >= '0' && e->KeyChar <= '9') || (e->KeyChar >= 'A' && e->KeyChar <= 'F');
+	bool withing_length = text_box->Text->Length < 2 || text_box->SelectionLength == text_box->Text->Length;
 
-	if (!isHex || !withinLength) {
-		e->Handled = true; // Suppress the keypress if not valid
-	} else if (textBox->SelectionLength == textBox->Text->Length) {
-		// Clear text if the entire text is selected
-		textBox->Text = "";
+	if (!is_key || !withing_length) {
+		e->Handled = true; // suppress input if not valid
+	} else if (text_box->SelectionLength == text_box->Text->Length) {
+		text_box->Text = ""; // clear text if the entire text is selected
 	}
 }
 
@@ -263,15 +274,17 @@ System::Void VoleMachine::MainForm::memory_list_OnCellClick(Object^ sender, Data
 		String^ hex_address = this->memory_list->Rows[row]->Cells[0]->Value->ToString();
 		this->highlightAddress(hex_address);
 		this->current_address_textbox->Text = hex_address;
-	}
+	} // set program counter to selected memory list address
 }
 
 System::Void VoleMachine::MainForm::memory_list_OnCellMouseEnter(Object^ sender, DataGridViewCellEventArgs^ e) {
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
+		// highlight address cells on hover
 		this->memory_list->Cursor = Cursors::Hand;
 		this->memory_list->Rows[e->RowIndex]->Cells[0]->Style->BackColor = Color::Azure;
 		this->memory_list->Rows[e->RowIndex]->Cells[3]->Style->BackColor = Color::Azure;
 	} else {
+		// highlight value cells on hover
 		this->memory_list->Cursor = Cursors::IBeam;
 		this->memory_list->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Style->BackColor = Color::AntiqueWhite;
 	}
@@ -281,97 +294,79 @@ System::Void VoleMachine::MainForm::memory_list_OnCellMouseLeave(Object^ sender,
 	this->memory_list->Cursor = Cursors::Default;
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
 		if (last_highlighted_address == this->memory_list->Rows[e->RowIndex]->Cells[0]->Value->ToString()) {
-			this->memory_list->Rows[e->RowIndex]->Cells[0]->Style->BackColor = Color::LightBlue;
-			this->memory_list->Rows[e->RowIndex]->Cells[3]->Style->BackColor = Color::LightBlue;
+			// reset program counter highlight on leave
+			this->updateMemoryListValueCellColorsAtRow(e->RowIndex, Color::LightBlue);
 		} else {
-			this->memory_list->Rows[e->RowIndex]->Cells[0]->Style->BackColor = SystemColors::Control;
-			this->memory_list->Rows[e->RowIndex]->Cells[3]->Style->BackColor = SystemColors::Control;
+			// reset address highlight on leave
+			this->updateMemoryListValueCellColorsAtRow(e->RowIndex, SystemColors::Control);
 		}
 	} else {
+		// reset value highlight on leave
 		this->memory_list->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Style->BackColor = Color::White;
 	}
 }
 
 System::Void VoleMachine::MainForm::memory_list_ScrollUpdate() {
-	int current_address = stoi(
-		Utilities::Conversion::convertHexToDec(
-			Utilities::Conversion::convertSystemStringToStdString(this->exec_ctrl->getCurrentAddress())
-		)
-	);
+	int current_address = Utilities::Conversion::convertHexSystemStringToDecInt(this->current_address_textbox->Text);
 
 	if (current_address % 20 == 0) {
 		this->memory_list->FirstDisplayedScrollingRowIndex += 10;
-	}
+	} // auto scroll if program counter reaches the m
 
-	int starting_address = stoi(
-		Utilities::Conversion::convertHexToDec(
-			Utilities::Conversion::convertSystemStringToStdString(this->starting_address_textbox->Text)
-		)
-	);
+	int starting_address = Utilities::Conversion::convertHexSystemStringToDecInt(this->starting_address_textbox->Text);
 
 	if (current_address == starting_address) {
 		this->memory_list->FirstDisplayedScrollingRowIndex = max(starting_address / 2 - 10, 0);
+	} // if program counter resets to starting address, scroll to starting address
+}
+
+System::Void VoleMachine::MainForm::syncAllMemoryListCells() {
+	for (int i = 0; i < 128; i++) {
+		String^ first_value = this->mem_ctrl->getMemoryValueAt(i * 2);
+		String^ second_value = this->mem_ctrl->getMemoryValueAt(i * 2 + 1);
+
+		// update memory list && higlight on update
+		this->memory_list->Rows[i]->Cells[1]->Value = first_value;
+		this->memory_list->Rows[i]->Cells[2]->Value = second_value;
+		this->updateMemoryListValueCellColorsAtRow(i, Color::Coral);
 	}
 }
 
+System::Void VoleMachine::MainForm::syncMemoryListCellAt(int index) {
+	int row = index / 2;
+	int col = index % 2 + 1;
+
+	this->memory_list->Rows[row]->Cells[col]->Value = this->mem_ctrl->getMemoryValueAt(index);
+	this->memory_list->Rows[row]->Cells[col]->Style->BackColor = Color::Coral;
+}
 System::Void VoleMachine::MainForm::OnMemoryUpdated() {
 	if (this->memory_list->InvokeRequired) {
 		this->Invoke(gcnew MemoryController::MemoryUpdatedEventHandler(this,
 			&MainForm::OnMemoryUpdated));
 		return;
-	}
+	} // update memory if update is required
 
-	this->initializeMemoryList();
-	for (int i = 0; i < 128; i++) {
-		String^ first_value = Utilities::Conversion::convertStdStringToSystemString(
-			this->machine->getMemory().getValueAt(i * 2)); // TODO: move to memory controller
-		String^ second_value = Utilities::Conversion::convertStdStringToSystemString(
-			this->machine->getMemory().getValueAt(i * 2 + 1));
-
-		this->memory_list->Rows[i]->Cells[1]->Value = first_value;
-		this->memory_list->Rows[i]->Cells[2]->Value = second_value;
-		this->memory_list->Rows[i]->Cells[1]->Style->BackColor = Color::Coral;
-		this->memory_list->Rows[i]->Cells[2]->Style->BackColor = Color::Coral;
-	}
-
-	this->color_reset_queue->Enqueue(
-		gcnew System::Tuple<System::DateTime, int, int>(
-			System::DateTime::Now,
-			-1,  // special value for full reset
-			-1
-		)
-	);
+	this->initializeMemoryList(); // reset list
+	this->syncAllMemoryListCells(); // do a full update
+	this->addCellToResetQueue(-1, -1); // special values for color reset
 
 	if (!this->reset_color_timer->Enabled) {
 		this->reset_color_timer->Start();
-	}
+	} // reset colors in the queue
 }
-
 System::Void VoleMachine::MainForm::OnMemoryUpdatedAtAddress(int index) {
 	if (this->memory_list->InvokeRequired) {
 		this->Invoke(gcnew MemoryController::MemoryUpdatedAtAddressEventHandler(this,
 			&MainForm::OnMemoryUpdatedAtAddress), index);
 		return;
-	}
+	} // update memory address if update is required
 
-	int row = index / 2;
-	int col = index % 2 + 1;
-
-	this->memory_list->Rows[row]->Cells[col]->Value = Utilities::Conversion::convertStdStringToSystemString(this->machine->getMemory().getValueAt(index)); // TODO: move to memory controller
-
-	this->memory_list->Rows[row]->Cells[col]->Style->BackColor = Color::Coral;
-
-	this->color_reset_queue->Enqueue(
-		gcnew System::Tuple<System::DateTime, int, int>(
-			System::DateTime::Now,
-			row,
-			col
-		)
-	);
+	this->syncMemoryListCellAt(index);
+	this->addCellToResetQueue(index);
 
 	if (!this->reset_color_timer->Enabled) {
 		this->reset_color_timer->Start();
-	}
+	} // reset colors in the queue
 }
 
 System::Void VoleMachine::MainForm::memory_list_OnMemoryCellValueChanged(Object^ sender, DataGridViewCellEventArgs^ e) {
@@ -399,13 +394,12 @@ System::Void VoleMachine::MainForm::memory_list_ResetCellColor(Object^ sender, E
 
 			if (reset_info->Item2 == -1 && reset_info->Item3 == -1) {
 				for (int i = 0; i < 128; i++) {
-					this->memory_list->Rows[i]->Cells[1]->Style->BackColor = Color::White;
-					this->memory_list->Rows[i]->Cells[2]->Style->BackColor = Color::White;
-				}
+					this->updateMemoryListValueCellColorsAtRow(i, Color::White);
+				} // reset all memory_list cells back to white
 			}
 			else {
 				this->memory_list->Rows[reset_info->Item2]->Cells[reset_info->Item3]->Style->BackColor = Color::White;
-			}
+			} // reset single memory_list cell back to white
 		}
 		else {
 			break;
@@ -414,21 +408,17 @@ System::Void VoleMachine::MainForm::memory_list_ResetCellColor(Object^ sender, E
 
 	if (this->color_reset_queue->Count == 0) {
 		this->reset_color_timer->Stop();
-	}
+	} // stop the timer when queue is empty
 }
 
 System::Void VoleMachine::MainForm::highlightAddress(String^ address) {
 	this->unHiglightLastAdderss();
-	int numeric_address = stoi(
-		Utilities::Conversion::convertHexToDec(
-			Utilities::Conversion::convertSystemStringToStdString(address)
-		)
-	);
+
+	int numeric_address = Utilities::Conversion::convertHexSystemStringToDecInt(address);
 
 	int row = numeric_address / 2;
 
-	this->memory_list->Rows[row]->Cells[0]->Style->BackColor = Color::LightBlue;
-	this->memory_list->Rows[row]->Cells[3]->Style->BackColor = Color::LightBlue;
+	this->updateMemoryListValueCellColorsAtRow(row, Color::LightBlue);
 
 	this->last_highlighted_address = address;
 }
@@ -436,18 +426,32 @@ System::Void VoleMachine::MainForm::highlightAddress(String^ address) {
 System::Void VoleMachine::MainForm::unHiglightLastAdderss() {
 	if (this->last_highlighted_address->Length == 0) {
 		return;
-	}
+	} // exit if nothing is highligted
 
-	int numeric_address = stoi(
-		Utilities::Conversion::convertHexToDec(
-			Utilities::Conversion::convertSystemStringToStdString(this->last_highlighted_address)
-		)
-	);
+	int numeric_address = Utilities::Conversion::convertHexSystemStringToDecInt(this->last_highlighted_address);
 
 	int row = numeric_address / 2;
 
-	this->memory_list->Rows[row]->Cells[0]->Style->BackColor = SystemColors::Control;
-	this->memory_list->Rows[row]->Cells[3]->Style->BackColor = SystemColors::Control;
+	this->updateMemoryListValueCellColorsAtRow(row, SystemColors::Control);
+}
+
+System::Void VoleMachine::MainForm::addCellToResetQueue(int index) {
+	return this->addCellToResetQueue(index / 2, index % 2 + 1);
+}
+
+System::Void VoleMachine::MainForm::addCellToResetQueue(int row, int col) {
+	this->color_reset_queue->Enqueue(
+		gcnew System::Tuple<System::DateTime, int, int>(
+			System::DateTime::Now,
+			row,
+			col
+		)
+	);
+}
+
+System::Void VoleMachine::MainForm::updateMemoryListValueCellColorsAtRow(int row, Color color) {
+	this->memory_list->Rows[row]->Cells[1]->Style->BackColor = color;
+	this->memory_list->Rows[row]->Cells[2]->Style->BackColor = color;
 }
 
 System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e) {
@@ -455,7 +459,7 @@ System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, Dat
 		e->AdvancedBorderStyle->Left = DataGridViewAdvancedCellBorderStyle::None;
 		e->AdvancedBorderStyle->Top = DataGridViewAdvancedCellBorderStyle::None;
 		e->AdvancedBorderStyle->Bottom = DataGridViewAdvancedCellBorderStyle::None;
-	}
+	} // remove styling from address cells
 	e->Handled = false;
 }
 

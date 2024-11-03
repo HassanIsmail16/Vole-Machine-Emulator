@@ -758,14 +758,16 @@ namespace VoleMachine {
 	#pragma endregion
 
 	private:
-		System::Void initializeRegistersList();
-		System::Void initializeMemoryList();
-		System::Void initializeControllers();
-		System::Void initializeMemoryController();
-		System::Void initializeRegistersController();
-		System::Void initializeExecutionController();
+	#pragma region Initialization
+			System::Void initializeRegistersList();
+			System::Void initializeMemoryList();
+			System::Void initializeControllers();
+			System::Void initializeMemoryController();
+			System::Void initializeRegistersController();
+			System::Void initializeExecutionController();
+	#pragma endregion
 
-	#pragma region Memory List Event Handlers
+	#pragma region Memory
 			System::Void memory_list_CellEndEdit(Object^ sender, DataGridViewCellEventArgs^ e);
 			System::Void memory_list_AddressCellStateChanged(Object^ sender, DataGridViewCellStateChangedEventArgs^ e);
 			System::Void memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e);
@@ -777,27 +779,28 @@ namespace VoleMachine {
 			System::Void memory_list_OnCellMouseEnter(Object^ sender, DataGridViewCellEventArgs^ e);
 			System::Void memory_list_OnCellMouseLeave(Object^ sender, DataGridViewCellEventArgs^ e);
 			System::Void memory_list_ScrollUpdate();
+			System::Void syncAllMemoryListCells();
+			System::Void syncMemoryListCellAt(int index);
 			System::Void OnMemoryUpdated();
 			System::Void OnMemoryUpdatedAtAddress(int index);
 			System::Void memory_list_OnMemoryCellValueChanged(Object^ sender, DataGridViewCellEventArgs^ e);
 			System::Void memory_list_ResetCellColor(Object^ sender, EventArgs^ e);
 			System::Void highlightAddress(String^ address);
 			System::Void unHiglightLastAdderss();
+			System::Void addCellToResetQueue(int index);
+			System::Void addCellToResetQueue(int row, int col);
+			System::Void updateMemoryListValueCellColorsAtRow(int row, Color color);
 	#pragma endregion
 
-	#pragma region Registers List Event Handlers
+	#pragma region Registers
 			System::Void OnRegisterUpdated();
-
 			System::Void OnAllRegistersUpdated();
-
 			System::Void OnResetRegisters();
-
 			System::Void resetRegistersColor();
 	#pragma endregion
 
 	#pragma region Execution Event Handlers
 			System::Void OnFetchInstruction();
-
 			System::Void OnExecuteInstruction();
 			System::Void OnUpdateScreen(std::string value);
 			System::Void OnChangeSpeed();
@@ -807,52 +810,48 @@ namespace VoleMachine {
 	#pragma endregion
 
 	#pragma region Button Click Event Handlers
-		private: System::Void load_from_file_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void export_to_file_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void reset_memory_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void reset_registers_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void fetch_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void reset_pc_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void clear_screen_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void execute_Click(System::Object^ sender, System::EventArgs^ e);
-
-		private: System::Void play_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void run_until_halt_Click(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void step_Click(System::Object^ sender, System::EventArgs^ e);
-
-		private: System::Void decode_Click(System::Object^ sender, System::EventArgs^ e);
-
-		private: System::Void ResetInstructionReg();
-		private: System::String^ GetInstructionDescription(OP_CODE opcode, System::String^ firstOperand, System::String^ secondOperand, System::String^ thirdOperand);
-		private: void UpdateOperandLabels(OP_CODE opcode);
-		private: void UpdateOperandsAndDescription(System::Collections::Generic::List<int>^ decodedInstruction, OP_CODE opcode);
+			System::Void load_from_file_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void export_to_file_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void reset_memory_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void reset_registers_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void fetch_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void reset_pc_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void clear_screen_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void execute_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void play_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void run_until_halt_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void step_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void decode_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void ResetInstructionReg();
+			System::String^ GetInstructionDescription(OP_CODE opcode, System::String^ firstOperand, System::String^ secondOperand, System::String^ thirdOperand);
+			void UpdateOperandLabels(OP_CODE opcode);
+			void UpdateOperandsAndDescription(System::Collections::Generic::List<int>^ decodedInstruction, OP_CODE opcode);
 
 	#pragma endregion
 
 	#pragma region Textbox Event Handlers
-		private: System::Void steps_spinbox_ValueChanged(System::Object^ sender, System::EventArgs^ e);
-		private: System::Void starting_address_textbox_TextChanged(System::Object^ sender, System::EventArgs^ e);
-		System::Void starting_address_textbox_KeyPress(Object^ sender, KeyPressEventArgs^ e);
-		System::Void starting_address_textbox_Click(System::Object^ sender, System::EventArgs^ e);
-		System::Void starting_address_textbox_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e);
-		System::Void starting_address_textbox_Leave(System::Object^ sender, System::EventArgs^ e);
-		System::Void starting_address_textbox_Enter(System::Object^ sender, System::EventArgs^ e);
-		System::Void updateStartingAddress();
-		System::Void starting_address_textbox_SelectStartingAddressText();
+			System::Void steps_spinbox_ValueChanged(System::Object^ sender, System::EventArgs^ e);
+			System::Void starting_address_textbox_TextChanged(System::Object^ sender, System::EventArgs^ e);
+			System::Void starting_address_textbox_KeyPress(Object^ sender, KeyPressEventArgs^ e);
+			System::Void starting_address_textbox_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void starting_address_textbox_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e);
+			System::Void starting_address_textbox_Leave(System::Object^ sender, System::EventArgs^ e);
+			System::Void starting_address_textbox_Enter(System::Object^ sender, System::EventArgs^ e);
+			System::Void updateStartingAddress();
+			System::Void starting_address_textbox_SelectStartingAddressText();
 	#pragma endregion
 
 	#pragma region Data Members
-			   int memory_list_selected_cell_row = 0;
-			   int memory_list_selected_cell_col = 1;
-			   Machine* machine;
-			   MemoryController^ mem_ctrl;
-			   RegistersController^ reg_ctrl;
-			   ExecutionController^ exec_ctrl;
-			   Timer^ reset_color_timer;
-			   String^ last_highlighted_address = "";
-			   Generic::Queue<System::Tuple<System::DateTime, int, int>^>^ color_reset_queue;
-			   bool starting_address_textbox_clicked = false;
+			int memory_list_selected_cell_row = 0;
+			int memory_list_selected_cell_col = 1;
+			Machine* machine;
+			MemoryController^ mem_ctrl;
+			RegistersController^ reg_ctrl;
+			ExecutionController^ exec_ctrl;
+			Timer^ reset_color_timer;
+			String^ last_highlighted_address = "";
+			Generic::Queue<System::Tuple<System::DateTime, int, int>^>^ color_reset_queue;
+			bool starting_address_textbox_clicked = false;
 	#pragma endregion
-
-};
+	};
 }

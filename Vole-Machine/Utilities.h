@@ -19,9 +19,10 @@ namespace Utilities {
 		static std::string convertSystemStringToStdString(System::String^ string);
 		
 		static std::string convertHexToDec(const std::string& hex);
+		static int convertHexSystemStringToDecInt(System::String^ hex);
 		static std::string convertDecToHex(const int integer);
 		static std::string convertIntToBin(int integer);
-
+		
 		static std::string convertFracToBin(double fraction, int precision = 8);
 
 		static std::string convertDecToBin(double decimal);

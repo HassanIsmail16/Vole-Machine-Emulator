@@ -84,6 +84,14 @@ std::string Conversion::convertHexToDec(const std::string& hex) {
 	return std::to_string(decimalValue);
 }
 
+int Utilities::Conversion::convertHexSystemStringToDecInt(System::String^ hex) {
+	return stoi(
+		Conversion::convertHexToDec(
+			Conversion::convertSystemStringToStdString(hex)
+		)
+	);
+}
+
 std::string Conversion::convertDecToHex(const int integer) {
 	std::stringstream stream;
 	stream << std::hex << (integer & 0xFF);

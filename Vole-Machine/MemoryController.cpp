@@ -23,7 +23,7 @@ void MemoryController::memoryUpdatedAtAddress(int index) {
 	this->is_updating_memory_list = false;
 }
 
-System::String^ MemoryController::getMemoryValueAt(int& index) {
+System::String^ MemoryController::getMemoryValueAt(int index) {
 	return Utilities::Conversion::convertStdStringToSystemString(this->machine->getMemory().getValueAt(index));
 }
 

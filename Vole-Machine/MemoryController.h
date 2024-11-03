@@ -14,7 +14,7 @@ public:
 	event MemoryUpdatedAtAddressEventHandler^ memory_updated_at_address;
 	void memoryUpdatedAtAddress(int index);
 
-	System::String^ getMemoryValueAt(int& index);
+	System::String^ getMemoryValueAt(int index);
 	void updateMemoryValueAt(int index, System::String^ new_value);
 
 	void loadFromFile(std::string filename);
