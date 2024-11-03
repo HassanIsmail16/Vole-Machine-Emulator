@@ -10,7 +10,7 @@ void Machine::loadProgram(std::string& filename) {
 
 	std::string current_instruction;
 	while (file >> current_instruction) {
-		if (!Utilities::InstructionValidation::isValidInstruction(current_instruction)) {
+		if (!Utilities::Validation::isValidInstruction(current_instruction)) {
 			continue;
 		} // skip instruction if not valid
 

@@ -29,7 +29,7 @@ void CPU::fetch(Memory& memory) {
 }
 
 std::vector<int> CPU::decode() {
-	if (!Utilities::InstructionValidation::isValidInstruction(this->instruction_register)) {
+	if (!Utilities::Validation::isValidInstruction(this->instruction_register)) {
 		return {};
 	}
 
@@ -72,9 +72,14 @@ bool CPU::isInstructionPending() {
 	return !this->instruction_register.empty();
 }
 
-void CPU::resetProgram() {
-	this->program_counter = 0; // set it to starting address
+void CPU::resetProgram(int starting_address) {
+	this->program_counter = starting_address; // set it to starting address
+	this->starting_address = starting_address;
 	this->instruction_register.clear();
+}
+
+int CPU::getStartingAddress() {
+	return this->starting_address;
 }
 
 std::string CPU::getRegisterValueAt(int index) {

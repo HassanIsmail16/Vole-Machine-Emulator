@@ -25,6 +25,8 @@ namespace VoleMachine {
 			this->memory_list->CellValueChanged += gcnew DataGridViewCellEventHandler(this, &MainForm::memory_list_OnMemoryCellValueChanged);
 			this->initializeRegistersList();
 			this->initializeMemoryList();
+			this->memory_list->EditingControlShowing += gcnew System::Windows::Forms::DataGridViewEditingControlShowingEventHandler(this, &MainForm::memory_list_EditingControlShowing);
+			this->memory_list->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MainForm::memory_list_KeyPress);
 			this->mem_ctrl->memory_updated += gcnew MemoryController::MemoryUpdatedEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdated);
 			this->mem_ctrl->memory_updated_at_address += gcnew MemoryController::MemoryUpdatedAtAddressEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdatedAtAddress);
 			this->exec_ctrl->fetched_instruction += gcnew ExecutionController::InstructionFetchedEventHandler(this, &VoleMachine::MainForm::OnFetchInstruction);
@@ -42,7 +44,13 @@ namespace VoleMachine {
 			this->reg_ctrl->register_reset += gcnew RegistersController::RegisterResetEvenHandler(this, &VoleMachine::MainForm::OnResetRegisters);
 			this->dark_mode->Click += gcnew System::EventHandler(this, &MainForm::dark_mode_Click);
 			this->decode->Click += gcnew System::EventHandler(this, &VoleMachine::MainForm::decode_Click);
-
+			this->starting_address_textbox->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &VoleMachine::MainForm::starting_address_textbox_KeyPress);
+			this->starting_address_textbox->CharacterCasing = CharacterCasing::Upper;
+			this->starting_address_textbox->Click += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Click);
+			this->starting_address_textbox->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MainForm::starting_address_textbox_KeyDown);
+			this->starting_address_textbox->Leave += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Leave);
+			this->starting_address_textbox->Enter += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Enter);
+			this->starting_address_textbox->MaxLength = 2;
 		}
 
 	protected:
@@ -121,6 +129,7 @@ namespace VoleMachine {
 	private: System::Windows::Forms::Label^ credits_label;
 	private: System::Windows::Forms::Button^ reset_pc;
 private: System::Windows::Forms::TextBox^ starting_address_textbox;
+private: System::Windows::Forms::Label^ label2;
 
 
 
@@ -132,6 +141,7 @@ private: System::Windows::Forms::TextBox^ starting_address_textbox;
 		void InitializeComponent(void) {
 			this->components = (gcnew System::ComponentModel::Container());
 			this->main_panel = (gcnew System::Windows::Forms::Panel());
+			this->starting_address_textbox = (gcnew System::Windows::Forms::TextBox());
 			this->credits_label = (gcnew System::Windows::Forms::Label());
 			this->dark_mode = (gcnew System::Windows::Forms::Button());
 			this->clear_screen = (gcnew System::Windows::Forms::Button());
@@ -177,7 +187,7 @@ private: System::Windows::Forms::TextBox^ starting_address_textbox;
 			this->play = (gcnew System::Windows::Forms::Button());
 			this->load_from_file = (gcnew System::Windows::Forms::Button());
 			this->contextMenuStrip1 = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
-			this->starting_address_textbox = (gcnew System::Windows::Forms::TextBox());
+			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->main_panel->SuspendLayout();
 			this->screen_panel->SuspendLayout();
 			this->instruction_register_panel->SuspendLayout();
@@ -192,6 +202,7 @@ private: System::Windows::Forms::TextBox^ starting_address_textbox;
 			// main_panel
 			// 
 			this->main_panel->BackColor = System::Drawing::SystemColors::Control;
+			this->main_panel->Controls->Add(this->label2);
 			this->main_panel->Controls->Add(this->starting_address_textbox);
 			this->main_panel->Controls->Add(this->credits_label);
 			this->main_panel->Controls->Add(this->dark_mode);
@@ -211,9 +222,17 @@ private: System::Windows::Forms::TextBox^ starting_address_textbox;
 			this->main_panel->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->main_panel->Location = System::Drawing::Point(0, 0);
 			this->main_panel->Name = L"main_panel";
-			this->main_panel->Padding = System::Windows::Forms::Padding(10, 10, 10, 10);
+			this->main_panel->Padding = System::Windows::Forms::Padding(10);
 			this->main_panel->Size = System::Drawing::Size(957, 584);
 			this->main_panel->TabIndex = 0;
+			// 
+			// starting_address_textbox
+			// 
+			this->starting_address_textbox->Location = System::Drawing::Point(411, 557);
+			this->starting_address_textbox->Name = L"starting_address_textbox";
+			this->starting_address_textbox->Size = System::Drawing::Size(38, 20);
+			this->starting_address_textbox->TabIndex = 14;
+			//this->starting_address_textbox->TextChanged += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_TextChanged);
 			// 
 			// credits_label
 			// 
@@ -464,7 +483,7 @@ private: System::Windows::Forms::TextBox^ starting_address_textbox;
 			// reset_pc
 			// 
 			this->reset_pc->Location = System::Drawing::Point(300, 21);
-			this->reset_pc->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->reset_pc->Margin = System::Windows::Forms::Padding(2);
 			this->reset_pc->Name = L"reset_pc";
 			this->reset_pc->Size = System::Drawing::Size(78, 23);
 			this->reset_pc->TabIndex = 4;
@@ -475,7 +494,7 @@ private: System::Windows::Forms::TextBox^ starting_address_textbox;
 			// fetch
 			// 
 			this->fetch->Location = System::Drawing::Point(205, 22);
-			this->fetch->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
+			this->fetch->Margin = System::Windows::Forms::Padding(2);
 			this->fetch->Name = L"fetch";
 			this->fetch->Size = System::Drawing::Size(91, 23);
 			this->fetch->TabIndex = 4;
@@ -665,13 +684,14 @@ private: System::Windows::Forms::TextBox^ starting_address_textbox;
 			this->contextMenuStrip1->Name = L"contextMenuStrip1";
 			this->contextMenuStrip1->Size = System::Drawing::Size(61, 4);
 			// 
-			// starting_address_textbox
+			// label2
 			// 
-			this->starting_address_textbox->Location = System::Drawing::Point(411, 558);
-			this->starting_address_textbox->Name = L"starting_address_textbox";
-			this->starting_address_textbox->ReadOnly = true;
-			this->starting_address_textbox->Size = System::Drawing::Size(21, 20);
-			this->starting_address_textbox->TabIndex = 14;
+			this->label2->AutoSize = true;
+			this->label2->Location = System::Drawing::Point(455, 561);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(84, 13);
+			this->label2->TabIndex = 15;
+			this->label2->Text = L"Starting Address";
 			// 
 			// MainForm
 			// 
@@ -711,6 +731,8 @@ private: System::Windows::Forms::TextBox^ starting_address_textbox;
 		System::Void memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e);
 		System::Void memory_list_HandleCellSelection(int edited_cell_col, int edited_cell_row);
 		System::Void memory_list_KeyDown(Object^ sender, KeyEventArgs^ e);
+		System::Void memory_list_EditingControlShowing(Object^ sender, DataGridViewEditingControlShowingEventArgs^ e);
+		System::Void memory_list_KeyPress(Object^ sender, KeyPressEventArgs^ e);
 
 		System::Void OnMemoryUpdated();
 		System::Void OnMemoryUpdatedAtAddress(int index);
@@ -730,6 +752,13 @@ private: System::Windows::Forms::TextBox^ starting_address_textbox;
 		System::Void highlightAddress(String^ address);
 		System::Void unHiglightLastAdderss();
 
+		System::Void starting_address_textbox_KeyPress(Object^ sender, KeyPressEventArgs^ e);
+		System::Void starting_address_textbox_Click(System::Object^ sender, System::EventArgs^ e);
+		System::Void starting_address_textbox_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e);
+		System::Void starting_address_textbox_Leave(System::Object^ sender, System::EventArgs^ e);
+		System::Void starting_address_textbox_Enter(System::Object^ sender, System::EventArgs^ e);
+		System::Void updateStartingAddress();
+		System::Void starting_address_textbox_SelectStartingAddressText();
 		int memory_list_selected_cell_row = 0;
 		int memory_list_selected_cell_col = 1;
 		Machine* machine;
@@ -739,7 +768,7 @@ private: System::Windows::Forms::TextBox^ starting_address_textbox;
 		Timer^ reset_color_timer;
 		String^ last_highlighted_address = "";
 		Generic::Queue<System::Tuple<System::DateTime, int, int>^>^ color_reset_queue;
-
+		bool starting_address_textbox_clicked = false;
 
 	private: System::Void load_from_file_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void export_to_file_Click(System::Object^ sender, System::EventArgs^ e);
@@ -761,5 +790,6 @@ private: System::Windows::Forms::TextBox^ starting_address_textbox;
 	private: System::String^ GetInstructionDescription(OP_CODE opcode, System::String^ firstOperand, System::String^ secondOperand, System::String^ thirdOperand);
 	private: void UpdateOperandLabels(OP_CODE opcode);
 	private: void UpdateOperandsAndDescription(System::Collections::Generic::List<int>^ decodedInstruction, OP_CODE opcode);
+	private: System::Void starting_address_textbox_TextChanged(System::Object^ sender, System::EventArgs^ e);
 };
 }

@@ -51,6 +51,7 @@ System::Void VoleMachine::MainForm::initializeMemoryList() {
 	this->memory_list->SelectionMode = DataGridViewSelectionMode::CellSelect;
 	this->memory_list->DefaultCellStyle->Font = gcnew System::Drawing::Font("Microsoft Sans Serif", 10);
 	this->memory_list->ColumnHeadersVisible = false;
+	this->memory_list->MultiSelect = false;
 
 	this->memory_list->Columns[0]->Name = "Address";
 	this->memory_list->Columns[0]->ReadOnly = true;
@@ -97,14 +98,24 @@ System::Void VoleMachine::MainForm::memory_list_CellEndEdit(Object^ sender, Data
 	int edited_cell_col = e->ColumnIndex;
 	int edited_cell_row = e->RowIndex;
 
-	if (edited_cell_col == 1) {
+	if (edited_cell_col == 1 || edited_cell_col == 2) {
 		String^ entered_value = this->memory_list->Rows[edited_cell_row]->Cells[edited_cell_col]->Value->ToString();
 
-		if (entered_value == "C0") {
-			this->memory_list->ClearSelection(); 
-			return; 
+		if (entered_value->Length == 1) {
+			entered_value = "0" + entered_value; // Pad single-digit hex values
 		}
-	} 
+
+		// Ensure the text is in uppercase
+		entered_value = entered_value->ToUpper();
+
+		this->memory_list->Rows[edited_cell_row]->Cells[edited_cell_col]->Value = entered_value;
+
+		// Special case if "C0" is entered in column 1
+		if (entered_value == "C0" && edited_cell_col == 1) {
+			this->memory_list->ClearSelection();
+			return;
+		}
+	}
 
 	this->memory_list->BeginInvoke(gcnew Action<int, int>(
 		this,
@@ -171,6 +182,42 @@ System::Void VoleMachine::MainForm::memory_list_KeyDown(Object^ sender, KeyEvent
 				}
 			}
 		}
+	}
+}
+
+System::Void VoleMachine::MainForm::memory_list_EditingControlShowing(Object^ sender, DataGridViewEditingControlShowingEventArgs^ e) {
+	// Ensure we only attach the event to columns 1 and 2
+	if (this->memory_list->CurrentCell->ColumnIndex == 1 || this->memory_list->CurrentCell->ColumnIndex == 2) {
+		// Cast the editing control to TextBox
+		TextBox^ editingTextBox = dynamic_cast<TextBox^>(e->Control);
+
+		if (editingTextBox != nullptr) {
+			// Remove any existing handler first to avoid duplicate handlers
+			editingTextBox->KeyPress -= gcnew KeyPressEventHandler(this, &VoleMachine::MainForm::memory_list_KeyPress);
+			// Add KeyPress event handler for hex validation
+			editingTextBox->KeyPress += gcnew KeyPressEventHandler(this, &VoleMachine::MainForm::memory_list_KeyPress);
+		}
+	}
+}
+System::Void VoleMachine::MainForm::memory_list_KeyPress(Object^ sender, KeyPressEventArgs^ e) {
+	TextBox^ textBox = dynamic_cast<TextBox^>(sender);
+
+	if (e->KeyChar == '\b') {
+		return; // Allow backspace
+	}
+
+	// Convert to uppercase
+	e->KeyChar = Char::ToUpper(e->KeyChar);
+
+	// Check if the key is a valid hex digit
+	bool isHex = (e->KeyChar >= '0' && e->KeyChar <= '9') || (e->KeyChar >= 'A' && e->KeyChar <= 'F');
+	bool withinLength = textBox->Text->Length < 2 || textBox->SelectionLength == textBox->Text->Length;
+
+	if (!isHex || !withinLength) {
+		e->Handled = true; // Suppress the keypress if not valid
+	} else if (textBox->SelectionLength == textBox->Text->Length) {
+		// Clear text if the entire text is selected
+		textBox->Text = "";
 	}
 }
 
@@ -399,6 +446,76 @@ System::Void VoleMachine::MainForm::unHiglightLastAdderss() {
 	this->memory_list->Rows[row]->Cells[3]->Style->BackColor = SystemColors::Control;
 }
 
+System::Void VoleMachine::MainForm::starting_address_textbox_KeyPress(Object^ sender, KeyPressEventArgs^ e) {
+	if (e->KeyChar == '\b') {
+		return;
+	}
+
+	e->KeyChar = Char::ToUpper(e->KeyChar);
+
+	bool isHex = (e->KeyChar >= '0' && e->KeyChar <= '9') ||
+		(e->KeyChar >= 'A' && e->KeyChar <= 'F');
+
+	bool withinLength = starting_address_textbox->Text->Length < 2;
+
+	if (!isHex || !withinLength) {
+		e->Handled = true;  // Suppress the keypress
+	}
+}
+
+System::Void VoleMachine::MainForm::starting_address_textbox_Click(System::Object^ sender, System::EventArgs^ e) {
+	//this->starting_address_textbox->Clear();
+	return;
+}
+
+System::Void VoleMachine::MainForm::starting_address_textbox_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {
+	if (this->starting_address_textbox->SelectionLength == this->starting_address_textbox->Text->Length &&
+		e->KeyCode != System::Windows::Forms::Keys::Back &&
+		e->KeyCode != System::Windows::Forms::Keys::Delete &&
+		e->KeyCode != System::Windows::Forms::Keys::Left &&
+		e->KeyCode != System::Windows::Forms::Keys::Right) {
+		this->starting_address_textbox->Text = "";  // Clear text to allow overwriting
+	}
+
+	if (e->KeyCode == Keys::Enter || e->KeyCode == Keys::Escape) {
+		this->updateStartingAddress();
+		e->Handled = true;
+		this->ActiveControl = nullptr;
+	}
+}
+
+System::Void VoleMachine::MainForm::starting_address_textbox_Leave(System::Object^ sender, System::EventArgs^ e) {
+	this->updateStartingAddress();
+}
+
+System::Void VoleMachine::MainForm::starting_address_textbox_Enter(System::Object^ sender, System::EventArgs^ e) {
+	this->BeginInvoke(
+		gcnew System::Action(
+			this, &VoleMachine::MainForm::starting_address_textbox_SelectStartingAddressText
+	)
+	);
+}
+
+System::Void VoleMachine::MainForm::updateStartingAddress() {
+	String^ text = this->starting_address_textbox->Text;
+	
+	if (text->Length == 2) {
+		this->exec_ctrl->setStartingAddress(text);
+		return;
+	}
+
+	while (text->Length < 2) {
+		text = "0" + text;
+	}
+
+	this->starting_address_textbox->Text = text;
+	this->updateStartingAddress();
+}
+
+System::Void VoleMachine::MainForm::starting_address_textbox_SelectStartingAddressText() {
+	this->starting_address_textbox->SelectAll();
+}
+
 System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e) {
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
 		e->AdvancedBorderStyle->Left = DataGridViewAdvancedCellBorderStyle::None;
@@ -600,7 +717,7 @@ void VoleMachine::MainForm::UpdateOperandsAndDescription(System::Collections::Ge
 		secondOperand = Utilities::Conversion::convertStdStringToSystemString(
 			Utilities::Conversion::convertDecToHex(decodedInstruction[2])); // X
 		thirdOperand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex(decodedInstruction[2]));         // Y
+			Utilities::Conversion::convertDecToHex(decodedInstruction[2])); // Y
 	}
 
 	if (opcode == OP_CODE::MOVE && decodedInstruction->Count > 2) {
@@ -621,6 +738,24 @@ void VoleMachine::MainForm::UpdateOperandsAndDescription(System::Collections::Ge
 
 	
 	this->instruction_decode_textbox->Text = instructionDescription;
+}
+
+System::Void VoleMachine::MainForm::starting_address_textbox_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+	return;
+	if (this->starting_address_textbox->Text->Length == 2) {
+		this->exec_ctrl->setStartingAddress(this->starting_address_textbox->Text);
+		return;
+	}
+
+	if (this->starting_address_textbox->Text->Length == 1) {
+		this->starting_address_textbox->Text = "0" + this->starting_address_textbox->Text;
+		return;
+	}
+
+	if (this->starting_address_textbox->Text->Length == 0) {
+		this->starting_address_textbox->Text = "00";
+		return;
+	}
 }
 
 System::String^ VoleMachine::MainForm::GetInstructionDescription(OP_CODE opcode, System::String^ firstOperand, System::String^ secondOperand, System::String^ thirdOperand) {

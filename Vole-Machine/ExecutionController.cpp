@@ -44,10 +44,11 @@ void ExecutionController::screenUpdated(std::string value) {
 }
 
 void ExecutionController::runAllInstructions() {
+	this->all_instructions = true;
 	this->is_running = true;
 	while (true) {
 		this->machine->getCPU().fetch(this->machine->getMemory());
-		this->machine->getCPU().execute(this->machine->getMemory(), this->machine->getCPU().decode());
+		this->executeCurrentInstruction();
 
 		if (this->machine->getCPU().isHalt()) {
 			program_halted();
@@ -61,6 +62,7 @@ void ExecutionController::runAllInstructions() {
 	}
 	this->all_instructions_executed();
 	this->is_running = false;
+	this->all_instructions = false;
 }
 
 void ExecutionController::fetchInstruction() {
@@ -79,12 +81,12 @@ void ExecutionController::executeCurrentInstruction() {
 
 	std::vector<int> instruction = this->machine->getCPU().decode();
 	
-	if (!Utilities::InstructionValidation::isValidInstruction(this->machine->getCPU().getCurrentInstruction())) {
+	if (!Utilities::Validation::isValidInstruction(this->machine->getCPU().getCurrentInstruction())) {
 		return;
 	}
 
 
-	if (this->machine->getCPU().isHalt()) {
+	if (this->machine->getCPU().isHalt() && !this->all_instructions) {
 		program_halted();
 	}
 
@@ -157,13 +159,24 @@ System::Nullable<int> ExecutionController::getUpdatedAddress() {
 	return System::Nullable<int>();
 }
 
+void ExecutionController::setStartingAddress(int address) {
+	this->starting_address = address;
+}
+
+void ExecutionController::setStartingAddress(System::String^ address) {
+	this->starting_address = stoi(
+		Utilities::Conversion::convertHexToDec(
+			Utilities::Conversion::convertSystemStringToStdString(address)
+		)
+	);
+}
 
 System::Collections::Generic::List<int>^ ExecutionController::decodeInstruction() {
 	if (!this->machine->getCPU().isInstructionPending()) {
 		return {};
 	}
 
-	if (!Utilities::InstructionValidation::isValidInstruction(this->machine->getCPU().getCurrentInstruction())) {
+	if (!Utilities::Validation::isValidInstruction(this->machine->getCPU().getCurrentInstruction())) {
 		return {};
 	}
 	System::Collections::Generic::List<int>^ result = gcnew System::Collections::Generic::List<int>();
