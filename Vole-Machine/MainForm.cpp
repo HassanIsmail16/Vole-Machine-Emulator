@@ -749,10 +749,16 @@ void VoleMachine::MainForm::UpdateOperandsAndDescription(System::Collections::Ge
 		std::cout << Utilities::Conversion::convertSystemStringToStdString(firstOperand) << std::endl;
 	}
 	if (decodedInstruction->Count > 2) {
-		secondOperand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex(decodedInstruction[2])); // X
-		thirdOperand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex(decodedInstruction[2])); // Y
+
+		System::String^ second_third_opreand = Utilities::Conversion::convertStdStringToSystemString(Utilities::Conversion::convertDecToHex(decodedInstruction[2]));
+		if (second_third_opreand->Length > 1) {
+			secondOperand += second_third_opreand[0]; // X
+			thirdOperand += second_third_opreand[1]; // Y
+		}
+		else {
+			secondOperand = "0"; // X
+			thirdOperand = second_third_opreand; // Y
+		}
 	}
 
 	if (opcode == OP_CODE::MOVE && decodedInstruction->Count > 2) {
