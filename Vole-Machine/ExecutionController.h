@@ -42,7 +42,7 @@ public:
 
 	void runAllInstructions();
 	void fetchInstruction();
-	std::vector<int> decodeInstruction();
+	System::Collections::Generic::List<int>^ decodeInstruction();
 	void executeCurrentInstruction();
 	void step();
 	void playInstructions();
@@ -79,12 +79,16 @@ public:
 
 	System::Nullable<int> getUpdatedAddress();
 
-
+	void setStartingAddress(int address);
+	void setStartingAddress(System::String^ address);
+	void setCurrentAddress(int address);
+	int getStartingAddress();
 private:
 	System::Windows::Forms::Timer^ instruction_timer;
 	void OnTimerTick(Object^ sender, System::EventArgs^ e);
 
 	int instructions_per_sec = 5;
 	bool is_running = false;
-
+	bool all_instructions = false;
+	int starting_address = 0;
 };

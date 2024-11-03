@@ -1,6 +1,8 @@
 #include "MainForm.h"
 #include <msclr/marshal_cppstd.h>
 #include <iostream>
+#include <sstream>
+#include <vector>
 #include "Utilities.h"
 
 using namespace System;
@@ -49,6 +51,7 @@ System::Void VoleMachine::MainForm::initializeMemoryList() {
 	this->memory_list->SelectionMode = DataGridViewSelectionMode::CellSelect;
 	this->memory_list->DefaultCellStyle->Font = gcnew System::Drawing::Font("Microsoft Sans Serif", 10);
 	this->memory_list->ColumnHeadersVisible = false;
+	this->memory_list->MultiSelect = false;
 
 	this->memory_list->Columns[0]->Name = "Address";
 	this->memory_list->Columns[0]->ReadOnly = true;
@@ -95,14 +98,24 @@ System::Void VoleMachine::MainForm::memory_list_CellEndEdit(Object^ sender, Data
 	int edited_cell_col = e->ColumnIndex;
 	int edited_cell_row = e->RowIndex;
 
-	if (edited_cell_col == 1) {
+	if (edited_cell_col == 1 || edited_cell_col == 2) {
 		String^ entered_value = this->memory_list->Rows[edited_cell_row]->Cells[edited_cell_col]->Value->ToString();
 
-		if (entered_value == "C0") {
-			this->memory_list->ClearSelection(); 
-			return; 
+		if (entered_value->Length == 1) {
+			entered_value = "0" + entered_value; // Pad single-digit hex values
 		}
-	} 
+
+		// Ensure the text is in uppercase
+		entered_value = entered_value->ToUpper();
+
+		this->memory_list->Rows[edited_cell_row]->Cells[edited_cell_col]->Value = entered_value;
+
+		// Special case if "C0" is entered in column 1
+		if (entered_value[0] == 'C' && edited_cell_col == 1) {
+			this->memory_list->ClearSelection();
+			return;
+		}
+	}
 
 	this->memory_list->BeginInvoke(gcnew Action<int, int>(
 		this,
@@ -169,6 +182,101 @@ System::Void VoleMachine::MainForm::memory_list_KeyDown(Object^ sender, KeyEvent
 				}
 			}
 		}
+	}
+}
+
+System::Void VoleMachine::MainForm::memory_list_EditingControlShowing(Object^ sender, DataGridViewEditingControlShowingEventArgs^ e) {
+	// Ensure we only attach the event to columns 1 and 2
+	if (this->memory_list->CurrentCell->ColumnIndex == 1 || this->memory_list->CurrentCell->ColumnIndex == 2) {
+		// Cast the editing control to TextBox
+		TextBox^ editingTextBox = dynamic_cast<TextBox^>(e->Control);
+
+		if (editingTextBox != nullptr) {
+			// Remove any existing handler first to avoid duplicate handlers
+			editingTextBox->KeyPress -= gcnew KeyPressEventHandler(this, &VoleMachine::MainForm::memory_list_KeyPress);
+			// Add KeyPress event handler for hex validation
+			editingTextBox->KeyPress += gcnew KeyPressEventHandler(this, &VoleMachine::MainForm::memory_list_KeyPress);
+		}
+	}
+}
+System::Void VoleMachine::MainForm::memory_list_KeyPress(Object^ sender, KeyPressEventArgs^ e) {
+	TextBox^ textBox = dynamic_cast<TextBox^>(sender);
+
+	if (e->KeyChar == '\b') {
+		return; // Allow backspace
+	}
+
+	// Convert to uppercase
+	e->KeyChar = Char::ToUpper(e->KeyChar);
+
+	// Check if the key is a valid hex digit
+	bool isHex = (e->KeyChar >= '0' && e->KeyChar <= '9') || (e->KeyChar >= 'A' && e->KeyChar <= 'F');
+	bool withinLength = textBox->Text->Length < 2 || textBox->SelectionLength == textBox->Text->Length;
+
+	if (!isHex || !withinLength) {
+		e->Handled = true; // Suppress the keypress if not valid
+	} else if (textBox->SelectionLength == textBox->Text->Length) {
+		// Clear text if the entire text is selected
+		textBox->Text = "";
+	}
+}
+
+System::Void VoleMachine::MainForm::memory_list_OnCellClick(Object^ sender, DataGridViewCellEventArgs^ e) {
+	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
+		int row = e->RowIndex;
+		this->exec_ctrl->setCurrentAddress(row * 2);
+
+		String^ hex_address = this->memory_list->Rows[row]->Cells[0]->Value->ToString();
+		this->highlightAddress(hex_address);
+		this->current_address_textbox->Text = hex_address;
+	}
+}
+
+System::Void VoleMachine::MainForm::memory_list_OnCellMouseEnter(Object^ sender, DataGridViewCellEventArgs^ e) {
+	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
+		this->memory_list->Cursor = Cursors::Hand;
+		this->memory_list->Rows[e->RowIndex]->Cells[0]->Style->BackColor = Color::Azure;
+		this->memory_list->Rows[e->RowIndex]->Cells[3]->Style->BackColor = Color::Azure;
+	} else {
+		this->memory_list->Cursor = Cursors::IBeam;
+		this->memory_list->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Style->BackColor = Color::AntiqueWhite;
+	}
+}
+
+System::Void VoleMachine::MainForm::memory_list_OnCellMouseLeave(Object^ sender, DataGridViewCellEventArgs^ e) {
+	this->memory_list->Cursor = Cursors::Default;
+	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
+		if (last_highlighted_address == this->memory_list->Rows[e->RowIndex]->Cells[0]->Value->ToString()) {
+			this->memory_list->Rows[e->RowIndex]->Cells[0]->Style->BackColor = Color::LightBlue;
+			this->memory_list->Rows[e->RowIndex]->Cells[3]->Style->BackColor = Color::LightBlue;
+		} else {
+			this->memory_list->Rows[e->RowIndex]->Cells[0]->Style->BackColor = SystemColors::Control;
+			this->memory_list->Rows[e->RowIndex]->Cells[3]->Style->BackColor = SystemColors::Control;
+		}
+	} else {
+		this->memory_list->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Style->BackColor = Color::White;
+	}
+}
+
+System::Void VoleMachine::MainForm::memory_list_ScrollUpdate() {
+	int current_address = stoi(
+		Utilities::Conversion::convertHexToDec(
+			Utilities::Conversion::convertSystemStringToStdString(this->exec_ctrl->getCurrentAddress())
+		)
+	);
+
+	if (current_address % 20 == 0) {
+		this->memory_list->FirstDisplayedScrollingRowIndex += 10;
+	}
+
+	int starting_address = stoi(
+		Utilities::Conversion::convertHexToDec(
+			Utilities::Conversion::convertSystemStringToStdString(this->starting_address_textbox->Text)
+		)
+	);
+
+	if (current_address == starting_address) {
+		this->memory_list->FirstDisplayedScrollingRowIndex = max(starting_address / 2 - 10, 0);
 	}
 }
 
@@ -251,6 +359,7 @@ System::Void VoleMachine::MainForm::OnFetchInstruction() {
 	String^ current_address = this->exec_ctrl->getCurrentAddress();
 	this->current_address_textbox->Text = current_address;
 
+	this->memory_list_ScrollUpdate();
 	this->highlightAddress(current_address);
 
 	this->current_instruction_textbox->Clear();
@@ -319,6 +428,7 @@ System::Void VoleMachine::MainForm::OnHaltProgram() {
 	this->exec_ctrl->pauseInstructions();
 	this->exec_ctrl->resetProgram();
 	this->resetRegistersColor();
+	this->memory_list_ScrollUpdate();
 	MessageBox::Show("Program halted.", "Program Halted", MessageBoxButtons::OK, MessageBoxIcon::Information);
 }
 
@@ -327,6 +437,7 @@ System::Void VoleMachine::MainForm::OnReachedEndOfMemory() {
 	this->exec_ctrl->pauseInstructions();
 	this->exec_ctrl->resetProgram();
 	this->resetRegistersColor();
+	this->memory_list_ScrollUpdate();
 	MessageBox::Show("Program reached end of memory.", "Reached End of Memory", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 }
 
@@ -396,6 +507,113 @@ System::Void VoleMachine::MainForm::unHiglightLastAdderss() {
 	this->memory_list->Rows[row]->Cells[0]->Style->BackColor = SystemColors::Control;
 	this->memory_list->Rows[row]->Cells[3]->Style->BackColor = SystemColors::Control;
 }
+
+System::Void VoleMachine::MainForm::starting_address_textbox_KeyPress(Object^ sender, KeyPressEventArgs^ e) {
+	if (e->KeyChar == '\b') {
+		return;
+	}
+
+	e->KeyChar = Char::ToUpper(e->KeyChar);
+
+	bool isHex = (e->KeyChar >= '0' && e->KeyChar <= '9') ||
+		(e->KeyChar >= 'A' && e->KeyChar <= 'F');
+
+	bool withinLength = starting_address_textbox->Text->Length < 2;
+
+	if (!isHex || !withinLength) {
+		e->Handled = true;  // Suppress the keypress
+	}
+}
+
+System::Void VoleMachine::MainForm::starting_address_textbox_Click(System::Object^ sender, System::EventArgs^ e) {
+	//this->starting_address_textbox->Clear();
+	return;
+}
+
+System::Void VoleMachine::MainForm::starting_address_textbox_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {
+	if (this->starting_address_textbox->SelectionLength == this->starting_address_textbox->Text->Length &&
+		e->KeyCode != System::Windows::Forms::Keys::Back &&
+		e->KeyCode != System::Windows::Forms::Keys::Delete &&
+		e->KeyCode != System::Windows::Forms::Keys::Left &&
+		e->KeyCode != System::Windows::Forms::Keys::Right &&
+		e->KeyCode != System::Windows::Forms::Keys::Enter &&
+		e->KeyCode != System::Windows::Forms::Keys::Escape) {
+		this->starting_address_textbox->Text = "";  // Clear text to allow overwriting
+	}
+
+	if (e->KeyCode == Keys::Enter || e->KeyCode == Keys::Escape) {
+		this->updateStartingAddress();
+		e->Handled = true;
+		this->ActiveControl = nullptr;
+	}
+}
+System::Void VoleMachine::MainForm::starting_address_textbox_Leave(System::Object^ sender, System::EventArgs^ e) {
+	this->updateStartingAddress();
+}
+
+System::Void VoleMachine::MainForm::starting_address_textbox_Enter(System::Object^ sender, System::EventArgs^ e) {
+	this->BeginInvoke(
+		gcnew System::Action(
+			this, &VoleMachine::MainForm::starting_address_textbox_SelectStartingAddressText
+		)
+	);
+}
+
+System::Void VoleMachine::MainForm::updateStartingAddress() {
+	String^ text = this->starting_address_textbox->Text;
+	
+	if (text->Length == 2) {
+		int decimal_value = stoi(
+			Utilities::Conversion::convertHexToDec(
+				Utilities::Conversion::convertSystemStringToStdString(text)
+			)
+		);
+
+		if (decimal_value % 2 != 0) {
+			decimal_value--;
+
+			text = Utilities::Conversion::convertStdStringToSystemString(
+				Utilities::Conversion::convertDecToHex(decimal_value)
+			);
+
+
+			if (text->Length == 1) {
+				text = "0" + text;
+			}
+
+			this->starting_address_textbox->Text = text;
+		} // handle odd addresses
+
+		int current_execution_address = stoi(
+			Utilities::Conversion::convertHexToDec(
+				Utilities::Conversion::convertSystemStringToStdString(
+					this->exec_ctrl->getCurrentAddress()
+				)
+			)
+		);
+		
+		if (current_execution_address < decimal_value) {
+			this->current_address_textbox->Text = text;
+			this->highlightAddress(text);
+		} // update program counter
+
+		this->exec_ctrl->setStartingAddress(text);
+		this->memory_list_ScrollUpdate();
+		return;
+	}
+
+	while (text->Length < 2) {
+		text = "0" + text;
+	}
+
+	this->starting_address_textbox->Text = text;
+	this->updateStartingAddress();
+}
+
+System::Void VoleMachine::MainForm::starting_address_textbox_SelectStartingAddressText() {
+	this->starting_address_textbox->SelectAll();
+}
+
 
 System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e) {
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
@@ -488,6 +706,7 @@ System::Void VoleMachine::MainForm::fetch_Click(System::Object^ sender, System::
 
 System::Void VoleMachine::MainForm::reset_pc_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->exec_ctrl->resetProgram();
+	this->memory_list_ScrollUpdate();
 }
 
 System::Void VoleMachine::MainForm::clear_screen_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -525,14 +744,19 @@ System::Void VoleMachine::MainForm::step_Click(System::Object^ sender, System::E
 }
 
 System::Void VoleMachine::MainForm::decode_Click(System::Object^ sender, System::EventArgs^ e) {
-	std::vector<int> decodedInstruction = exec_ctrl->decodeInstruction();
+	auto decoded_instruction = exec_ctrl->decodeInstruction();
+
+	if (decoded_instruction == nullptr) {
+		return;
+	}
 
 	this->opcode_textbox->Text = Utilities::Conversion::convertStdStringToSystemString(
-		Utilities::Conversion::convertDecToHex(decodedInstruction[0]));
+		Utilities::Conversion::convertDecToHex(decoded_instruction[0])
+	);
 
-	OP_CODE opcode = static_cast<OP_CODE>(decodedInstruction[0]);
+	OP_CODE opcode = static_cast<OP_CODE>(decoded_instruction[0]);
 	UpdateOperandLabels(opcode);
-	UpdateOperandsAndDescription(decodedInstruction, opcode);
+	UpdateOperandsAndDescription(decoded_instruction, opcode);
 }
 
 void VoleMachine::MainForm::UpdateOperandLabels(OP_CODE opcode) {
@@ -570,9 +794,15 @@ void VoleMachine::MainForm::UpdateOperandLabels(OP_CODE opcode) {
 		break;
 
 	case OP_CODE::HALT:
-		this->first_operand_label->Text = "";
-		this->second_operand_label->Text = "";
-		this->third_operand_label->Text = "";
+		this->first_operand_label->Text = "x";
+		this->second_operand_label->Text = "x";
+		this->third_operand_label->Text = "x";
+		break;
+
+	case OP_CODE::UNKNOWN:
+		this->first_operand_label->Text = "?";
+		this->second_operand_label->Text = "?";
+		this->third_operand_label->Text = "?";
 		break;
 
 	default:
@@ -581,73 +811,99 @@ void VoleMachine::MainForm::UpdateOperandLabels(OP_CODE opcode) {
 	}
 }
 
-void VoleMachine::MainForm::UpdateOperandsAndDescription(const std::vector<int>& decodedInstruction, OP_CODE opcode) {
-	System::String^ firstOperand = "";
-	System::String^ secondOperand = "";
-	System::String^ thirdOperand = "";
-	System::String^ instructionDescription;
+void VoleMachine::MainForm::UpdateOperandsAndDescription(System::Collections::Generic::List<int>^ decoded_instruction, OP_CODE opcode) {
+	System::String^ first_operand = "";
+	System::String^ second_operand = "";
+	System::String^ third_operand = "";
+	System::String^ instruction_description;
 
-	if (decodedInstruction.size() > 1) {
-		firstOperand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex(decodedInstruction[1]));
-	}
-	if (decodedInstruction.size() > 2) {
-		secondOperand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex((decodedInstruction[2] >> 4) & 0xF)); // X
-		thirdOperand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex(decodedInstruction[2] & 0xF));         // Y
+	if (decoded_instruction->Count > 1) {
+		first_operand = Utilities::Conversion::convertStdStringToSystemString(
+			Utilities::Conversion::convertDecToHex(decoded_instruction[1])
+		);
 	}
 
-	if (opcode == OP_CODE::MOVE && decodedInstruction.size() > 2) {
-		secondOperand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex(decodedInstruction[2]));
-	}
-	if (decodedInstruction.size() > 3) {
-		thirdOperand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex(decodedInstruction[3]));
+	if (decoded_instruction->Count > 2) {
+		System::String^ second_third_operand = Utilities::Conversion::convertStdStringToSystemString(
+			Utilities::Conversion::convertDecToHex(decoded_instruction[2])
+		);
+
+		if (second_third_operand->Length > 1) {
+			second_operand += second_third_operand[0]; // X
+			third_operand += second_third_operand[1]; // Y
+		} else {
+			second_operand = "0"; // X
+			third_operand = second_third_operand; // Y
+		}
 	}
 
-	instructionDescription = GetInstructionDescription(opcode, firstOperand, secondOperand, thirdOperand);
+	if (opcode == OP_CODE::MOVE && decoded_instruction->Count > 2) {
+		second_operand = Utilities::Conversion::convertStdStringToSystemString(
+			Utilities::Conversion::convertDecToHex(decoded_instruction[2]));
+	}
+	if (decoded_instruction->Count > 3) {
+		third_operand = Utilities::Conversion::convertStdStringToSystemString(
+			Utilities::Conversion::convertDecToHex(decoded_instruction[3]));
+	}
+	
+	instruction_description = GetInstructionDescription(opcode, first_operand, second_operand, third_operand);
+
+	this->first_operand_textbox->Text = first_operand;
+	this->second_operand_textbox->Text = second_operand;
+	this->third_operand_textbox->Text = third_operand;
 
 	
-	this->first_operand_textbox->Text = firstOperand;
-	this->second_operand_textbox->Text = secondOperand;
-	this->third_operand_textbox->Text = thirdOperand;
-
-	
-	this->instruction_decode_textbox->Text = instructionDescription;
+	this->instruction_decode_textbox->Text = instruction_description;
 }
 
-System::String^ VoleMachine::MainForm::GetInstructionDescription(OP_CODE opcode, System::String^ firstOperand, System::String^ secondOperand, System::String^ thirdOperand) {
+System::Void VoleMachine::MainForm::starting_address_textbox_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+	return;
+	if (this->starting_address_textbox->Text->Length == 2) {
+		this->exec_ctrl->setStartingAddress(this->starting_address_textbox->Text);
+		return;
+	}
+
+	if (this->starting_address_textbox->Text->Length == 1) {
+		this->starting_address_textbox->Text = "0" + this->starting_address_textbox->Text;
+		return;
+	}
+
+	if (this->starting_address_textbox->Text->Length == 0) {
+		this->starting_address_textbox->Text = "00";
+		return;
+	}
+}
+
+System::String^ VoleMachine::MainForm::GetInstructionDescription(OP_CODE opcode, System::String^ first_operand, System::String^ second_operand, System::String^ third_operand) {
 	switch (opcode) {
 	case OP_CODE::LOAD_M:
-		return "Copy from memory " + secondOperand + thirdOperand + " to register " + firstOperand;
+		return "Copy the content from memory address " + second_operand + third_operand + " to register " + first_operand;
 	case OP_CODE::LOAD_V:
-		return "Copy bit-string " + secondOperand + thirdOperand + " to register " + firstOperand;
+		return "Copy the value " + second_operand + third_operand + " to register " + first_operand;
 	case OP_CODE::STORE:
-		return "Store register " + firstOperand + " in memory " + secondOperand + thirdOperand;
-	case OP_CODE::JUMP_EQ:
-		return "Jump to " + secondOperand + thirdOperand + " if register " + firstOperand + " == 0";
-	case OP_CODE::JUMP_GT:
-		return "Jump to " + secondOperand + thirdOperand + " if register " + firstOperand + " > 0";
+		return "Store the content of register " + first_operand + " in memory address " + second_operand + third_operand;
 	case OP_CODE::MOVE:
-		return "Move register " + secondOperand + " to register " + thirdOperand;
+		return "Move the content of register " + second_operand + " to register " + third_operand;
 	case OP_CODE::ADD:
-		return "Add registers " + secondOperand + " and " + thirdOperand + " to register " + firstOperand;
+		return "Add (in two's complement representation) the contents of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
 	case OP_CODE::ADD_F:
-		return "Add (float) registers " + secondOperand + " and " + thirdOperand + " to register " + firstOperand;
+		return "Add (in floating point representation) the contents of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
 	case OP_CODE::BIT_OR:
-		return "OR registers " + secondOperand + " and " + thirdOperand + " to register " + firstOperand;
+		return "Bitwise OR the contents of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
 	case OP_CODE::BIT_AND:
-		return "AND registers " + secondOperand + " and " + thirdOperand + " to register " + firstOperand;
+		return "Bitwise AND the contents of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
 	case OP_CODE::BIT_XOR:
-		return "XOR registers " + secondOperand + " and " + thirdOperand + " to register " + firstOperand;
+		return "Bitwise XOR the conetnts of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
 	case OP_CODE::ROTATE:
-		return "Rotate register " + firstOperand + " by " + secondOperand + " steps";
+		return "Rotate register " + first_operand + " by " + second_operand + " steps cyclically right";
+	case OP_CODE::JUMP_EQ:
+		return "Jump to the instruction at memory address " + second_operand + third_operand + " if register " + first_operand + " contains the value 00";
 	case OP_CODE::HALT:
 		return "Halt execution";
+	case OP_CODE::JUMP_GT:
+		return "Jump to the instruction at memory address" + second_operand + third_operand + " if register " + first_operand + " contains a value greater than 00";
+	case OP_CODE::UNKNOWN:
 	default:
-		return "Unknown opcode.";
+		return "Unknown instruction. Do nothing and advance to the next instruction.";
 	}
 }
-

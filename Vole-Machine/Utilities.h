@@ -4,12 +4,13 @@
 #include <wincrypt.h>
 
 namespace Utilities {
-	class InstructionValidation {
+	class Validation {
 	public:
 		static bool isValidInstruction(std::string& instruction_string);
 		static bool isValidMemoryAddress(std::string& address);
 		static bool isValidRegisterIndex(char& index);
 		static bool isValidHexChar(char& ch);
+		static bool isValidMemoryCellValue(std::string& cell_value);
 	};
 
 	class Conversion {
@@ -19,7 +20,6 @@ namespace Utilities {
 		
 		static std::string convertHexToDec(const std::string& hex);
 		static std::string convertDecToHex(const int integer);
-
 		static std::string convertIntToBin(int integer);
 
 		static std::string convertFracToBin(double fraction, int precision = 8);

@@ -2,6 +2,8 @@
 #include "Memory.h"
 #include "Utilities.h"
 #include <iostream>
+#include <algorithm>
+
 CPU::CPU() {
 	this->program_counter = 0;
 	this->instruction_register = "";
@@ -19,17 +21,17 @@ void CPU::runInstructions(Memory& memory) {
 
 void CPU::fetch(Memory& memory) {
 	if (this->program_counter == 255) {
-		this->program_counter = 0;
+		this->program_counter = this->starting_address;
 	}
 
 	std::string instruction1 = memory.getValueAt(this->program_counter);
 	std::string instruction2 = memory.getValueAt(this->program_counter + 1);
 	this->instruction_register = instruction1 + instruction2;
-	this->program_counter += (this->program_counter == 254) ? 1 : 2; // TODO: starting address
+	this->program_counter += (this->program_counter == 254) ? 1 : 2;
 }
 
 std::vector<int> CPU::decode() {
-	if (!Utilities::InstructionValidation::isValidInstruction(this->instruction_register)) {
+	if (!Utilities::Validation::isValidInstruction(this->instruction_register)) {
 		return {};
 	}
 
@@ -72,9 +74,19 @@ bool CPU::isInstructionPending() {
 	return !this->instruction_register.empty();
 }
 
-void CPU::resetProgram() {
-	this->program_counter = 0; // set it to starting address
+void CPU::resetProgram(int starting_address) {
+	this->program_counter = starting_address; // set it to starting address
+	this->starting_address = starting_address;
 	this->instruction_register.clear();
+}
+
+int CPU::getStartingAddress() {
+	return this->starting_address;
+}
+
+void CPU::setStartingAddress(int starting_address) {
+	this->starting_address = starting_address;
+	this->program_counter = max(this->program_counter, starting_address);
 }
 
 std::string CPU::getRegisterValueAt(int index) {
@@ -83,6 +95,10 @@ std::string CPU::getRegisterValueAt(int index) {
 
 void CPU::setRegisterValueAt(int index, std::string& value) {
 	this->registers[index].setValue(value);
+}
+
+void CPU::setProgramCounter(int address) {
+	this->program_counter = address;
 }
 
 size_t& CPU::getProgramCounter() {

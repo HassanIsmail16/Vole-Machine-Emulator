@@ -44,28 +44,31 @@ void ExecutionController::screenUpdated(std::string value) {
 }
 
 void ExecutionController::runAllInstructions() {
+	this->all_instructions = true;
 	this->is_running = true;
 	while (true) {
 		this->machine->getCPU().fetch(this->machine->getMemory());
-		this->machine->getCPU().execute(this->machine->getMemory(), this->machine->getCPU().decode());
+		this->executeCurrentInstruction();
 
 		if (this->machine->getCPU().isHalt()) {
 			program_halted();
 			break;
 		}
 
-		if (this->getCurrentAddress() == "FF") { // TODO: add validation for FE if starting address is odd
+		if (this->getCurrentAddress() == "FF") {
 			reached_end_of_memory();
 			break;
 		}
 	}
 	this->all_instructions_executed();
 	this->is_running = false;
+	this->all_instructions = false;
 }
 
 void ExecutionController::fetchInstruction() {
-	if (this->getCurrentAddress() == "FF") { // TODO: add validation for FE if starting address is odd
+	if (this->getCurrentAddress() == "FF") {
 		reached_end_of_memory();
+		return;
 	}
 
 	this->machine->getCPU().fetch(this->machine->getMemory());
@@ -79,12 +82,12 @@ void ExecutionController::executeCurrentInstruction() {
 
 	std::vector<int> instruction = this->machine->getCPU().decode();
 	
-	if (!Utilities::InstructionValidation::isValidInstruction(this->machine->getCPU().getCurrentInstruction())) {
+	if (!Utilities::Validation::isValidInstruction(this->machine->getCPU().getCurrentInstruction())) {
 		return;
 	}
 
 
-	if (this->machine->getCPU().isHalt()) {
+	if (this->machine->getCPU().isHalt() && !this->all_instructions) {
 		program_halted();
 	}
 
@@ -120,7 +123,7 @@ void ExecutionController::pauseInstructions() {
 }
 
 void ExecutionController::resetProgram() {
-	this->machine->getCPU().resetProgram(); // TODO: starting address
+	this->machine->getCPU().resetProgram(this->starting_address);
 	fetchedInstruction();
 }
 
@@ -157,7 +160,51 @@ System::Nullable<int> ExecutionController::getUpdatedAddress() {
 	return System::Nullable<int>();
 }
 
-
-std::vector<int> ExecutionController::decodeInstruction() {
-	return this->machine->getCPU().decode();
+void ExecutionController::setStartingAddress(int address) {
+	this->starting_address = address;
 }
+
+void ExecutionController::setStartingAddress(System::String^ address) {
+	this->starting_address = stoi(
+		Utilities::Conversion::convertHexToDec(
+			Utilities::Conversion::convertSystemStringToStdString(address)
+		)
+	);
+
+	this->machine->getCPU().setStartingAddress(this->starting_address);
+}
+
+void ExecutionController::setCurrentAddress(int address) {
+	this->machine->getCPU().setProgramCounter(address);
+}
+
+int ExecutionController::getStartingAddress() {
+	return this->starting_address;
+}
+
+System::Collections::Generic::List<int>^ ExecutionController::decodeInstruction() {
+	if (!this->machine->getCPU().isInstructionPending()) {
+		return nullptr;
+	}
+
+	System::Collections::Generic::List<int>^ result = gcnew System::Collections::Generic::List<int>();
+	std::string current_instruction = this->machine->getCPU().getCurrentInstruction();
+
+	if (!Utilities::Validation::isValidInstruction(current_instruction)) {
+		
+		for (int i = 0; i < 4; i++) {
+			result->Add(stoi(current_instruction.substr(i, 1), nullptr, 16));
+		}
+
+		return result;
+	} // handle invalid instructions
+
+
+	std::vector<int> temp = machine->getCPU().decode();
+
+	for (auto& it : temp) {
+		result->Add(it);
+	}
+
+	return result;
+} // TODO: make return type nullable
