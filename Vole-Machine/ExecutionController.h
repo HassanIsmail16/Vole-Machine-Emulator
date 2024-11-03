@@ -81,7 +81,8 @@ public:
 
 	void setStartingAddress(int address);
 	void setStartingAddress(System::String^ address);
-
+	void setCurrentAddress(int address);
+	int getStartingAddress();
 private:
 	System::Windows::Forms::Timer^ instruction_timer;
 	void OnTimerTick(Object^ sender, System::EventArgs^ e);

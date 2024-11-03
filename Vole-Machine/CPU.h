@@ -32,6 +32,7 @@ public:
     std::string getRegisterValueAt(int index);
     void setRegisterValueAt(int index, std::string& value);
 
+    void setProgramCounter(int address);
     size_t& getProgramCounter();
     std::string getCurrentInstruction();
 };

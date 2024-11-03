@@ -221,6 +221,65 @@ System::Void VoleMachine::MainForm::memory_list_KeyPress(Object^ sender, KeyPres
 	}
 }
 
+System::Void VoleMachine::MainForm::memory_list_OnCellClick(Object^ sender, DataGridViewCellEventArgs^ e) {
+	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
+		int row = e->RowIndex;
+		this->exec_ctrl->setCurrentAddress(row * 2);
+
+		String^ hex_address = this->memory_list->Rows[row]->Cells[0]->Value->ToString();
+		this->highlightAddress(hex_address);
+		this->current_address_textbox->Text = hex_address;
+	}
+}
+
+System::Void VoleMachine::MainForm::memory_list_OnCellMouseEnter(Object^ sender, DataGridViewCellEventArgs^ e) {
+	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
+		this->memory_list->Cursor = Cursors::Hand;
+		this->memory_list->Rows[e->RowIndex]->Cells[0]->Style->BackColor = Color::Azure;
+		this->memory_list->Rows[e->RowIndex]->Cells[3]->Style->BackColor = Color::Azure;
+	} else {
+		this->memory_list->Cursor = Cursors::IBeam;
+		this->memory_list->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Style->BackColor = Color::AntiqueWhite;
+	}
+}
+
+System::Void VoleMachine::MainForm::memory_list_OnCellMouseLeave(Object^ sender, DataGridViewCellEventArgs^ e) {
+	this->memory_list->Cursor = Cursors::Default;
+	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
+		if (last_highlighted_address == this->memory_list->Rows[e->RowIndex]->Cells[0]->Value->ToString()) {
+			this->memory_list->Rows[e->RowIndex]->Cells[0]->Style->BackColor = Color::LightBlue;
+			this->memory_list->Rows[e->RowIndex]->Cells[3]->Style->BackColor = Color::LightBlue;
+		} else {
+			this->memory_list->Rows[e->RowIndex]->Cells[0]->Style->BackColor = SystemColors::Control;
+			this->memory_list->Rows[e->RowIndex]->Cells[3]->Style->BackColor = SystemColors::Control;
+		}
+	} else {
+		this->memory_list->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Style->BackColor = Color::White;
+	}
+}
+
+System::Void VoleMachine::MainForm::memory_list_ScrollUpdate() {
+	int current_address = stoi(
+		Utilities::Conversion::convertHexToDec(
+			Utilities::Conversion::convertSystemStringToStdString(this->exec_ctrl->getCurrentAddress())
+		)
+	);
+
+	if (current_address % 20 == 0) {
+		this->memory_list->FirstDisplayedScrollingRowIndex += 10;
+	}
+
+	int starting_address = stoi(
+		Utilities::Conversion::convertHexToDec(
+			Utilities::Conversion::convertSystemStringToStdString(this->starting_address_textbox->Text)
+		)
+	);
+
+	if (current_address == starting_address) {
+		this->memory_list->FirstDisplayedScrollingRowIndex = max(starting_address / 2 - 10, 0);
+	}
+}
+
 System::Void VoleMachine::MainForm::OnMemoryUpdated() {
 	if (this->memory_list->InvokeRequired) {
 		this->Invoke(gcnew MemoryController::MemoryUpdatedEventHandler(this,
@@ -300,6 +359,7 @@ System::Void VoleMachine::MainForm::OnFetchInstruction() {
 	String^ current_address = this->exec_ctrl->getCurrentAddress();
 	this->current_address_textbox->Text = current_address;
 
+	this->memory_list_ScrollUpdate();
 	this->highlightAddress(current_address);
 
 	this->current_instruction_textbox->Clear();
@@ -368,6 +428,7 @@ System::Void VoleMachine::MainForm::OnHaltProgram() {
 	this->exec_ctrl->pauseInstructions();
 	this->exec_ctrl->resetProgram();
 	this->resetRegistersColor();
+	this->memory_list_ScrollUpdate();
 	MessageBox::Show("Program halted.", "Program Halted", MessageBoxButtons::OK, MessageBoxIcon::Information);
 }
 
@@ -376,6 +437,7 @@ System::Void VoleMachine::MainForm::OnReachedEndOfMemory() {
 	this->exec_ctrl->pauseInstructions();
 	this->exec_ctrl->resetProgram();
 	this->resetRegistersColor();
+	this->memory_list_ScrollUpdate();
 	MessageBox::Show("Program reached end of memory.", "Reached End of Memory", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 }
 
@@ -536,6 +598,7 @@ System::Void VoleMachine::MainForm::updateStartingAddress() {
 		} // update program counter
 
 		this->exec_ctrl->setStartingAddress(text);
+		this->memory_list_ScrollUpdate();
 		return;
 	}
 
@@ -550,6 +613,7 @@ System::Void VoleMachine::MainForm::updateStartingAddress() {
 System::Void VoleMachine::MainForm::starting_address_textbox_SelectStartingAddressText() {
 	this->starting_address_textbox->SelectAll();
 }
+
 
 System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e) {
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
@@ -642,6 +706,7 @@ System::Void VoleMachine::MainForm::fetch_Click(System::Object^ sender, System::
 
 System::Void VoleMachine::MainForm::reset_pc_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->exec_ctrl->resetProgram();
+	this->memory_list_ScrollUpdate();
 }
 
 System::Void VoleMachine::MainForm::clear_screen_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -842,4 +907,3 @@ System::String^ VoleMachine::MainForm::GetInstructionDescription(OP_CODE opcode,
 		return "Unknown instruction. Do nothing and advance to the next instruction.";
 	}
 }
-

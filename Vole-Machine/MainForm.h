@@ -27,6 +27,11 @@ namespace VoleMachine {
 			this->initializeMemoryList();
 			this->memory_list->EditingControlShowing += gcnew System::Windows::Forms::DataGridViewEditingControlShowingEventHandler(this, &MainForm::memory_list_EditingControlShowing);
 			this->memory_list->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MainForm::memory_list_KeyPress);
+			this->memory_list->CellClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_OnCellClick);
+			this->memory_list->CellMouseEnter += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_OnCellMouseEnter);
+			this->memory_list->CellMouseLeave += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_OnCellMouseLeave);
+			this->memory_list->DefaultCellStyle->SelectionBackColor = Color::FromArgb(255, 255, 220, 180);
+			this->memory_list->DefaultCellStyle->SelectionForeColor = Color::Black;
 			this->mem_ctrl->memory_updated += gcnew MemoryController::MemoryUpdatedEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdated);
 			this->mem_ctrl->memory_updated_at_address += gcnew MemoryController::MemoryUpdatedAtAddressEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdatedAtAddress);
 			this->exec_ctrl->fetched_instruction += gcnew ExecutionController::InstructionFetchedEventHandler(this, &VoleMachine::MainForm::OnFetchInstruction);
@@ -42,7 +47,6 @@ namespace VoleMachine {
 			this->color_reset_queue = gcnew System::Collections::Generic::Queue<System::Tuple<System::DateTime, int, int>^>();
 			this->reg_ctrl->register_updated += gcnew RegistersController::RegisterUpdatedEventHandler(this, &VoleMachine::MainForm::OnRegisterUpdated);
 			this->reg_ctrl->register_reset += gcnew RegistersController::RegisterResetEvenHandler(this, &VoleMachine::MainForm::OnResetRegisters);
-			this->dark_mode->Click += gcnew System::EventHandler(this, &MainForm::dark_mode_Click);
 			this->decode->Click += gcnew System::EventHandler(this, &VoleMachine::MainForm::decode_Click);
 			this->starting_address_textbox->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &VoleMachine::MainForm::starting_address_textbox_KeyPress);
 			this->starting_address_textbox->CharacterCasing = CharacterCasing::Upper;
@@ -133,7 +137,7 @@ namespace VoleMachine {
 
 	private: System::Windows::Forms::Button^ execute;
 	private: System::Windows::Forms::TextBox^ instruction_decode_textbox;
-	private: System::Windows::Forms::Button^ dark_mode;
+
 	private: System::Windows::Forms::Label^ credits_label;
 	private: System::Windows::Forms::Button^ reset_pc;
 private: System::Windows::Forms::TextBox^ starting_address_textbox;
@@ -155,7 +159,6 @@ private: System::Windows::Forms::ToolTip^ starting_address_textbox_tooltip;
 			this->starting_address_label = (gcnew System::Windows::Forms::Label());
 			this->starting_address_textbox = (gcnew System::Windows::Forms::TextBox());
 			this->credits_label = (gcnew System::Windows::Forms::Label());
-			this->dark_mode = (gcnew System::Windows::Forms::Button());
 			this->clear_screen = (gcnew System::Windows::Forms::Button());
 			this->screen_label = (gcnew System::Windows::Forms::Label());
 			this->screen_panel = (gcnew System::Windows::Forms::Panel());
@@ -216,7 +219,6 @@ private: System::Windows::Forms::ToolTip^ starting_address_textbox_tooltip;
 			this->main_panel->Controls->Add(this->starting_address_label);
 			this->main_panel->Controls->Add(this->starting_address_textbox);
 			this->main_panel->Controls->Add(this->credits_label);
-			this->main_panel->Controls->Add(this->dark_mode);
 			this->main_panel->Controls->Add(this->clear_screen);
 			this->main_panel->Controls->Add(this->screen_label);
 			this->main_panel->Controls->Add(this->screen_panel);
@@ -262,16 +264,6 @@ private: System::Windows::Forms::ToolTip^ starting_address_textbox_tooltip;
 			this->credits_label->Size = System::Drawing::Size(382, 13);
 			this->credits_label->TabIndex = 13;
 			this->credits_label->Text = L"Made with (not that much) love by: Hassan Ali, Abdullah Ali, Momen Abdelkader";
-			// 
-			// dark_mode
-			// 
-			this->dark_mode->Location = System::Drawing::Point(836, 555);
-			this->dark_mode->Name = L"dark_mode";
-			this->dark_mode->Size = System::Drawing::Size(110, 23);
-			this->dark_mode->TabIndex = 12;
-			this->dark_mode->Text = L"Dark Mode";
-			this->dark_mode->UseVisualStyleBackColor = true;
-			this->dark_mode->Click += gcnew System::EventHandler(this, &MainForm::dark_mode_Click);
 			// 
 			// clear_screen
 			// 
@@ -739,6 +731,10 @@ private: System::Windows::Forms::ToolTip^ starting_address_textbox_tooltip;
 		System::Void memory_list_KeyDown(Object^ sender, KeyEventArgs^ e);
 		System::Void memory_list_EditingControlShowing(Object^ sender, DataGridViewEditingControlShowingEventArgs^ e);
 		System::Void memory_list_KeyPress(Object^ sender, KeyPressEventArgs^ e);
+		System::Void memory_list_OnCellClick(Object^ sender, DataGridViewCellEventArgs^ e);
+		System::Void memory_list_OnCellMouseEnter(Object^ sender, DataGridViewCellEventArgs^ e);
+		System::Void memory_list_OnCellMouseLeave(Object^ sender, DataGridViewCellEventArgs^ e);
+		System::Void memory_list_ScrollUpdate();
 
 		System::Void OnMemoryUpdated();
 		System::Void OnMemoryUpdatedAtAddress(int index);
@@ -747,7 +743,6 @@ private: System::Windows::Forms::ToolTip^ starting_address_textbox_tooltip;
 		System::Void OnExecuteInstruction();
 
 		System::Void OnRegisterUpdated();
-
 		System::Void OnResetRegisters();
 		System::Void OnUpdateScreen(std::string value);
 		System::Void OnChangeSpeed();
@@ -765,6 +760,7 @@ private: System::Windows::Forms::ToolTip^ starting_address_textbox_tooltip;
 		System::Void starting_address_textbox_Enter(System::Object^ sender, System::EventArgs^ e);
 		System::Void updateStartingAddress();
 		System::Void starting_address_textbox_SelectStartingAddressText();
+
 		int memory_list_selected_cell_row = 0;
 		int memory_list_selected_cell_col = 1;
 		Machine* machine;
@@ -788,8 +784,6 @@ private: System::Windows::Forms::ToolTip^ starting_address_textbox_tooltip;
 	private: System::Void play_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void run_until_halt_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void step_Click(System::Object^ sender, System::EventArgs^ e);
-
-	private: System::Void dark_mode_Click(System::Object^ sender, System::EventArgs^ e){}
 
 	private: System::Void decode_Click(System::Object^ sender, System::EventArgs^ e);
 

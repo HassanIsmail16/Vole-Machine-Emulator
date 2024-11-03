@@ -174,6 +174,14 @@ void ExecutionController::setStartingAddress(System::String^ address) {
 	this->machine->getCPU().setStartingAddress(this->starting_address);
 }
 
+void ExecutionController::setCurrentAddress(int address) {
+	this->machine->getCPU().setProgramCounter(address);
+}
+
+int ExecutionController::getStartingAddress() {
+	return this->starting_address;
+}
+
 System::Collections::Generic::List<int>^ ExecutionController::decodeInstruction() {
 	if (!this->machine->getCPU().isInstructionPending()) {
 		return nullptr;

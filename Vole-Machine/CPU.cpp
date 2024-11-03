@@ -97,6 +97,10 @@ void CPU::setRegisterValueAt(int index, std::string& value) {
 	this->registers[index].setValue(value);
 }
 
+void CPU::setProgramCounter(int address) {
+	this->program_counter = address;
+}
+
 size_t& CPU::getProgramCounter() {
 	return program_counter;
 }
