@@ -578,6 +578,7 @@ System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender,
 		String^ filename = file_dialog->FileName;
 		std::string std_filename = Utilities::Conversion::convertSystemStringToStdString(filename); 
 		this->mem_ctrl->loadFromFile(std_filename);
+		this->exec_ctrl->resetProgram();
 		this->reg_ctrl->resetRegisters();
 		MessageBox::Show("File loaded successfully!", "File Loaded", MessageBoxButtons::OK, MessageBoxIcon::Information);
 		this->machine->displayMemory(); // TODO: remove 

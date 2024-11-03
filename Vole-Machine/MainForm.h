@@ -61,7 +61,6 @@ namespace VoleMachine {
 			this->color_reset_queue = gcnew System::Collections::Generic::Queue<System::Tuple<System::DateTime, int, int>^>();
 		#pragma endregion
 
-
 		#pragma region Decode and Start Address Events Subscriptions
 			this->decode->Click += gcnew System::EventHandler(this, &VoleMachine::MainForm::decode_Click);
 			this->starting_address_textbox->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &VoleMachine::MainForm::starting_address_textbox_KeyPress);
