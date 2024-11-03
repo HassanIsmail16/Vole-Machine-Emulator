@@ -760,6 +760,6 @@ private: System::Windows::Forms::TextBox^ starting_address_textbox;
 
 	private: System::String^ GetInstructionDescription(OP_CODE opcode, System::String^ firstOperand, System::String^ secondOperand, System::String^ thirdOperand);
 	private: void UpdateOperandLabels(OP_CODE opcode);
-	private: void UpdateOperandsAndDescription(const std::vector<int>& decodedInstruction, OP_CODE opcode);
+	private: void UpdateOperandsAndDescription(System::Collections::Generic::List<int>^ decodedInstruction, OP_CODE opcode);
 };
 }

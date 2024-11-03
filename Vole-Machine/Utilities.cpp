@@ -68,13 +68,13 @@ std::string Utilities::Conversion::convertHexToDec(const std::string& hex) {
 	return std::to_string(decimalValue);
 }
 
-std::string Utilities::Conversion::convertDecToHex(const int integer) {
+std::string convertDecToHex(const int integer) {
 	std::stringstream stream;
 	stream << std::hex << (integer & 0xFF);
 	std::string result = stream.str();
 	std::transform(result.begin(), result.end(), result.begin(), ::toupper);
 
-	return result.length() == 1 ? "0" + result : result;
+	return result;
 }
 
 std::string Utilities::Conversion::convertIntToBin(int integer) {
