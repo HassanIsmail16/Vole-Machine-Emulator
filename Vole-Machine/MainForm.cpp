@@ -715,9 +715,15 @@ System::Void VoleMachine::MainForm::run_until_halt_Click(System::Object^ sender,
 
 System::Void VoleMachine::MainForm::step_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->exec_ctrl->step();
+	this->decodeInstruction();
 }
 
+
 System::Void VoleMachine::MainForm::decode_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->decodeInstruction();
+}
+
+System::Void VoleMachine::MainForm::decodeInstruction() {
 	auto decoded_instruction = exec_ctrl->decodeInstruction();
 
 	if (decoded_instruction == nullptr) {

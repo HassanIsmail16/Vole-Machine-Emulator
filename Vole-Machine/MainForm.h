@@ -823,6 +823,7 @@ namespace VoleMachine {
 			System::Void run_until_halt_Click(System::Object^ sender, System::EventArgs^ e);
 			System::Void step_Click(System::Object^ sender, System::EventArgs^ e);
 			System::Void decode_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void decodeInstruction();
 			System::Void ResetInstructionReg();
 			System::String^ GetInstructionDescription(OP_CODE opcode, System::String^ firstOperand, System::String^ secondOperand, System::String^ thirdOperand);
 			void UpdateOperandLabels(OP_CODE opcode);

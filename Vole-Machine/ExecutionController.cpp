@@ -135,8 +135,6 @@ void ExecutionController::resetInstructionRegister() {
 }
 
 
-
-
 System::String^ ExecutionController::getCurrentAddress() {
 	return this->machine->getCPU().getProgramCounter().ToString("X2");
 }
