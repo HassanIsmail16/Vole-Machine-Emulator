@@ -40,15 +40,19 @@ public:
 	delegate void ReachedEndOfMemoryEventHandler();
 	ReachedEndOfMemoryEventHandler^ reached_end_of_memory;
 
+	delegate void ResetInstructionRegEventHandler();
+	event ResetInstructionRegEventHandler^ resetInstructionReg;
+
 	void runAllInstructions();
 	void fetchInstruction();
 	System::Collections::Generic::List<int>^ decodeInstruction();
 	void executeCurrentInstruction();
 	void step();
 	void playInstructions();
-	void pauseInstructions();
+	void pauseInstructions(); 
 
 	void resetProgram();
+	void resetInstructionRegister();
 
 	System::String^ getCurrentAddress();
 	System::String^ getCurrentInstruction();

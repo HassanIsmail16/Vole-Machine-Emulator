@@ -69,6 +69,7 @@ namespace VoleMachine {
 			this->starting_address_textbox->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MainForm::starting_address_textbox_KeyDown);
 			this->starting_address_textbox->Leave += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Leave);
 			this->starting_address_textbox->Enter += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Enter);
+			exec_ctrl->resetInstructionReg += gcnew ExecutionController::ResetInstructionRegEventHandler(this, &MainForm::ResetInstructionReg);
 			this->starting_address_textbox->MaxLength = 2;
 			this->starting_address_textbox_tooltip->AutoPopDelay = 5000;
 			this->starting_address_textbox_tooltip->InitialDelay = 500;
@@ -841,6 +842,7 @@ namespace VoleMachine {
 
 		private: System::Void decode_Click(System::Object^ sender, System::EventArgs^ e);
 
+		private: System::Void ResetInstructionReg();
 		private: System::String^ GetInstructionDescription(OP_CODE opcode, System::String^ firstOperand, System::String^ secondOperand, System::String^ thirdOperand);
 		private: void UpdateOperandLabels(OP_CODE opcode);
 		private: void UpdateOperandsAndDescription(System::Collections::Generic::List<int>^ decodedInstruction, OP_CODE opcode);

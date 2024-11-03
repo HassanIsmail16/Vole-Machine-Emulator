@@ -108,3 +108,8 @@ size_t& CPU::getProgramCounter() {
 std::string CPU::getCurrentInstruction() {
 	return this->instruction_register;
 }
+
+void CPU::resetInstructionRegister() {
+	this->instruction_register.clear();
+}
+

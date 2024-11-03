@@ -122,10 +122,20 @@ void ExecutionController::pauseInstructions() {
 	}
 }
 
+
 void ExecutionController::resetProgram() {
 	this->machine->getCPU().resetProgram(this->starting_address);
+	resetInstructionRegister();
 	fetchedInstruction();
+	this->resetInstructionReg();
 }
+
+void ExecutionController::resetInstructionRegister() {
+	this->machine->getCPU().resetInstructionRegister();
+}
+
+
+
 
 System::String^ ExecutionController::getCurrentAddress() {
 	return this->machine->getCPU().getProgramCounter().ToString("X2");

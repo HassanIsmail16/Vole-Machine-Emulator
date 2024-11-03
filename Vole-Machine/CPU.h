@@ -26,6 +26,9 @@ public:
     void halt();
     bool isInstructionPending();
     void resetProgram(int starting_address = 0);
+
+    void resetInstructionRegister();
+
     int getStartingAddress();
     void setStartingAddress(int starting_address);
 

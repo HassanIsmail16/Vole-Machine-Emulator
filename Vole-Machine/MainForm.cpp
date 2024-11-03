@@ -677,6 +677,14 @@ System::Void VoleMachine::MainForm::decode_Click(System::Object^ sender, System:
 	UpdateOperandsAndDescription(decoded_instruction, opcode);
 }
 
+System::Void VoleMachine::MainForm::ResetInstructionReg() {
+	this->opcode_textbox->Clear();
+	this->first_operand_textbox->Clear();
+	this->second_operand_textbox->Clear();
+	this->third_operand_textbox->Clear();
+	this->instruction_decode_textbox->Clear();
+}
+
 void VoleMachine::MainForm::UpdateOperandLabels(OP_CODE opcode) {
 	switch (opcode) {
 	case OP_CODE::LOAD_M:
@@ -795,7 +803,7 @@ System::String^ VoleMachine::MainForm::GetInstructionDescription(OP_CODE opcode,
 	case OP_CODE::BIT_XOR:
 		return "Bitwise XOR the conetnts of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
 	case OP_CODE::ROTATE:
-		return "Rotate register " + first_operand + " by " + second_operand + " steps cyclically right";
+		return "Rotate register " + first_operand + " by " + third_operand + " steps cyclically right";
 	case OP_CODE::JUMP_EQ:
 		return "Jump to the instruction at memory address " + second_operand + third_operand + " if register " + first_operand + " contains the value 00";
 	case OP_CODE::HALT:
