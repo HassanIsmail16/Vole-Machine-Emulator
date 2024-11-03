@@ -40,7 +40,7 @@ System::Void VoleMachine::MainForm::initializeRegistersList() {
 			)
 		);
 
-		item->SubItems->Add("0x00");
+		item->SubItems->Add("00");
 		item->SubItems->Add("00000000");
 		item->SubItems->Add("0");
 		item->SubItems->Add("0");
@@ -487,7 +487,12 @@ System::Void VoleMachine::MainForm::OnRegisterUpdated() {
 		this->registers_list->Items[updated_register.Value]->BackColor = System::Drawing::Color::LightGreen;
 
 		// Get Values
-		System::String^ hex_value = "0x" + this->reg_ctrl->getHexRegisterValueAt(updated_register.Value);
+		System::String^ hex_value = this->reg_ctrl->getHexRegisterValueAt(updated_register.Value);
+
+		if (hex_value->Length == 1) {
+			hex_value = "0" + hex_value;
+		}
+
 		System::String^ binary_value = this->reg_ctrl->getBinRegisterValueAt(updated_register.Value);
 		System::String^ int_value = this->reg_ctrl->getIntRegisterValueAt(updated_register.Value);
 		System::String^ float_value = this->reg_ctrl->getFloatRegisterValueAt(updated_register.Value);
@@ -505,7 +510,7 @@ System::Void VoleMachine::MainForm::OnAllRegistersUpdated() {
 		this->resetRegistersColor();
 
 		// Get Values
-		System::String^ hex_value = "0x" + this->reg_ctrl->getHexRegisterValueAt(i);
+		System::String^ hex_value = this->reg_ctrl->getHexRegisterValueAt(i);
 		System::String^ binary_value = this->reg_ctrl->getBinRegisterValueAt(i);
 		System::String^ int_value = this->reg_ctrl->getIntRegisterValueAt(i);
 		System::String^ float_value = this->reg_ctrl->getFloatRegisterValueAt(i);
@@ -524,7 +529,7 @@ System::Void VoleMachine::MainForm::OnResetRegisters() {
 	this->resetRegistersColor();
 
 	for (int i = 0; i < 16; i++) {
-		this->registers_list->Items[i]->SubItems[1]->Text = "0x00";
+		this->registers_list->Items[i]->SubItems[1]->Text = "00";
 		this->registers_list->Items[i]->SubItems[2]->Text = "00000000";
 		this->registers_list->Items[i]->SubItems[3]->Text = "0";
 		this->registers_list->Items[i]->SubItems[4]->Text = "0";
