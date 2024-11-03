@@ -841,17 +841,17 @@ void VoleMachine::MainForm::UpdateOperandsAndDescription(System::Collections::Ge
 System::String^ VoleMachine::MainForm::GetInstructionDescription(OP_CODE opcode, System::String^ first_operand, System::String^ second_operand, System::String^ third_operand) {
 	switch (opcode) {
 	case OP_CODE::LOAD_M:
-		return "Copy the content from memory address " + second_operand + third_operand + " to register " + first_operand;
+		return "LOAD register " + first_operand + " with the content of memory address at " + second_operand + third_operand;
 	case OP_CODE::LOAD_V:
-		return "Copy the value " + second_operand + third_operand + " to register " + first_operand;
+		return "LOAD register " + first_operand + " with the value " + second_operand + third_operand;
 	case OP_CODE::STORE:
-		return "Store the content of register " + first_operand + " in memory address " + second_operand + third_operand;
+		return "STORE the content of register " + first_operand + " in memory address " + second_operand + third_operand;
 	case OP_CODE::MOVE:
-		return "Move the content of register " + second_operand + " to register " + third_operand;
+		return "MOVE the content of register " + second_operand + " to register " + third_operand;
 	case OP_CODE::ADD:
-		return "Add (in two's complement representation) the contents of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
+		return "ADD the contents of registers " + second_operand + " and " + third_operand + " as though they were two’s complement representations and leave the result in register " + first_operand;
 	case OP_CODE::ADD_F:
-		return "Add (in floating point representation) the contents of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
+		return "ADD the contents of registers " + second_operand + " and " + third_operand + " as though they represented values in floating-point notation and leave the floating-point result in register " + first_operand;
 	case OP_CODE::BIT_OR:
 		return "Bitwise OR the contents of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
 	case OP_CODE::BIT_AND:
@@ -859,13 +859,13 @@ System::String^ VoleMachine::MainForm::GetInstructionDescription(OP_CODE opcode,
 	case OP_CODE::BIT_XOR:
 		return "Bitwise XOR the conetnts of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
 	case OP_CODE::ROTATE:
-		return "Rotate register " + first_operand + " by " + third_operand + " steps cyclically right";
+		return "ROTATE register " + first_operand + " steps cyclically right " + third_operand + " steps.";
 	case OP_CODE::JUMP_EQ:
-		return "Jump to the instruction at memory address " + second_operand + third_operand + " if register " + first_operand + " contains the value 00";
+		return "JUMP to the instruction at memory address " + second_operand + third_operand + " if the content of register " + first_operand + " equals the content of register 0";
 	case OP_CODE::HALT:
 		return "Halt execution";
 	case OP_CODE::JUMP_GT:
-		return "Jump to the instruction at memory address" + second_operand + third_operand + " if register " + first_operand + " contains a value greater than 00";
+		return "Jump to the instruction at memory address" + second_operand + third_operand + " if the content of register " + first_operand + " is greater than the content of register 0 (In Two's Complement)";
 	case OP_CODE::UNKNOWN:
 	default:
 		return "Unknown instruction. Do nothing and advance to the next instruction.";
