@@ -253,6 +253,8 @@ System::Void VoleMachine::MainForm::OnFetchInstruction() {
 	String^ current_address = this->exec_ctrl->getCurrentAddress();
 	this->current_address_textbox->Text = current_address;
 
+	this->highlightAddress(current_address);
+
 	this->current_instruction_textbox->Clear();
 	String^ current_instruction = this->exec_ctrl->getCurrentInstruction();
 	this->current_instruction_textbox->Text = current_instruction;
@@ -364,6 +366,39 @@ System::Void VoleMachine::MainForm::memory_list_ResetCellColor(Object^ sender, E
 	}
 }
 
+System::Void VoleMachine::MainForm::highlightAddress(String^ address) {
+	this->unHiglightLastAdderss();
+	int numeric_address = stoi(
+		Utilities::Conversion::convertHexToDec(
+			Utilities::Conversion::convertSystemStringToStdString(address)
+		)
+	);
+
+	int row = numeric_address / 2;
+	
+	this->memory_list->Rows[row]->Cells[0]->Style->BackColor = Color::LightBlue;
+	this->memory_list->Rows[row]->Cells[3]->Style->BackColor = Color::LightBlue;
+
+	this->last_highlighted_address = address;
+}
+
+System::Void VoleMachine::MainForm::unHiglightLastAdderss() {
+	if (this->last_highlighted_address->Length == 0) {
+		return;
+	}
+
+	int numeric_address = stoi(
+		Utilities::Conversion::convertHexToDec(
+			Utilities::Conversion::convertSystemStringToStdString(this->last_highlighted_address)
+		)
+	);
+
+	int row = numeric_address / 2;
+
+	this->memory_list->Rows[row]->Cells[0]->Style->BackColor = SystemColors::Control;
+	this->memory_list->Rows[row]->Cells[3]->Style->BackColor = SystemColors::Control;
+}
+
 System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e) {
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
 		e->AdvancedBorderStyle->Left = DataGridViewAdvancedCellBorderStyle::None;
@@ -375,7 +410,7 @@ System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, Dat
 
 System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (!this->machine->getMemory().isEmpty()) {
-		Windows::Forms::DialogResult result = MessageBox::Show("Loading a file will overwrite the current memory. Are you sure you want to continue?", "Confirmation", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
+		Windows::Forms::DialogResult result = MessageBox::Show("Loading a file will overwrite the current memory and reset registers. Are you sure you want to continue?", "Confirmation", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
     
 		if (result == System::Windows::Forms::DialogResult::No) {
 			return;
@@ -392,6 +427,7 @@ System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender,
 		String^ filename = file_dialog->FileName;
 		std::string std_filename = Utilities::Conversion::convertSystemStringToStdString(filename); 
 		this->mem_ctrl->loadFromFile(std_filename);
+		this->reg_ctrl->resetRegisters();
 		MessageBox::Show("File loaded successfully!", "File Loaded", MessageBoxButtons::OK, MessageBoxIcon::Information);
 		this->machine->displayMemory(); // TODO: remove 
 ;	}
@@ -426,6 +462,17 @@ System::Void VoleMachine::MainForm::reset_memory_Click(System::Object^ sender, S
 }
 
 System::Void VoleMachine::MainForm::reset_registers_Click(System::Object^ sender, System::EventArgs^ e) {
+
+	Windows::Forms::DialogResult result = MessageBox::Show("Are you sure you want to reset registers?", "Confirmation", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
+
+	if (result == System::Windows::Forms::DialogResult::No) {
+		return;
+	}
+
+	this->reg_ctrl->resetRegisters();
+}
+
+System::Void VoleMachine::MainForm::OnResetRegisters() {
 	// Reset Displayed Registers
 	this->resetRegistersColor();
 
@@ -435,9 +482,6 @@ System::Void VoleMachine::MainForm::reset_registers_Click(System::Object^ sender
 		this->registers_list->Items[i]->SubItems[3]->Text = "0";
 		this->registers_list->Items[i]->SubItems[4]->Text = "0";
 	}
-
-	// Reset Registers
-	this->reg_ctrl-> resetRegisters();
 }
 
 System::Void VoleMachine::MainForm::fetch_Click(System::Object^ sender, System::EventArgs^ e) {

@@ -25,7 +25,7 @@ void CPU::fetch(Memory& memory) {
 	std::string instruction1 = memory.getValueAt(this->program_counter);
 	std::string instruction2 = memory.getValueAt(this->program_counter + 1);
 	this->instruction_register = instruction1 + instruction2;
-	this->program_counter += (this->program_counter == 254) ? 1 : 2;
+	this->program_counter += (this->program_counter == 254) ? 1 : 2; // TODO: starting address
 }
 
 std::vector<int> CPU::decode() {
@@ -61,7 +61,7 @@ void CPU::clearRegisters() {
 }
 
 bool CPU::isHalt() {
-	return instruction_register == "C000";
+	return toupper(instruction_register[0]) == 'C';
 }
 
 void CPU::halt() {
@@ -73,7 +73,7 @@ bool CPU::isInstructionPending() {
 }
 
 void CPU::resetProgram() {
-	this->program_counter = 0;
+	this->program_counter = 0; // set it to starting address
 	this->instruction_register.clear();
 }
 

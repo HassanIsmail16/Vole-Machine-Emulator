@@ -54,7 +54,7 @@ void ExecutionController::runAllInstructions() {
 			break;
 		}
 
-		if (this->getCurrentAddress() == "FF") {
+		if (this->getCurrentAddress() == "FF") { // TODO: add validation for FE if starting address is odd
 			reached_end_of_memory();
 			break;
 		}
@@ -64,7 +64,7 @@ void ExecutionController::runAllInstructions() {
 }
 
 void ExecutionController::fetchInstruction() {
-	if (this->getCurrentAddress() == "FF") {
+	if (this->getCurrentAddress() == "FF") { // TODO: add validation for FE if starting address is odd
 		reached_end_of_memory();
 	}
 
@@ -72,13 +72,18 @@ void ExecutionController::fetchInstruction() {
 	fetchedInstruction();
 }
 
-void ExecutionController::executeCurrentInstruction() { // TODO: Handle Halt
+void ExecutionController::executeCurrentInstruction() {
 	if (!this->machine->getCPU().isInstructionPending()) {
 		return;
 	}
 
 	std::vector<int> instruction = this->machine->getCPU().decode();
 	
+	if (!Utilities::InstructionValidation::isValidInstruction(this->machine->getCPU().getCurrentInstruction())) {
+		return;
+	}
+
+
 	if (this->machine->getCPU().isHalt()) {
 		program_halted();
 	}
@@ -115,7 +120,7 @@ void ExecutionController::pauseInstructions() {
 }
 
 void ExecutionController::resetProgram() {
-	this->machine->getCPU().resetProgram();
+	this->machine->getCPU().resetProgram(); // TODO: starting address
 	fetchedInstruction();
 }
 

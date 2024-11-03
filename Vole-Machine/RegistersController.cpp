@@ -6,6 +6,7 @@ void RegistersController::registerUpdated() {
 
 void RegistersController::resetRegisters() {
 	this->machine->getCPU().clearRegisters();
+	this->register_reset();
 }
 
 System::String^ RegistersController::getHexRegisterValueAt(int index) {
