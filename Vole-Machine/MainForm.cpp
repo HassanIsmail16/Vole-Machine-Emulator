@@ -811,6 +811,7 @@ void VoleMachine::MainForm::updateOperandsAndDescription(System::Collections::Ge
 	} // handle xRS
 
 	if (decoded_instruction->Count > 3) {
+		second_operand = Utilities::Conversion::convertDecToHexSystemString(decoded_instruction[2]);
 		third_operand = Utilities::Conversion::convertDecToHexSystemString(decoded_instruction[3]);
 	} // get thrid operand in case of RST
 	
