@@ -139,6 +139,10 @@ std::string Conversion::convertDecToBin(double decimal) {
 	return binary;
 }
 
+System::String^ Conversion::convertDecToHexSystemString(int dec) {
+	return convertStdStringToSystemString(Conversion::convertDecToHex(dec));
+}
+
 double Conversion::convvertBinToFloat(std::string& binary) {
 	// make sure it's 8-bits
 	binary.insert(0, 8 - binary.size(), '0');
@@ -158,11 +162,19 @@ double Conversion::convvertBinToFloat(std::string& binary) {
 		+ 0.0625 * std::stoi(std::to_string(binary[7] - '0'));
 
 
-	// Get float value using explicit normalization
+	// get float value using explicit normalization
 	const int bias = 4;
 	double result = sign * mantissa * pow(2, exponent - bias);
 	Conversion::clampFloatingValue(result);
 	return result;
+}
+
+std::string Utilities::Conversion::capitalize(std::string str) {
+	for (char& ch : str) {
+		ch = toupper(ch);
+	}
+
+	return str;
 }
 
 std::string Conversion::convertFloatToBin(double decimal) {

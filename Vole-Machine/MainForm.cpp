@@ -137,7 +137,7 @@ System::Void VoleMachine::MainForm::initializeExecutionController() {
 	this->exec_ctrl->program_halted += gcnew ExecutionController::ProgramHaltedEventHandler(this, &VoleMachine::MainForm::OnHaltProgram);
 	this->exec_ctrl->reached_end_of_memory += gcnew ExecutionController::ReachedEndOfMemoryEventHandler(this, &VoleMachine::MainForm::OnReachedEndOfMemory);
 	this->exec_ctrl->all_instructions_executed += gcnew ExecutionController::AllInstructionsExecutedEventHandler(this, &VoleMachine::MainForm::OnExecutedAllInstructions);
-	this->exec_ctrl->resetInstructionReg += gcnew ExecutionController::ResetInstructionRegEventHandler(this, &MainForm::ResetInstructionReg);
+	this->exec_ctrl->reset_instruction_register += gcnew ExecutionController::ResetInstructionRegisterEventHandler(this, &MainForm::resetInstructionRegister);
 }
 
 #pragma region memory_list Events
@@ -374,16 +374,14 @@ System::Void VoleMachine::MainForm::OnMemoryUpdatedAtAddress(int index) {
 }
 
 System::Void VoleMachine::MainForm::memory_list_OnMemoryCellValueChanged(Object^ sender, DataGridViewCellEventArgs^ e) {
-	if (this->mem_ctrl->is_updating_memory_list) {
+	if (this->mem_ctrl->isUpdatingMemoryList()) {
 		return;
-	}
+	} // if memory list is updating, don't update
 	
 	int address = e->RowIndex * 2 + e->ColumnIndex - 1;
 	String^ value = this->memory_list->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Value->ToString();
 
-	this->mem_ctrl->updateMemoryValueAt(address, value);
-
-	this->machine->displayMemory(); // TODO: remove
+	this->mem_ctrl->setMemoryValueAt(address, value);
 }
 
 System::Void VoleMachine::MainForm::memory_list_ResetCellColor(Object^ sender, EventArgs^ e) {
@@ -542,13 +540,17 @@ System::Void VoleMachine::MainForm::resetRegistersColor() {
 #pragma region Execution Events
 
 System::Void VoleMachine::MainForm::OnFetchInstruction() {
+	// update current address
 	this->current_address_textbox->Clear();
 	String^ current_address = this->exec_ctrl->getCurrentAddress();
 	this->current_address_textbox->Text = current_address;
 
+	// update memory list visuals
 	this->memory_list_ScrollUpdate();
 	this->highlightAddress(current_address);
 
+	// update current instruction
+	this->resetInstructionRegister();
 	this->current_instruction_textbox->Clear();
 	String^ current_instruction = this->exec_ctrl->getCurrentInstruction();
 	this->current_instruction_textbox->Text = current_instruction;
@@ -559,11 +561,13 @@ System::Void VoleMachine::MainForm::OnExecuteInstruction() {
 
 	if (updated_address.HasValue) {
 		this->mem_ctrl->memoryUpdatedAtAddress(updated_address.Value);
-	}
+	} // update memory address
+
+
+	this->exec_ctrl->setCurrentAddress(this->exec_ctrl->getCurrentAddress());
+	this->OnFetchInstruction(); // update program counter
 
 	this->reg_ctrl->registerUpdated();
-	// TODO: Update screen
-	this->machine->displayMemory(); // TODO: Remove
 }
 
 System::Void VoleMachine::MainForm::OnUpdateScreen(std::string value) {
@@ -576,11 +580,11 @@ System::Void VoleMachine::MainForm::OnChangeSpeed() {
 		this->Invoke(gcnew ExecutionController::SpeedChangedEventHandler(this,
 			&MainForm::OnChangeSpeed));
 		return;
-	}
+	} // update speed if update is required
 
 	if (this->steps_spinbox->Value != this->exec_ctrl->InstructionsPerSecond) {
 		this->steps_spinbox->Value = this->exec_ctrl->InstructionsPerSecond;
-	}
+	} // update the spinbox if it has changed
 }
 
 System::Void VoleMachine::MainForm::OnHaltProgram() {
@@ -611,13 +615,13 @@ System::Void VoleMachine::MainForm::OnExecutedAllInstructions() {
 #pragma region Button Click Events
 
 System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (!this->machine->getMemory().isEmpty()) { // TODO: move to execution controller
+	if (!this->mem_ctrl->isMemoryEmpty()) {
 		Windows::Forms::DialogResult result = MessageBox::Show("Loading a file will overwrite the current memory and reset everything. Are you sure you want to continue?", "Confirmation", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
     
 		if (result == System::Windows::Forms::DialogResult::No) {
 			return;
-		}
-	}
+		} // exit if user chooses not
+	} // warn user that memory will be overwritten
 	
 	OpenFileDialog^ file_dialog = gcnew OpenFileDialog();
 
@@ -632,18 +636,11 @@ System::Void VoleMachine::MainForm::load_from_file_Click(System::Object^ sender,
 		this->exec_ctrl->resetProgram();
 		this->reg_ctrl->resetRegisters();
 		this->screen_textbox->Clear();
-		// TODO: Reset Decoded Instruction
 		MessageBox::Show("File loaded successfully!", "File Loaded", MessageBoxButtons::OK, MessageBoxIcon::Information);
-		this->machine->displayMemory(); // TODO: remove 
-;	}
+	} // load file
 }
 
 System::Void VoleMachine::MainForm::export_to_file_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (mem_ctrl == nullptr) {
-		MessageBox::Show("MemoryController is not initialized!", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
-		return;
-	}
-
 	SaveFileDialog^ saveFileDialog = gcnew SaveFileDialog();
 	saveFileDialog->Filter = "Text Files|*.txt|All Files|*.*";
 	saveFileDialog->Title = "Export Memory to File";
@@ -652,7 +649,7 @@ System::Void VoleMachine::MainForm::export_to_file_Click(System::Object^ sender,
 		std::string filename = Utilities::Conversion::convertSystemStringToStdString(saveFileDialog->FileName);
 		mem_ctrl->exportToFile(filename);
 		MessageBox::Show("File saved successfully.", "Export Complete", MessageBoxButtons::OK, MessageBoxIcon::Information);
-	}
+	} // save file
 }
 
 System::Void VoleMachine::MainForm::reset_memory_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -660,10 +657,9 @@ System::Void VoleMachine::MainForm::reset_memory_Click(System::Object^ sender, S
 
 	if (result == System::Windows::Forms::DialogResult::No) {
 		return;
-	}
+	} // exit if user chooses no
 
 	this->mem_ctrl->resetMemory();
-	this->machine->displayMemory(); // TODO: remove
 }
 
 System::Void VoleMachine::MainForm::reset_registers_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -672,7 +668,7 @@ System::Void VoleMachine::MainForm::reset_registers_Click(System::Object^ sender
 
 	if (result == System::Windows::Forms::DialogResult::No) {
 		return;
-	}
+	} // exit if user chooses no
 
 	this->reg_ctrl->resetRegisters();
 }
@@ -717,18 +713,18 @@ System::Void VoleMachine::MainForm::decode_Click(System::Object^ sender, System:
 
 	if (decoded_instruction == nullptr) {
 		return;
-	}
+	} // exit if no decoded instruction
 
 	this->opcode_textbox->Text = Utilities::Conversion::convertStdStringToSystemString(
 		Utilities::Conversion::convertDecToHex(decoded_instruction[0])
 	);
 
 	OP_CODE opcode = static_cast<OP_CODE>(decoded_instruction[0]);
-	UpdateOperandLabels(opcode);
-	UpdateOperandsAndDescription(decoded_instruction, opcode);
+	updateOperandLabels(opcode);
+	updateOperandsAndDescription(decoded_instruction, opcode);
 }
 
-System::Void VoleMachine::MainForm::ResetInstructionReg() {
+System::Void VoleMachine::MainForm::resetInstructionRegister() {
 	this->opcode_textbox->Clear();
 	this->first_operand_textbox->Clear();
 	this->second_operand_textbox->Clear();
@@ -736,7 +732,7 @@ System::Void VoleMachine::MainForm::ResetInstructionReg() {
 	this->instruction_decode_textbox->Clear();
 }
 
-void VoleMachine::MainForm::UpdateOperandLabels(OP_CODE opcode) {
+void VoleMachine::MainForm::updateOperandLabels(OP_CODE opcode) {
 	switch (opcode) {
 	case OP_CODE::LOAD_M:
 	case OP_CODE::LOAD_V:
@@ -788,52 +784,46 @@ void VoleMachine::MainForm::UpdateOperandLabels(OP_CODE opcode) {
 	}
 }
 
-void VoleMachine::MainForm::UpdateOperandsAndDescription(System::Collections::Generic::List<int>^ decoded_instruction, OP_CODE opcode) {
+void VoleMachine::MainForm::updateOperandsAndDescription(System::Collections::Generic::List<int>^ decoded_instruction, OP_CODE opcode) {
 	System::String^ first_operand = "";
 	System::String^ second_operand = "";
 	System::String^ third_operand = "";
 	System::String^ instruction_description;
 
 	if (decoded_instruction->Count > 1) {
-		first_operand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex(decoded_instruction[1])
-		);
-	}
+		first_operand = Utilities::Conversion::convertDecToHexSystemString(decoded_instruction[1]);
+	} // get first operand
 
 	if (decoded_instruction->Count > 2) {
-		System::String^ second_third_operand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex(decoded_instruction[2])
-		);
+		System::String^ XY = Utilities::Conversion::convertDecToHexSystemString(decoded_instruction[2]);
 
-		if (second_third_operand->Length > 1) {
-			second_operand += second_third_operand[0]; // X
-			third_operand += second_third_operand[1]; // Y
+		if (XY->Length > 1) {
+			second_operand += XY[0]; // X
+			third_operand += XY[1]; // Y
 		} else {
 			second_operand = "0"; // X
-			third_operand = second_third_operand; // Y
+			third_operand = XY; // Y
 		}
-	}
+	} // get second operand and third operand in case of RXY
 
 	if (opcode == OP_CODE::MOVE && decoded_instruction->Count > 2) {
-		second_operand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex(decoded_instruction[2]));
-	}
+		second_operand = Utilities::Conversion::convertDecToHexSystemString(decoded_instruction[2]);
+	} // handle xRS
+
 	if (decoded_instruction->Count > 3) {
-		third_operand = Utilities::Conversion::convertStdStringToSystemString(
-			Utilities::Conversion::convertDecToHex(decoded_instruction[3]));
-	}
+		third_operand = Utilities::Conversion::convertDecToHexSystemString(decoded_instruction[3]);
+	} // get thrid operand in case of RST
 	
-	instruction_description = GetInstructionDescription(opcode, first_operand, second_operand, third_operand);
+	instruction_description = getInstructionDescription(opcode, first_operand, second_operand, third_operand);
 
 	this->first_operand_textbox->Text = first_operand;
 	this->second_operand_textbox->Text = second_operand;
 	this->third_operand_textbox->Text = third_operand;
 
-	
 	this->instruction_decode_textbox->Text = instruction_description;
 }
 
-System::String^ VoleMachine::MainForm::GetInstructionDescription(OP_CODE opcode, System::String^ first_operand, System::String^ second_operand, System::String^ third_operand) {
+System::String^ VoleMachine::MainForm::getInstructionDescription(OP_CODE opcode, System::String^ first_operand, System::String^ second_operand, System::String^ third_operand) {
 	switch (opcode) {
 	case OP_CODE::LOAD_M:
 		return "Copy the content from memory address " + second_operand + third_operand + " to register " + first_operand;
@@ -875,25 +865,7 @@ System::Void VoleMachine::MainForm::steps_spinbox_ValueChanged(System::Object^ s
 
 	if (this->exec_ctrl->InstructionsPerSecond != new_speed) {
 		this->exec_ctrl->updateSpeed(new_speed);
-	}
-}
-
-System::Void VoleMachine::MainForm::starting_address_textbox_TextChanged(System::Object^ sender, System::EventArgs^ e) {
-	return;
-	if (this->starting_address_textbox->Text->Length == 2) {
-		this->exec_ctrl->setStartingAddress(this->starting_address_textbox->Text);
-		return;
-	}
-
-	if (this->starting_address_textbox->Text->Length == 1) {
-		this->starting_address_textbox->Text = "0" + this->starting_address_textbox->Text;
-		return;
-	}
-
-	if (this->starting_address_textbox->Text->Length == 0) {
-		this->starting_address_textbox->Text = "00";
-		return;
-	}
+	} // update speed if update is required
 }
 
 System::Void VoleMachine::MainForm::starting_address_textbox_KeyPress(Object^ sender, KeyPressEventArgs^ e) {
@@ -903,19 +875,14 @@ System::Void VoleMachine::MainForm::starting_address_textbox_KeyPress(Object^ se
 
 	e->KeyChar = Char::ToUpper(e->KeyChar);
 
-	bool isHex = (e->KeyChar >= '0' && e->KeyChar <= '9') ||
+	bool is_hex = (e->KeyChar >= '0' && e->KeyChar <= '9') ||
 		(e->KeyChar >= 'A' && e->KeyChar <= 'F');
 
-	bool withinLength = starting_address_textbox->Text->Length < 2;
+	bool within_length = starting_address_textbox->Text->Length < 2;
 
-	if (!isHex || !withinLength) {
-		e->Handled = true;  // Suppress the keypress
-	}
-}
-
-System::Void VoleMachine::MainForm::starting_address_textbox_Click(System::Object^ sender, System::EventArgs^ e) {
-	//this->starting_address_textbox->Clear();
-	return;
+	if (!is_hex || !within_length) {
+		e->Handled = true;
+	} // supress key press if not valid
 }
 
 System::Void VoleMachine::MainForm::starting_address_textbox_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {
@@ -926,7 +893,7 @@ System::Void VoleMachine::MainForm::starting_address_textbox_KeyDown(System::Obj
 		e->KeyCode != System::Windows::Forms::Keys::Right &&
 		e->KeyCode != System::Windows::Forms::Keys::Enter &&
 		e->KeyCode != System::Windows::Forms::Keys::Escape) {
-		this->starting_address_textbox->Text = "";  // Clear text to allow overwriting
+		this->starting_address_textbox->Text = "";  // clear text to allow overwriting
 	}
 
 	if (e->KeyCode == Keys::Enter || e->KeyCode == Keys::Escape) {
@@ -952,11 +919,7 @@ System::Void VoleMachine::MainForm::updateStartingAddress() {
 	String^ text = this->starting_address_textbox->Text;
 
 	if (text->Length == 2) {
-		int decimal_value = stoi(
-			Utilities::Conversion::convertHexToDec(
-				Utilities::Conversion::convertSystemStringToStdString(text)
-			)
-		);
+		int decimal_value = Utilities::Conversion::convertHexSystemStringToDecInt(text);
 
 		if (decimal_value % 2 != 0) {
 			decimal_value--;
@@ -968,18 +931,12 @@ System::Void VoleMachine::MainForm::updateStartingAddress() {
 
 			if (text->Length == 1) {
 				text = "0" + text;
-			}
+			} // add leading zero
 
 			this->starting_address_textbox->Text = text;
 		} // handle odd addresses
 
-		int current_execution_address = stoi(
-			Utilities::Conversion::convertHexToDec(
-				Utilities::Conversion::convertSystemStringToStdString(
-					this->exec_ctrl->getCurrentAddress()
-				)
-			)
-		);
+		int current_execution_address = Utilities::Conversion::convertHexSystemStringToDecInt(this->current_address_textbox->Text);
 
 		if (current_execution_address < decimal_value) {
 			this->current_address_textbox->Text = text;
@@ -993,7 +950,7 @@ System::Void VoleMachine::MainForm::updateStartingAddress() {
 
 	while (text->Length < 2) {
 		text = "0" + text;
-	}
+	} // add leading zero
 
 	this->starting_address_textbox->Text = text;
 	this->updateStartingAddress();

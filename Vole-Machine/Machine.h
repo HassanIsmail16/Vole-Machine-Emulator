@@ -13,6 +13,4 @@ public:
     void outputState();
     CPU& getCPU();
     Memory& getMemory();
-    void displayMemory();
-
 };

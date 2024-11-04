@@ -12,7 +12,7 @@ void ALU::addTwoComp(int regR, int regS, int regT, Registers& registers) {
     int valueT = std::stoi(registers[regT].getValue(), nullptr, 16);
     int result = valueS + valueT;
 
-    // Handle two's complement overflow
+    // handle two's complement overflow
     if (result > 127) {
         result -= 256;
     }

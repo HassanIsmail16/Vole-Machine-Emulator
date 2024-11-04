@@ -20,6 +20,7 @@ namespace VoleMachine {
 
 		#pragma region Initialize Main Components and Controllers
 			this->machine = new Machine();
+			this->MaximizeBox = false;
 			this->InitializeComponent();
 			this->initializeControllers();
 			this->initializeRegistersList();
@@ -237,9 +238,8 @@ namespace VoleMachine {
 				this->starting_address_textbox->TabIndex = 14;
 				this->starting_address_textbox->Text = L"00";
 				this->starting_address_textbox->MaxLength = 2;
-				this->starting_address_textbox->CharacterCasing = CharacterCasing::Upper;
+				this->starting_address_textbox->CharacterCasing = System::Windows::Forms::CharacterCasing::Upper;
 				this->starting_address_textbox->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &VoleMachine::MainForm::starting_address_textbox_KeyPress);
-				this->starting_address_textbox->Click += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Click);
 				this->starting_address_textbox->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MainForm::starting_address_textbox_KeyDown);
 				this->starting_address_textbox->Leave += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Leave);
 				this->starting_address_textbox->Enter += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Enter);
@@ -559,7 +559,7 @@ namespace VoleMachine {
 				this->memory_list->Size = System::Drawing::Size(278, 484);
 				this->memory_list->TabIndex = 0;
 				this->memory_list->DefaultCellStyle->SelectionBackColor = Color::FromArgb(255, 255, 220, 180);
-				this->memory_list->DefaultCellStyle->SelectionForeColor = Color::Black;
+				this->memory_list->DefaultCellStyle->SelectionForeColor = System::Drawing::Color::Black;
 				this->memory_list->CellEndEdit += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_CellEndEdit);
 				this->memory_list->CellPainting += gcnew System::Windows::Forms::DataGridViewCellPaintingEventHandler(this, &MainForm::memory_list_CellPainting);
 				this->memory_list->CellStateChanged += gcnew System::Windows::Forms::DataGridViewCellStateChangedEventHandler(this, &MainForm::memory_list_AddressCellStateChanged);
@@ -823,18 +823,16 @@ namespace VoleMachine {
 			System::Void run_until_halt_Click(System::Object^ sender, System::EventArgs^ e);
 			System::Void step_Click(System::Object^ sender, System::EventArgs^ e);
 			System::Void decode_Click(System::Object^ sender, System::EventArgs^ e);
-			System::Void ResetInstructionReg();
-			System::String^ GetInstructionDescription(OP_CODE opcode, System::String^ firstOperand, System::String^ secondOperand, System::String^ thirdOperand);
-			void UpdateOperandLabels(OP_CODE opcode);
-			void UpdateOperandsAndDescription(System::Collections::Generic::List<int>^ decodedInstruction, OP_CODE opcode);
+			System::Void resetInstructionRegister();
+			System::String^ getInstructionDescription(OP_CODE opcode, System::String^ firstOperand, System::String^ secondOperand, System::String^ thirdOperand);
+			void updateOperandLabels(OP_CODE opcode);
+			void updateOperandsAndDescription(System::Collections::Generic::List<int>^ decodedInstruction, OP_CODE opcode);
 
 	#pragma endregion
 
 	#pragma region Textbox Event Handlers
 			System::Void steps_spinbox_ValueChanged(System::Object^ sender, System::EventArgs^ e);
-			System::Void starting_address_textbox_TextChanged(System::Object^ sender, System::EventArgs^ e);
 			System::Void starting_address_textbox_KeyPress(Object^ sender, KeyPressEventArgs^ e);
-			System::Void starting_address_textbox_Click(System::Object^ sender, System::EventArgs^ e);
 			System::Void starting_address_textbox_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e);
 			System::Void starting_address_textbox_Leave(System::Object^ sender, System::EventArgs^ e);
 			System::Void starting_address_textbox_Enter(System::Object^ sender, System::EventArgs^ e);

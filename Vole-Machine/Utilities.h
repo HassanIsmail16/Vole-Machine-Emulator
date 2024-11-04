@@ -22,13 +22,11 @@ namespace Utilities {
 		static int convertHexSystemStringToDecInt(System::String^ hex);
 		static std::string convertDecToHex(const int integer);
 		static std::string convertIntToBin(int integer);
-		
 		static std::string convertFracToBin(double fraction, int precision = 8);
-
 		static std::string convertDecToBin(double decimal);
-
+		static System::String^ convertDecToHexSystemString(int dec);
 		static double convvertBinToFloat(std::string& binary);
-
+		static std::string capitalize(std::string str);
 		static std::string convertFloatToBin(double decimal);
 
 		static void clampFloatingValue(double& floating_point_value);

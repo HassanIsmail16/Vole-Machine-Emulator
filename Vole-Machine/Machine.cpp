@@ -8,7 +8,7 @@ void Machine::loadProgram(std::string& filename) {
 
 	for (int i = 0; i < this->processor.getStartingAddress() / 2; i++) {
 		this->memory.addInstruction("0000");
-	}
+	} // populate memory with empty instructions till starting address
 
 	std::fstream file(filename);
 
@@ -18,7 +18,7 @@ void Machine::loadProgram(std::string& filename) {
 			continue;
 		} // skip instruction if not valid
 
-		this->memory.addInstruction(current_instruction);
+		this->memory.addInstruction(Utilities::Conversion::capitalize(current_instruction));
 	}
 }
 
@@ -28,13 +28,4 @@ CPU& Machine::getCPU() {
 
 Memory& Machine::getMemory() {
 	return this->memory;
-}
-
-// TODO: remove this
-void Machine::displayMemory() { 
-	std::cout << std::string(20, '-') << std::endl;
-	for (int i = 0; i < 128; i += 2) {
-		std::cout << this->memory.memory[i].getValue() << " " << this->memory.memory[i + 1].getValue() << std::endl;
-	}
-	std::cout << std::string(20, '-') << std::endl;
 }

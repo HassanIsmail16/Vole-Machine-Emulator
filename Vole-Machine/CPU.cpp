@@ -22,18 +22,18 @@ void CPU::runInstructions(Memory& memory) {
 void CPU::fetch(Memory& memory) {
 	if (this->program_counter == 255) {
 		this->program_counter = this->starting_address;
-	}
+	} // TODO: odd starting address
 
 	std::string instruction1 = memory.getValueAt(this->program_counter);
 	std::string instruction2 = memory.getValueAt(this->program_counter + 1);
 	this->instruction_register = instruction1 + instruction2;
-	this->program_counter += (this->program_counter == 254) ? 1 : 2;
+	this->program_counter += (this->program_counter == 254) ? 1 : 2; // TODO: odd starting address
 }
 
 std::vector<int> CPU::decode() {
 	if (!Utilities::Validation::isValidInstruction(this->instruction_register)) {
 		return {};
-	}
+	} // return special value if instruction is not valid
 
 	std::vector<int> instruction;
 	instruction.push_back(std::stoi(this->instruction_register.substr(0, 1), nullptr, 16));
@@ -75,7 +75,7 @@ bool CPU::isInstructionPending() {
 }
 
 void CPU::resetProgram(int starting_address) {
-	this->program_counter = starting_address; // set it to starting address
+	this->program_counter = starting_address; // set PC to starting address
 	this->starting_address = starting_address;
 	this->instruction_register.clear();
 }

@@ -46,14 +46,13 @@ System::Nullable<int> RegistersController::getUpdatedRegister() {
 
 	if (current_instruction.length() == 0 || current_instruction[0] == 'B' || current_instruction[0] == 'D') {
 		return System::Nullable<int>();
-	}
+	} // handle instructions that do not update registers
 
 
 	if (current_instruction[0] == '4') {
 		return System::Convert::ToInt32(Utilities::Conversion::convertStdStringToSystemString(current_instruction)->Substring(3, 1), 16);
-	}
+	} // handle jump instructions
 
 	return System::Convert::ToInt32(Utilities::Conversion::convertStdStringToSystemString(current_instruction)->Substring(1, 1), 16);
-
 }
 
