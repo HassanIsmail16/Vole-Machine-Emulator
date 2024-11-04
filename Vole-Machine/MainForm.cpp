@@ -313,8 +313,8 @@ System::Void VoleMachine::MainForm::memory_list_OnCellMouseLeave(Object^ sender,
 System::Void VoleMachine::MainForm::memory_list_ScrollUpdate() {
 	int current_address = Utilities::Conversion::convertHexSystemStringToDecInt(this->current_address_textbox->Text);
 
-	if (current_address % 20 == 0) {
-		this->memory_list->FirstDisplayedScrollingRowIndex += 10;
+	if (current_address % 20 == 0 || current_address - this->memory_list->FirstDisplayedScrollingRowIndex > 10) {
+		this->memory_list->FirstDisplayedScrollingRowIndex = max(current_address / 2 - 10 - (current_address % 2), 0); // -10;
 	} // auto scroll if program counter reaches the m
 
 	int starting_address = Utilities::Conversion::convertHexSystemStringToDecInt(this->starting_address_textbox->Text);
