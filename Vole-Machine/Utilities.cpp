@@ -18,7 +18,7 @@ bool Validation::isValidInstruction(std::string& instruction_string) {
 	} // validate LOAD, STORE, and JUMP
 
 	if (instruction_string[0] == '4') {
-		return isValidRegisterIndex(instruction_string[2]) && isValidRegisterIndex(instruction_string[4]);
+		return isValidRegisterIndex(instruction_string[2]) && isValidRegisterIndex(instruction_string[3]);
 	} // validate MOVE 
 
 	if (instruction_string[0] >= '5' && instruction_string[0] <= '9') {
