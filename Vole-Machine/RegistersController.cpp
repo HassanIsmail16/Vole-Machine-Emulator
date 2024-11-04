@@ -14,7 +14,9 @@ void RegistersController::resetRegisters() {
 }
 
 System::String^ RegistersController::getHexRegisterValueAt(int index) {
-	return Utilities::Conversion::convertStdStringToSystemString(this->machine->getCPU().getRegisterValueAt(index));
+	std::string hex_value = this->machine->getCPU().getRegisterValueAt(index);
+	std::transform(hex_value.begin(), hex_value.end(), hex_value.begin(), ::toupper);
+	return Utilities::Conversion::convertStdStringToSystemString(hex_value);
 }
 
 System::String^ RegistersController::getIntRegisterValueAt(int index) {

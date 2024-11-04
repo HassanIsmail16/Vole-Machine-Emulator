@@ -1,4 +1,4 @@
-#include "MainForm.h"
+﻿#include "MainForm.h"
 #include <msclr/marshal_cppstd.h>
 #include <iostream>
 #include <sstream>
@@ -40,7 +40,7 @@ System::Void VoleMachine::MainForm::initializeRegistersList() {
 			)
 		);
 
-		item->SubItems->Add("0x00");
+		item->SubItems->Add("00");
 		item->SubItems->Add("00000000");
 		item->SubItems->Add("0");
 		item->SubItems->Add("0");
@@ -485,7 +485,12 @@ System::Void VoleMachine::MainForm::OnRegisterUpdated() {
 		this->registers_list->Items[updated_register.Value]->BackColor = System::Drawing::Color::LightGreen;
 
 		// Get Values
-		System::String^ hex_value = "0x" + this->reg_ctrl->getHexRegisterValueAt(updated_register.Value);
+		System::String^ hex_value = this->reg_ctrl->getHexRegisterValueAt(updated_register.Value);
+
+		if (hex_value->Length == 1) {
+			hex_value = "0" + hex_value;
+		}
+
 		System::String^ binary_value = this->reg_ctrl->getBinRegisterValueAt(updated_register.Value);
 		System::String^ int_value = this->reg_ctrl->getIntRegisterValueAt(updated_register.Value);
 		System::String^ float_value = this->reg_ctrl->getFloatRegisterValueAt(updated_register.Value);
@@ -503,7 +508,7 @@ System::Void VoleMachine::MainForm::OnAllRegistersUpdated() {
 		this->resetRegistersColor();
 
 		// Get Values
-		System::String^ hex_value = "0x" + this->reg_ctrl->getHexRegisterValueAt(i);
+		System::String^ hex_value = this->reg_ctrl->getHexRegisterValueAt(i);
 		System::String^ binary_value = this->reg_ctrl->getBinRegisterValueAt(i);
 		System::String^ int_value = this->reg_ctrl->getIntRegisterValueAt(i);
 		System::String^ float_value = this->reg_ctrl->getFloatRegisterValueAt(i);
@@ -522,7 +527,7 @@ System::Void VoleMachine::MainForm::OnResetRegisters() {
 	this->resetRegistersColor();
 
 	for (int i = 0; i < 16; i++) {
-		this->registers_list->Items[i]->SubItems[1]->Text = "0x00";
+		this->registers_list->Items[i]->SubItems[1]->Text = "00";
 		this->registers_list->Items[i]->SubItems[2]->Text = "00000000";
 		this->registers_list->Items[i]->SubItems[3]->Text = "0";
 		this->registers_list->Items[i]->SubItems[4]->Text = "0";
@@ -706,14 +711,19 @@ System::Void VoleMachine::MainForm::run_until_halt_Click(System::Object^ sender,
 
 System::Void VoleMachine::MainForm::step_Click(System::Object^ sender, System::EventArgs^ e) {
 	this->exec_ctrl->step();
+	this->decodeInstruction();
 }
 
 System::Void VoleMachine::MainForm::decode_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->decodeInstruction();
+}
+
+System::Void VoleMachine::MainForm::decodeInstruction() {
 	auto decoded_instruction = exec_ctrl->decodeInstruction();
 
 	if (decoded_instruction == nullptr) {
 		return;
-	} // exit if no decoded instruction
+	}
 
 	this->opcode_textbox->Text = Utilities::Conversion::convertStdStringToSystemString(
 		Utilities::Conversion::convertDecToHex(decoded_instruction[0])
@@ -827,17 +837,17 @@ void VoleMachine::MainForm::updateOperandsAndDescription(System::Collections::Ge
 System::String^ VoleMachine::MainForm::getInstructionDescription(OP_CODE opcode, System::String^ first_operand, System::String^ second_operand, System::String^ third_operand) {
 	switch (opcode) {
 	case OP_CODE::LOAD_M:
-		return "Copy the content from memory address " + second_operand + third_operand + " to register " + first_operand;
+		return "LOAD register " + first_operand + " with the content of memory address at " + second_operand + third_operand;
 	case OP_CODE::LOAD_V:
-		return "Copy the value " + second_operand + third_operand + " to register " + first_operand;
+		return "LOAD register " + first_operand + " with the value " + second_operand + third_operand;
 	case OP_CODE::STORE:
-		return "Store the content of register " + first_operand + " in memory address " + second_operand + third_operand;
+		return "STORE the content of register " + first_operand + " in memory address " + second_operand + third_operand;
 	case OP_CODE::MOVE:
-		return "Move the content of register " + second_operand + " to register " + third_operand;
+		return "MOVE the content of register " + second_operand + " to register " + third_operand;
 	case OP_CODE::ADD:
-		return "Add (in two's complement representation) the contents of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
+		return "ADD the contents of registers " + second_operand + " and " + third_operand + " as though they were two's complement representations and leave the result in register " + first_operand;
 	case OP_CODE::ADD_F:
-		return "Add (in floating point representation) the contents of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
+		return "ADD the contents of registers " + second_operand + " and " + third_operand + " as though they represented values in floating-point notation and leave the floating-pointn result in register " + first_operand;
 	case OP_CODE::BIT_OR:
 		return "Bitwise OR the contents of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
 	case OP_CODE::BIT_AND:
@@ -845,13 +855,13 @@ System::String^ VoleMachine::MainForm::getInstructionDescription(OP_CODE opcode,
 	case OP_CODE::BIT_XOR:
 		return "Bitwise XOR the conetnts of registers " + second_operand + " and " + third_operand + " into register " + first_operand;
 	case OP_CODE::ROTATE:
-		return "Rotate register " + first_operand + " by " + third_operand + " steps cyclically right";
+		return "ROTATE register " + first_operand + " steps cyclically right " + third_operand + " steps.";
 	case OP_CODE::JUMP_EQ:
-		return "Jump to the instruction at memory address " + second_operand + third_operand + " if register " + first_operand + " contains the value 00";
+		return "JUMP to the instruction at memory address " + second_operand + third_operand + " if the content of register " + first_operand + " equals the content of register 0";
 	case OP_CODE::HALT:
 		return "Halt execution";
 	case OP_CODE::JUMP_GT:
-		return "Jump to the instruction at memory address" + second_operand + third_operand + " if register " + first_operand + " contains a value greater than 00";
+		return "Jump to the instruction at memory address" + second_operand + third_operand + " if the content of register " + first_operand + " is greater than the content of register 0 (In Two's Complement)";
 	case OP_CODE::UNKNOWN:
 	default:
 		return "Unknown instruction. Do nothing and advance to the next instruction.";
