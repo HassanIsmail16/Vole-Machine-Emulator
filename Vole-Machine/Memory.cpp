@@ -52,3 +52,7 @@ void Memory::clearMemory() {
 bool Memory::isEmpty() {
 	return this->last_added_instruction_index == 0;
 }
+
+void Memory::setLastAddedInstructionIndex(int index) {
+	this->last_added_instruction_index = index;
+}

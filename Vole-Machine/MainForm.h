@@ -131,7 +131,8 @@ namespace VoleMachine {
 		private: System::Windows::Forms::GroupBox^ screen_groupbox;
 		private: System::Windows::Forms::RadioButton^ hex_rb;
 		private: System::Windows::Forms::RadioButton^ ascii_rb;
-private: System::Windows::Forms::Button^ button1;
+private: System::Windows::Forms::Button^ batch_add_code;
+
 
 		private: System::ComponentModel::IContainer^ components;
 	#pragma endregion
@@ -141,9 +142,8 @@ private: System::Windows::Forms::Button^ button1;
 	#pragma region Windows Form Designer generated code
 			void InitializeComponent(void) {
 				this->components = (gcnew System::ComponentModel::Container());
-				System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle1 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
+				System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle2 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
 				this->main_panel = (gcnew System::Windows::Forms::Panel());
-				this->button1 = (gcnew System::Windows::Forms::Button());
 				this->screen_groupbox = (gcnew System::Windows::Forms::GroupBox());
 				this->hex_rb = (gcnew System::Windows::Forms::RadioButton());
 				this->ascii_rb = (gcnew System::Windows::Forms::RadioButton());
@@ -196,6 +196,7 @@ private: System::Windows::Forms::Button^ button1;
 				this->play = (gcnew System::Windows::Forms::Button());
 				this->load_from_file = (gcnew System::Windows::Forms::Button());
 				this->starting_address_textbox_tooltip = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->batch_add_code = (gcnew System::Windows::Forms::Button());
 				this->main_panel->SuspendLayout();
 				this->screen_groupbox->SuspendLayout();
 				this->memory_list_groupbox->SuspendLayout();
@@ -212,7 +213,7 @@ private: System::Windows::Forms::Button^ button1;
 				// main_panel
 				// 
 				this->main_panel->BackColor = System::Drawing::SystemColors::Control;
-				this->main_panel->Controls->Add(this->button1);
+				this->main_panel->Controls->Add(this->batch_add_code);
 				this->main_panel->Controls->Add(this->screen_groupbox);
 				this->main_panel->Controls->Add(this->memory_list_groupbox);
 				this->main_panel->Controls->Add(this->credits_label);
@@ -236,16 +237,6 @@ private: System::Windows::Forms::Button^ button1;
 				this->main_panel->Padding = System::Windows::Forms::Padding(12, 11, 12, 11);
 				this->main_panel->Size = System::Drawing::Size(1116, 629);
 				this->main_panel->TabIndex = 0;
-				// 
-				// button1
-				// 
-				this->button1->Location = System::Drawing::Point(9, 572);
-				this->button1->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
-				this->button1->Name = L"button1";
-				this->button1->Size = System::Drawing::Size(461, 25);
-				this->button1->TabIndex = 17;
-				this->button1->Text = L"Batch Add Code";
-				this->button1->UseVisualStyleBackColor = true;
 				// 
 				// screen_groupbox
 				// 
@@ -599,6 +590,7 @@ private: System::Windows::Forms::Button^ button1;
 				this->current_address_textbox->Size = System::Drawing::Size(90, 22);
 				this->current_address_textbox->TabIndex = 1;
 				this->current_address_textbox->Text = L"00";
+				this->current_address_textbox->TextChanged += gcnew System::EventHandler(this, &MainForm::current_address_textbox_TextChanged);
 				// 
 				// program_counter_address_label
 				// 
@@ -659,18 +651,17 @@ private: System::Windows::Forms::Button^ button1;
 				this->memory_list->BackgroundColor = System::Drawing::SystemColors::Control;
 				this->memory_list->BorderStyle = System::Windows::Forms::BorderStyle::None;
 				this->memory_list->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-				dataGridViewCellStyle1->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
-				dataGridViewCellStyle1->BackColor = System::Drawing::SystemColors::Window;
-				dataGridViewCellStyle1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular,
+				dataGridViewCellStyle2->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
+				dataGridViewCellStyle2->BackColor = System::Drawing::SystemColors::Window;
+				dataGridViewCellStyle2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-				dataGridViewCellStyle1->ForeColor = System::Drawing::SystemColors::ControlText;
-				dataGridViewCellStyle1->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+				dataGridViewCellStyle2->ForeColor = System::Drawing::SystemColors::ControlText;
+				dataGridViewCellStyle2->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
 					static_cast<System::Int32>(static_cast<System::Byte>(220)), static_cast<System::Int32>(static_cast<System::Byte>(180)));
-				dataGridViewCellStyle1->SelectionForeColor = System::Drawing::Color::Black;
-				dataGridViewCellStyle1->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
-				this->memory_list->DefaultCellStyle = dataGridViewCellStyle1;
-				this->memory_list->Location = System::Drawing::Point(8, 9);
-				this->memory_list->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
+				dataGridViewCellStyle2->SelectionForeColor = System::Drawing::Color::Black;
+				dataGridViewCellStyle2->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
+				this->memory_list->DefaultCellStyle = dataGridViewCellStyle2;
+				this->memory_list->Location = System::Drawing::Point(7, 8);
 				this->memory_list->Name = L"memory_list";
 				this->memory_list->RowHeadersWidth = 51;
 				this->memory_list->Size = System::Drawing::Size(278, 454);
@@ -681,6 +672,7 @@ private: System::Windows::Forms::Button^ button1;
 				this->memory_list->CellMouseLeave += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_OnCellMouseLeave);
 				this->memory_list->CellPainting += gcnew System::Windows::Forms::DataGridViewCellPaintingEventHandler(this, &MainForm::memory_list_CellPainting);
 				this->memory_list->CellStateChanged += gcnew System::Windows::Forms::DataGridViewCellStateChangedEventHandler(this, &MainForm::memory_list_AddressCellStateChanged);
+				this->memory_list->CellValueChanged += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_OnMemoryCellValueChanged);
 				this->memory_list->EditingControlShowing += gcnew System::Windows::Forms::DataGridViewEditingControlShowingEventHandler(this, &MainForm::memory_list_EditingControlShowing);
 				this->memory_list->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MainForm::memory_list_KeyDown);
 				this->memory_list->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MainForm::memory_list_KeyPress);
@@ -842,6 +834,15 @@ private: System::Windows::Forms::Button^ button1;
 				this->load_from_file->UseVisualStyleBackColor = true;
 				this->load_from_file->Click += gcnew System::EventHandler(this, &MainForm::load_from_file_Click);
 				// 
+				// batch_add_code
+				// 
+				this->batch_add_code->Location = System::Drawing::Point(8, 531);
+				this->batch_add_code->Name = L"batch_add_code";
+				this->batch_add_code->Size = System::Drawing::Size(395, 23);
+				this->batch_add_code->TabIndex = 17;
+				this->batch_add_code->Text = L"Batch Add Code";
+				this->batch_add_code->UseVisualStyleBackColor = true;
+				// 
 				// MainForm
 				// 
 				this->AutoScaleDimensions = System::Drawing::SizeF(7, 14);
@@ -908,7 +909,10 @@ private: System::Windows::Forms::Button^ button1;
 			System::Void addCellToResetQueue(int index);
 			System::Void addCellToResetQueue(int row, int col);
 			System::Void setMemoryListValueCellColorsAtRow(int row, Color color);
-			System::Void setMemoryListAddressCellColorsAtRow(int row, Color color);
+			System::Void setMemoryListAddressCellColorsAtRow(int row, Color color, bool is_odd);
+			System::Void setLastHighlightedAddress(String^ address);
+			bool isOddSelection();
+			bool isLastHighlightedAddressOdd();
 	#pragma endregion
 
 	#pragma region Registers
@@ -965,6 +969,7 @@ private: System::Windows::Forms::Button^ button1;
 			System::Void starting_address_textbox_Enter(System::Object^ sender, System::EventArgs^ e);
 			System::Void updateStartingAddress();
 			System::Void starting_address_textbox_SelectStartingAddressText();
+			System::Void current_address_textbox_TextChanged(System::Object^ sender, System::EventArgs^ e);
 	#pragma endregion
 
 	#pragma region Data Members
@@ -978,6 +983,7 @@ private: System::Windows::Forms::Button^ button1;
 			String^ last_highlighted_address = "";
 			Generic::Queue<System::Tuple<System::DateTime, int, int>^>^ color_reset_queue;
 			bool starting_address_textbox_clicked = false;
+			bool is_last_highlighted_address_odd = false;
 	#pragma endregion
 };
 }

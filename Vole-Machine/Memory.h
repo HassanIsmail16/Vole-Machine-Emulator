@@ -17,4 +17,5 @@ public:
 	void clearValueAt(const size_t index);
 	void clearMemory();
 	bool isEmpty();
+	void setLastAddedInstructionIndex(int index);
 };

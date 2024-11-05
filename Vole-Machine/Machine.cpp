@@ -6,9 +6,8 @@
 void Machine::loadProgram(std::string& filename) {
 	this->memory.clearMemory();
 
-	for (int i = 0; i < this->processor.getStartingAddress() / 2; i++) {
-		this->memory.addInstruction("0000");
-	} // populate memory with empty instructions till starting address
+	// begin adding instructions from the starting address
+	this->memory.setLastAddedInstructionIndex(this->processor.getStartingAddress());
 
 	std::fstream file(filename);
 
