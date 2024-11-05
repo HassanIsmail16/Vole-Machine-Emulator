@@ -66,7 +66,7 @@ void ExecutionController::runAllInstructions() {
 }
 
 void ExecutionController::fetchInstruction() {
-	if (this->hasReachedEndOfMemory()) {
+	if (this->hasReachedEndOfMemory() || this->getCurrentAddress() == "FF") {
 		reached_end_of_memory();
 		return;
 	} // exit if reached end of memory
@@ -131,6 +131,7 @@ void ExecutionController::resetProgram() {
 	resetInstructionRegister();
 	fetchedInstruction();
 	this->reset_instruction_register();
+	std::cout << this->machine->getCPU().getStartingAddress() << std::endl;
 }
 
 void ExecutionController::resetInstructionRegister() {
