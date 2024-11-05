@@ -244,23 +244,36 @@ System::Void VoleMachine::MainForm::memory_list_EditingControlShowing(Object^ se
 		}
 	}
 }
+
 System::Void VoleMachine::MainForm::memory_list_KeyPress(Object^ sender, KeyPressEventArgs^ e) {
-	TextBox^ text_box = dynamic_cast<TextBox^>(sender); // cast sender to textbox for easier handling
+	// First check if we're editing a cell in the DataGridView
+	if (this->memory_list->EditingControl != nullptr) {
+		TextBox^ text_box = dynamic_cast<TextBox^>(this->memory_list->EditingControl);
 
-	if (e->KeyChar == '\b') {
-		return; 
-	} // allow backspace
+		if (text_box == nullptr) {
+			e->Handled = true;  // Not a TextBox, suppress input
+			return;
+		}
 
-	e->KeyChar = Char::ToUpper(e->KeyChar); // convert input to uppercase
+		if (e->KeyChar == '\b') {
+			return;  // allow backspace
+		}
 
-	// check if the key is a valid hex digit
-	bool is_key = (e->KeyChar >= '0' && e->KeyChar <= '9') || (e->KeyChar >= 'A' && e->KeyChar <= 'F');
-	bool withing_length = text_box->Text->Length < 2 || text_box->SelectionLength == text_box->Text->Length;
+		e->KeyChar = Char::ToUpper(e->KeyChar);  // convert input to uppercase
 
-	if (!is_key || !withing_length) {
-		e->Handled = true; // suppress input if not valid
-	} else if (text_box->SelectionLength == text_box->Text->Length) {
-		text_box->Text = ""; // clear text if the entire text is selected
+		// check if the key is a valid hex digit
+		bool is_key = (e->KeyChar >= '0' && e->KeyChar <= '9') ||
+			(e->KeyChar >= 'A' && e->KeyChar <= 'F');
+		bool within_length = text_box->Text->Length < 2 ||
+			text_box->SelectionLength == text_box->Text->Length;
+
+		if (!is_key || !within_length) {
+			e->Handled = true;  // suppress input if not valid
+		} else if (text_box->SelectionLength == text_box->Text->Length) {
+			text_box->Text = "";  // clear text if the entire text is selected
+		}
+	} else {
+		e->Handled = true;  // Not in edit mode, suppress input
 	}
 }
 
