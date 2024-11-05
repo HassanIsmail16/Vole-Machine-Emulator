@@ -66,7 +66,7 @@ void ExecutionController::runAllInstructions() {
 }
 
 void ExecutionController::fetchInstruction() {
-	if (this->getCurrentAddress() == "FF") {
+	if (this->hasReachedEndOfMemory()) {
 		reached_end_of_memory();
 		return;
 	} // exit if reached end of memory
@@ -175,7 +175,6 @@ void ExecutionController::setStartingAddress(int address) {
 }
 
 bool ExecutionController::hasReachedEndOfMemory() {
-	// ODD
 	return this->machine->getCPU().hasReachedEndOfMemory();
 }
 

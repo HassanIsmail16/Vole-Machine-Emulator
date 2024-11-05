@@ -20,15 +20,15 @@ void CPU::runInstructions(Memory& memory) {
 }
 
 void CPU::fetch(Memory& memory) {
-	if (this->hasReachedEndOfMemory()) { // ODD
+	if (this->hasReachedEndOfMemory()) {
 		this->setProgramCounter(this->starting_address);
-	} // TODO: odd starting address
+	}
 
 	std::string instruction1 = memory.getValueAt(this->program_counter);
 	std::string instruction2 = memory.getValueAt(this->program_counter + 1);
 	this->instruction_register = instruction1 + instruction2;
 	this->program_counter += ((!this->isProgramCounterOdd() && this->program_counter == 254) ||
-							 (this->isProgramCounterOdd() && this->program_counter == 253)) ? 1 : 2; // ODD
+							 (this->isProgramCounterOdd() && this->program_counter == 253)) ? 1 : 2;
 }
 
 std::vector<int> CPU::decode() {

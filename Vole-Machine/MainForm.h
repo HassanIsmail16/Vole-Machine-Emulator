@@ -555,6 +555,7 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				this->current_address_textbox->Size = System::Drawing::Size(78, 20);
 				this->current_address_textbox->TabIndex = 1;
 				this->current_address_textbox->Text = L"00";
+				this->current_address_textbox->TextChanged += gcnew System::EventHandler(this, &MainForm::current_address_textbox_TextChanged);
 				// 
 				// program_counter_address_label
 				// 
@@ -907,6 +908,7 @@ private: System::Windows::Forms::Button^ batch_add_code;
 			System::Void starting_address_textbox_Enter(System::Object^ sender, System::EventArgs^ e);
 			System::Void updateStartingAddress();
 			System::Void starting_address_textbox_SelectStartingAddressText();
+			System::Void current_address_textbox_TextChanged(System::Object^ sender, System::EventArgs^ e);
 	#pragma endregion
 
 	#pragma region Data Members

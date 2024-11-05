@@ -485,7 +485,6 @@ System::Void VoleMachine::MainForm::setMemoryListAddressCellColorsAtRow(int row,
 			this->memory_list->Rows[row + 1]->Cells[0]->Style->BackColor = color;
 		}
 	} else {
-		std::cout << "s1 " << row << std::endl;
 		this->memory_list->Rows[row]->Cells[0]->Style->BackColor = color;
 		this->memory_list->Rows[row]->Cells[3]->Style->BackColor = color;
 	}
@@ -965,21 +964,6 @@ System::Void VoleMachine::MainForm::updateStartingAddress() {
 	if (text->Length == 2) {
 		int decimal_value = Utilities::Conversion::convertHexSystemStringToDecInt(text);
 
-		//if (decimal_value % 2 != 0) {
-		//	decimal_value--;
-
-		//	text = Utilities::Conversion::convertStdStringToSystemString(
-		//		Utilities::Conversion::convertDecToHex(decimal_value)
-		//	);
-
-
-		//	if (text->Length == 1) {
-		//		text = "0" + text;
-		//	} // add leading zero
-
-		//	this->starting_address_textbox->Text = text;
-		//} // handle odd addresses
-
 		int current_execution_address = Utilities::Conversion::convertHexSystemStringToDecInt(this->current_address_textbox->Text);
 
 		if (current_execution_address < decimal_value) {
@@ -1002,5 +986,11 @@ System::Void VoleMachine::MainForm::updateStartingAddress() {
 
 System::Void VoleMachine::MainForm::starting_address_textbox_SelectStartingAddressText() {
 	this->starting_address_textbox->SelectAll();
+}
+
+System::Void VoleMachine::MainForm::current_address_textbox_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+	if (this->current_address_textbox->Text == "FF") {
+		this->OnReachedEndOfMemory();
+	}
 }
 #pragma endregion
