@@ -173,31 +173,24 @@ System::Void VoleMachine::MainForm::memory_list_CellEndEdit(Object^ sender, Data
 
 System::Void VoleMachine::MainForm::memory_list_AddressCellStateChanged(Object^ sender, DataGridViewCellStateChangedEventArgs^ e) {
 	if (this->memory_list->RowCount != 128 || this->memory_list->ColumnCount != 4) {
-		return;
-	} // exit if memory list is not alerady populated
+		return; // Exit if memory list is not already populated
+	}
 
 	if (!e->Cell || e->StateChanged != DataGridViewElementStates::Selected) {
-		return;
-	} // exit if cell is not selected
-
-	if (e->Cell->RowIndex == this->memory_list_selected_cell_row && e->Cell->ColumnIndex == this->memory_list_selected_cell_col) {
-		return;
-	} // exit if cell is already selected
-
-	if (!e->Cell->Selected) {
-		return;
-	} // exit if nothing is selected
+		return; // Exit if cell is not selected
+	}
 
 	if (e->Cell->ColumnIndex == 0 || e->Cell->ColumnIndex == 3) {
-		// forbid user from selecting address cells
+		// Prevent selection of address cells
 		e->Cell->Selected = false;
-		this->memory_list->Rows[this->memory_list_selected_cell_row]->Cells[this->memory_list_selected_cell_col]->Selected = true;
+		return;
 	} else {
-		// select value cells
+		// Update selected cell tracking
 		this->memory_list_selected_cell_row = e->Cell->RowIndex;
 		this->memory_list_selected_cell_col = e->Cell->ColumnIndex;
 	}
 }
+
 
 System::Void VoleMachine::MainForm::memory_list_HandleCellSelection(int edited_cell_col, int edited_cell_row) {
 	if (edited_cell_col == 1) {
