@@ -582,6 +582,19 @@ System::Void VoleMachine::MainForm::OnExecuteInstruction() {
 }
 
 System::Void VoleMachine::MainForm::OnUpdateScreen(std::string value) {
+	if (value.size() == 0) {
+		return;
+	}
+
+	if (ascii_rb->Checked) {
+		std::string ascii_string = Utilities::Conversion::convertStdStringToASCIIChar(value);
+		value = ascii_string;
+	}
+
+	if (hex_rb->Checked && value.size() == 1) {
+		value = "0" + value;
+	}
+
 	this->screen_textbox->AppendText(Utilities::Conversion::convertStdStringToSystemString(value));
 	this->screen_textbox->ScrollToCaret();
 }
@@ -838,6 +851,46 @@ void VoleMachine::MainForm::updateOperandsAndDescription(System::Collections::Ge
 	this->third_operand_textbox->Text = third_operand;
 
 	this->instruction_decode_textbox->Text = instruction_description;
+}
+
+System::Void VoleMachine::MainForm::hex_rb_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+	this->updateScreen();
+}
+
+System::Void VoleMachine::MainForm::updateScreen() {
+	if (ascii_rb->Checked) {
+		this->hexScreenToASCII();
+	}
+	else {
+		this->asciiScreenToHex();
+	}
+}
+
+System::Void VoleMachine::MainForm::hexScreenToASCII() {
+	System::String^ screen_text = this->screen_textbox->Text;
+	this->screen_textbox->Clear();
+
+	for (int i = 0; i < screen_text->Length - 1; i += 2) {
+		System::String^ hex_char = screen_text[i].ToString() + screen_text[i + 1].ToString();
+		int hex_value = System::Convert::ToInt32(hex_char, 16);
+
+		System::String^ ascii_char = System::Convert::ToChar(hex_value).ToString();
+		this->screen_textbox->AppendText(ascii_char);
+	}
+
+}
+
+System::Void VoleMachine::MainForm::asciiScreenToHex() {
+	System::String^ screen_text = this->screen_textbox->Text;
+	this->screen_textbox->Clear();
+
+	for (int i = 0; i < screen_text->Length; i++) {
+		int ascii_code = int(screen_text[i]);
+		System::String^ hex_char = String::Format("{0:X2}", ascii_code);
+		this->screen_textbox->AppendText(hex_char);
+	}
+
+
 }
 
 System::String^ VoleMachine::MainForm::getInstructionDescription(OP_CODE opcode, System::String^ first_operand, System::String^ second_operand, System::String^ third_operand) {

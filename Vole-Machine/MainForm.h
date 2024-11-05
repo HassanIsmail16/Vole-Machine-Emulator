@@ -141,8 +141,9 @@ private: System::Windows::Forms::Button^ button1;
 	#pragma region Windows Form Designer generated code
 			void InitializeComponent(void) {
 				this->components = (gcnew System::ComponentModel::Container());
-				System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle7 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
+				System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle1 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
 				this->main_panel = (gcnew System::Windows::Forms::Panel());
+				this->button1 = (gcnew System::Windows::Forms::Button());
 				this->screen_groupbox = (gcnew System::Windows::Forms::GroupBox());
 				this->hex_rb = (gcnew System::Windows::Forms::RadioButton());
 				this->ascii_rb = (gcnew System::Windows::Forms::RadioButton());
@@ -195,7 +196,6 @@ private: System::Windows::Forms::Button^ button1;
 				this->play = (gcnew System::Windows::Forms::Button());
 				this->load_from_file = (gcnew System::Windows::Forms::Button());
 				this->starting_address_textbox_tooltip = (gcnew System::Windows::Forms::ToolTip(this->components));
-				this->button1 = (gcnew System::Windows::Forms::Button());
 				this->main_panel->SuspendLayout();
 				this->screen_groupbox->SuspendLayout();
 				this->memory_list_groupbox->SuspendLayout();
@@ -231,18 +231,31 @@ private: System::Windows::Forms::Button^ button1;
 				this->main_panel->Controls->Add(this->controls_panel);
 				this->main_panel->Dock = System::Windows::Forms::DockStyle::Fill;
 				this->main_panel->Location = System::Drawing::Point(0, 0);
+				this->main_panel->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->main_panel->Name = L"main_panel";
-				this->main_panel->Padding = System::Windows::Forms::Padding(10);
-				this->main_panel->Size = System::Drawing::Size(957, 584);
+				this->main_panel->Padding = System::Windows::Forms::Padding(12, 11, 12, 11);
+				this->main_panel->Size = System::Drawing::Size(1116, 629);
 				this->main_panel->TabIndex = 0;
+				// 
+				// button1
+				// 
+				this->button1->Location = System::Drawing::Point(9, 572);
+				this->button1->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
+				this->button1->Name = L"button1";
+				this->button1->Size = System::Drawing::Size(461, 25);
+				this->button1->TabIndex = 17;
+				this->button1->Text = L"Batch Add Code";
+				this->button1->UseVisualStyleBackColor = true;
 				// 
 				// screen_groupbox
 				// 
 				this->screen_groupbox->Controls->Add(this->hex_rb);
 				this->screen_groupbox->Controls->Add(this->ascii_rb);
-				this->screen_groupbox->Location = System::Drawing::Point(667, 530);
+				this->screen_groupbox->Location = System::Drawing::Point(778, 571);
+				this->screen_groupbox->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->screen_groupbox->Name = L"screen_groupbox";
-				this->screen_groupbox->Size = System::Drawing::Size(279, 47);
+				this->screen_groupbox->Padding = System::Windows::Forms::Padding(4, 3, 4, 3);
+				this->screen_groupbox->Size = System::Drawing::Size(326, 51);
 				this->screen_groupbox->TabIndex = 16;
 				this->screen_groupbox->TabStop = false;
 				this->screen_groupbox->Text = L"Screen Settings";
@@ -251,20 +264,23 @@ private: System::Windows::Forms::Button^ button1;
 				// 
 				this->hex_rb->AutoSize = true;
 				this->hex_rb->Checked = true;
-				this->hex_rb->Location = System::Drawing::Point(111, 19);
+				this->hex_rb->Location = System::Drawing::Point(130, 20);
+				this->hex_rb->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->hex_rb->Name = L"hex_rb";
-				this->hex_rb->Size = System::Drawing::Size(71, 17);
+				this->hex_rb->Size = System::Drawing::Size(76, 18);
 				this->hex_rb->TabIndex = 16;
 				this->hex_rb->TabStop = true;
 				this->hex_rb->Text = L"Print HEX";
 				this->hex_rb->UseVisualStyleBackColor = true;
+				this->hex_rb->CheckedChanged += gcnew System::EventHandler(this, &MainForm::hex_rb_CheckedChanged);
 				// 
 				// ascii_rb
 				// 
 				this->ascii_rb->AutoSize = true;
-				this->ascii_rb->Location = System::Drawing::Point(18, 19);
+				this->ascii_rb->Location = System::Drawing::Point(21, 20);
+				this->ascii_rb->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->ascii_rb->Name = L"ascii_rb";
-				this->ascii_rb->Size = System::Drawing::Size(76, 17);
+				this->ascii_rb->Size = System::Drawing::Size(84, 18);
 				this->ascii_rb->TabIndex = 16;
 				this->ascii_rb->TabStop = true;
 				this->ascii_rb->Text = L"Print ASCII";
@@ -276,9 +292,11 @@ private: System::Windows::Forms::Button^ button1;
 				this->memory_list_groupbox->Controls->Add(this->even_selection_rb);
 				this->memory_list_groupbox->Controls->Add(this->starting_address_label);
 				this->memory_list_groupbox->Controls->Add(this->starting_address_textbox);
-				this->memory_list_groupbox->Location = System::Drawing::Point(411, 530);
+				this->memory_list_groupbox->Location = System::Drawing::Point(479, 571);
+				this->memory_list_groupbox->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->memory_list_groupbox->Name = L"memory_list_groupbox";
-				this->memory_list_groupbox->Size = System::Drawing::Size(249, 47);
+				this->memory_list_groupbox->Padding = System::Windows::Forms::Padding(4, 3, 4, 3);
+				this->memory_list_groupbox->Size = System::Drawing::Size(290, 51);
 				this->memory_list_groupbox->TabIndex = 16;
 				this->memory_list_groupbox->TabStop = false;
 				this->memory_list_groupbox->Text = L"Memory List Settings";
@@ -286,9 +304,10 @@ private: System::Windows::Forms::Button^ button1;
 				// odd_selection_rb
 				// 
 				this->odd_selection_rb->AutoSize = true;
-				this->odd_selection_rb->Location = System::Drawing::Point(146, 26);
+				this->odd_selection_rb->Location = System::Drawing::Point(170, 28);
+				this->odd_selection_rb->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->odd_selection_rb->Name = L"odd_selection_rb";
-				this->odd_selection_rb->Size = System::Drawing::Size(92, 17);
+				this->odd_selection_rb->Size = System::Drawing::Size(102, 18);
 				this->odd_selection_rb->TabIndex = 16;
 				this->odd_selection_rb->TabStop = true;
 				this->odd_selection_rb->Text = L"Odd Selection";
@@ -298,9 +317,10 @@ private: System::Windows::Forms::Button^ button1;
 				// 
 				this->even_selection_rb->AutoSize = true;
 				this->even_selection_rb->Checked = true;
-				this->even_selection_rb->Location = System::Drawing::Point(146, 10);
+				this->even_selection_rb->Location = System::Drawing::Point(170, 11);
+				this->even_selection_rb->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->even_selection_rb->Name = L"even_selection_rb";
-				this->even_selection_rb->Size = System::Drawing::Size(97, 17);
+				this->even_selection_rb->Size = System::Drawing::Size(106, 18);
 				this->even_selection_rb->TabIndex = 16;
 				this->even_selection_rb->TabStop = true;
 				this->even_selection_rb->Text = L"Even Selection";
@@ -309,19 +329,21 @@ private: System::Windows::Forms::Button^ button1;
 				// starting_address_label
 				// 
 				this->starting_address_label->AutoSize = true;
-				this->starting_address_label->Location = System::Drawing::Point(52, 22);
+				this->starting_address_label->Location = System::Drawing::Point(61, 24);
+				this->starting_address_label->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 				this->starting_address_label->Name = L"starting_address_label";
-				this->starting_address_label->Size = System::Drawing::Size(84, 13);
+				this->starting_address_label->Size = System::Drawing::Size(97, 14);
 				this->starting_address_label->TabIndex = 15;
 				this->starting_address_label->Text = L"Starting Address";
 				// 
 				// starting_address_textbox
 				// 
 				this->starting_address_textbox->CharacterCasing = System::Windows::Forms::CharacterCasing::Upper;
-				this->starting_address_textbox->Location = System::Drawing::Point(8, 18);
+				this->starting_address_textbox->Location = System::Drawing::Point(9, 19);
+				this->starting_address_textbox->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->starting_address_textbox->MaxLength = 2;
 				this->starting_address_textbox->Name = L"starting_address_textbox";
-				this->starting_address_textbox->Size = System::Drawing::Size(38, 20);
+				this->starting_address_textbox->Size = System::Drawing::Size(44, 22);
 				this->starting_address_textbox->TabIndex = 14;
 				this->starting_address_textbox->Text = L"00";
 				this->starting_address_textbox->Enter += gcnew System::EventHandler(this, &MainForm::starting_address_textbox_Enter);
@@ -332,17 +354,19 @@ private: System::Windows::Forms::Button^ button1;
 				// credits_label
 				// 
 				this->credits_label->AutoSize = true;
-				this->credits_label->Location = System::Drawing::Point(74, 560);
+				this->credits_label->Location = System::Drawing::Point(86, 603);
+				this->credits_label->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 				this->credits_label->Name = L"credits_label";
-				this->credits_label->Size = System::Drawing::Size(263, 13);
+				this->credits_label->Size = System::Drawing::Size(297, 14);
 				this->credits_label->TabIndex = 13;
 				this->credits_label->Text = L"Made by: Hassan Ali, Abdullah Ali, Momen Abdelkader";
 				// 
 				// clear_screen
 				// 
-				this->clear_screen->Location = System::Drawing::Point(849, 316);
+				this->clear_screen->Location = System::Drawing::Point(990, 340);
+				this->clear_screen->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->clear_screen->Name = L"clear_screen";
-				this->clear_screen->Size = System::Drawing::Size(83, 23);
+				this->clear_screen->Size = System::Drawing::Size(97, 25);
 				this->clear_screen->TabIndex = 11;
 				this->clear_screen->Text = L"Clear Screen";
 				this->clear_screen->UseVisualStyleBackColor = true;
@@ -351,9 +375,10 @@ private: System::Windows::Forms::Button^ button1;
 				// screen_label
 				// 
 				this->screen_label->AutoSize = true;
-				this->screen_label->Location = System::Drawing::Point(675, 321);
+				this->screen_label->Location = System::Drawing::Point(788, 346);
+				this->screen_label->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 				this->screen_label->Name = L"screen_label";
-				this->screen_label->Size = System::Drawing::Size(41, 13);
+				this->screen_label->Size = System::Drawing::Size(45, 14);
 				this->screen_label->TabIndex = 10;
 				this->screen_label->Text = L"Screen";
 				// 
@@ -361,28 +386,31 @@ private: System::Windows::Forms::Button^ button1;
 				// 
 				this->screen_panel->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 				this->screen_panel->Controls->Add(this->screen_textbox);
-				this->screen_panel->Location = System::Drawing::Point(667, 329);
+				this->screen_panel->Location = System::Drawing::Point(778, 354);
+				this->screen_panel->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->screen_panel->Name = L"screen_panel";
-				this->screen_panel->Size = System::Drawing::Size(279, 195);
+				this->screen_panel->Size = System::Drawing::Size(325, 210);
 				this->screen_panel->TabIndex = 9;
 				// 
 				// screen_textbox
 				// 
 				this->screen_textbox->BackColor = System::Drawing::SystemColors::Control;
-				this->screen_textbox->Location = System::Drawing::Point(5, 15);
+				this->screen_textbox->Location = System::Drawing::Point(6, 16);
+				this->screen_textbox->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->screen_textbox->Multiline = true;
 				this->screen_textbox->Name = L"screen_textbox";
 				this->screen_textbox->ReadOnly = true;
 				this->screen_textbox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-				this->screen_textbox->Size = System::Drawing::Size(268, 170);
+				this->screen_textbox->Size = System::Drawing::Size(312, 183);
 				this->screen_textbox->TabIndex = 0;
 				// 
 				// instruction_register_label
 				// 
 				this->instruction_register_label->AutoSize = true;
-				this->instruction_register_label->Location = System::Drawing::Point(675, 77);
+				this->instruction_register_label->Location = System::Drawing::Point(788, 83);
+				this->instruction_register_label->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 				this->instruction_register_label->Name = L"instruction_register_label";
-				this->instruction_register_label->Size = System::Drawing::Size(98, 13);
+				this->instruction_register_label->Size = System::Drawing::Size(114, 14);
 				this->instruction_register_label->TabIndex = 8;
 				this->instruction_register_label->Text = L"Instruction Register";
 				// 
@@ -402,95 +430,106 @@ private: System::Windows::Forms::Button^ button1;
 				this->instruction_register_panel->Controls->Add(this->decode);
 				this->instruction_register_panel->Controls->Add(this->current_instruction_textbox);
 				this->instruction_register_panel->Controls->Add(this->instruction_register_instruction_label);
-				this->instruction_register_panel->Location = System::Drawing::Point(667, 84);
+				this->instruction_register_panel->Location = System::Drawing::Point(778, 90);
+				this->instruction_register_panel->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->instruction_register_panel->Name = L"instruction_register_panel";
-				this->instruction_register_panel->Size = System::Drawing::Size(279, 226);
+				this->instruction_register_panel->Size = System::Drawing::Size(325, 243);
 				this->instruction_register_panel->TabIndex = 7;
 				// 
 				// instruction_decode_textbox
 				// 
 				this->instruction_decode_textbox->AcceptsReturn = true;
 				this->instruction_decode_textbox->BackColor = System::Drawing::SystemColors::Control;
-				this->instruction_decode_textbox->Location = System::Drawing::Point(17, 111);
+				this->instruction_decode_textbox->Location = System::Drawing::Point(20, 120);
+				this->instruction_decode_textbox->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->instruction_decode_textbox->Multiline = true;
 				this->instruction_decode_textbox->Name = L"instruction_decode_textbox";
 				this->instruction_decode_textbox->ReadOnly = true;
-				this->instruction_decode_textbox->Size = System::Drawing::Size(242, 71);
+				this->instruction_decode_textbox->Size = System::Drawing::Size(282, 76);
 				this->instruction_decode_textbox->TabIndex = 5;
 				// 
 				// third_operand_textbox
 				// 
-				this->third_operand_textbox->Location = System::Drawing::Point(233, 81);
+				this->third_operand_textbox->Location = System::Drawing::Point(272, 87);
+				this->third_operand_textbox->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->third_operand_textbox->Name = L"third_operand_textbox";
 				this->third_operand_textbox->ReadOnly = true;
-				this->third_operand_textbox->Size = System::Drawing::Size(21, 20);
+				this->third_operand_textbox->Size = System::Drawing::Size(24, 22);
 				this->third_operand_textbox->TabIndex = 4;
 				// 
 				// second_operand_textbox
 				// 
-				this->second_operand_textbox->Location = System::Drawing::Point(180, 81);
+				this->second_operand_textbox->Location = System::Drawing::Point(210, 87);
+				this->second_operand_textbox->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->second_operand_textbox->Name = L"second_operand_textbox";
 				this->second_operand_textbox->ReadOnly = true;
-				this->second_operand_textbox->Size = System::Drawing::Size(21, 20);
+				this->second_operand_textbox->Size = System::Drawing::Size(24, 22);
 				this->second_operand_textbox->TabIndex = 4;
 				// 
 				// first_operand_textbox
 				// 
-				this->first_operand_textbox->Location = System::Drawing::Point(127, 81);
+				this->first_operand_textbox->Location = System::Drawing::Point(148, 87);
+				this->first_operand_textbox->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->first_operand_textbox->Name = L"first_operand_textbox";
 				this->first_operand_textbox->ReadOnly = true;
-				this->first_operand_textbox->Size = System::Drawing::Size(21, 20);
+				this->first_operand_textbox->Size = System::Drawing::Size(24, 22);
 				this->first_operand_textbox->TabIndex = 4;
 				// 
 				// opcode_textbox
 				// 
-				this->opcode_textbox->Location = System::Drawing::Point(65, 81);
+				this->opcode_textbox->Location = System::Drawing::Point(76, 87);
+				this->opcode_textbox->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->opcode_textbox->Name = L"opcode_textbox";
 				this->opcode_textbox->ReadOnly = true;
-				this->opcode_textbox->Size = System::Drawing::Size(21, 20);
+				this->opcode_textbox->Size = System::Drawing::Size(24, 22);
 				this->opcode_textbox->TabIndex = 4;
 				// 
 				// third_operand_label
 				// 
 				this->third_operand_label->AutoSize = true;
-				this->third_operand_label->Location = System::Drawing::Point(213, 85);
+				this->third_operand_label->Location = System::Drawing::Point(248, 92);
+				this->third_operand_label->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 				this->third_operand_label->Name = L"third_operand_label";
-				this->third_operand_label->Size = System::Drawing::Size(16, 13);
+				this->third_operand_label->Size = System::Drawing::Size(17, 14);
 				this->third_operand_label->TabIndex = 3;
 				this->third_operand_label->Text = L"\?:";
 				// 
 				// second_operand_label
 				// 
 				this->second_operand_label->AutoSize = true;
-				this->second_operand_label->Location = System::Drawing::Point(160, 85);
+				this->second_operand_label->Location = System::Drawing::Point(187, 92);
+				this->second_operand_label->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 				this->second_operand_label->Name = L"second_operand_label";
-				this->second_operand_label->Size = System::Drawing::Size(16, 13);
+				this->second_operand_label->Size = System::Drawing::Size(17, 14);
 				this->second_operand_label->TabIndex = 3;
 				this->second_operand_label->Text = L"\?:";
 				// 
 				// first_operand_label
 				// 
 				this->first_operand_label->AutoSize = true;
-				this->first_operand_label->Location = System::Drawing::Point(107, 85);
+				this->first_operand_label->Location = System::Drawing::Point(125, 92);
+				this->first_operand_label->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 				this->first_operand_label->Name = L"first_operand_label";
-				this->first_operand_label->Size = System::Drawing::Size(16, 13);
+				this->first_operand_label->Size = System::Drawing::Size(17, 14);
 				this->first_operand_label->TabIndex = 3;
 				this->first_operand_label->Text = L"\?:";
 				// 
 				// opcode_label
 				// 
 				this->opcode_label->AutoSize = true;
-				this->opcode_label->Location = System::Drawing::Point(14, 85);
+				this->opcode_label->Location = System::Drawing::Point(16, 92);
+				this->opcode_label->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 				this->opcode_label->Name = L"opcode_label";
-				this->opcode_label->Size = System::Drawing::Size(48, 13);
+				this->opcode_label->Size = System::Drawing::Size(54, 14);
 				this->opcode_label->TabIndex = 3;
 				this->opcode_label->Text = L"Opcode:";
 				// 
 				// execute
 				// 
-				this->execute->Location = System::Drawing::Point(17, 188);
+				this->execute->Location = System::Drawing::Point(20, 202);
+				this->execute->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->execute->Name = L"execute";
-				this->execute->Size = System::Drawing::Size(243, 23);
+				this->execute->Size = System::Drawing::Size(284, 25);
 				this->execute->TabIndex = 2;
 				this->execute->Text = L"Execute";
 				this->execute->UseVisualStyleBackColor = true;
@@ -498,9 +537,10 @@ private: System::Windows::Forms::Button^ button1;
 				// 
 				// decode
 				// 
-				this->decode->Location = System::Drawing::Point(17, 50);
+				this->decode->Location = System::Drawing::Point(20, 54);
+				this->decode->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->decode->Name = L"decode";
-				this->decode->Size = System::Drawing::Size(243, 23);
+				this->decode->Size = System::Drawing::Size(284, 25);
 				this->decode->TabIndex = 2;
 				this->decode->Text = L"Decode";
 				this->decode->UseVisualStyleBackColor = true;
@@ -508,10 +548,11 @@ private: System::Windows::Forms::Button^ button1;
 				// 
 				// current_instruction_textbox
 				// 
-				this->current_instruction_textbox->Location = System::Drawing::Point(138, 18);
+				this->current_instruction_textbox->Location = System::Drawing::Point(161, 19);
+				this->current_instruction_textbox->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->current_instruction_textbox->Name = L"current_instruction_textbox";
 				this->current_instruction_textbox->ReadOnly = true;
-				this->current_instruction_textbox->Size = System::Drawing::Size(92, 20);
+				this->current_instruction_textbox->Size = System::Drawing::Size(107, 22);
 				this->current_instruction_textbox->TabIndex = 1;
 				// 
 				// instruction_register_instruction_label
@@ -519,18 +560,20 @@ private: System::Windows::Forms::Button^ button1;
 				this->instruction_register_instruction_label->AutoSize = true;
 				this->instruction_register_instruction_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-				this->instruction_register_instruction_label->Location = System::Drawing::Point(17, 22);
+				this->instruction_register_instruction_label->Location = System::Drawing::Point(20, 24);
+				this->instruction_register_instruction_label->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 				this->instruction_register_instruction_label->Name = L"instruction_register_instruction_label";
-				this->instruction_register_instruction_label->Size = System::Drawing::Size(112, 13);
+				this->instruction_register_instruction_label->Size = System::Drawing::Size(130, 16);
 				this->instruction_register_instruction_label->TabIndex = 0;
 				this->instruction_register_instruction_label->Text = L"Current Instruction";
 				// 
 				// program_counter_label
 				// 
 				this->program_counter_label->AutoSize = true;
-				this->program_counter_label->Location = System::Drawing::Point(23, 79);
+				this->program_counter_label->Location = System::Drawing::Point(27, 85);
+				this->program_counter_label->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 				this->program_counter_label->Name = L"program_counter_label";
-				this->program_counter_label->Size = System::Drawing::Size(86, 13);
+				this->program_counter_label->Size = System::Drawing::Size(100, 14);
 				this->program_counter_label->TabIndex = 6;
 				this->program_counter_label->Text = L"Program Counter";
 				// 
@@ -541,17 +584,19 @@ private: System::Windows::Forms::Button^ button1;
 				this->program_counter_panel->Controls->Add(this->program_counter_address_label);
 				this->program_counter_panel->Controls->Add(this->reset_pc);
 				this->program_counter_panel->Controls->Add(this->fetch);
-				this->program_counter_panel->Location = System::Drawing::Point(10, 84);
+				this->program_counter_panel->Location = System::Drawing::Point(12, 90);
+				this->program_counter_panel->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->program_counter_panel->Name = L"program_counter_panel";
-				this->program_counter_panel->Size = System::Drawing::Size(393, 63);
+				this->program_counter_panel->Size = System::Drawing::Size(458, 68);
 				this->program_counter_panel->TabIndex = 5;
 				// 
 				// current_address_textbox
 				// 
-				this->current_address_textbox->Location = System::Drawing::Point(122, 23);
+				this->current_address_textbox->Location = System::Drawing::Point(142, 25);
+				this->current_address_textbox->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->current_address_textbox->Name = L"current_address_textbox";
 				this->current_address_textbox->ReadOnly = true;
-				this->current_address_textbox->Size = System::Drawing::Size(78, 20);
+				this->current_address_textbox->Size = System::Drawing::Size(90, 22);
 				this->current_address_textbox->TabIndex = 1;
 				this->current_address_textbox->Text = L"00";
 				// 
@@ -560,18 +605,19 @@ private: System::Windows::Forms::Button^ button1;
 				this->program_counter_address_label->AutoSize = true;
 				this->program_counter_address_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-				this->program_counter_address_label->Location = System::Drawing::Point(13, 26);
+				this->program_counter_address_label->Location = System::Drawing::Point(15, 28);
+				this->program_counter_address_label->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 				this->program_counter_address_label->Name = L"program_counter_address_label";
-				this->program_counter_address_label->Size = System::Drawing::Size(101, 13);
+				this->program_counter_address_label->Size = System::Drawing::Size(122, 16);
 				this->program_counter_address_label->TabIndex = 0;
 				this->program_counter_address_label->Text = L"Current Address:";
 				// 
 				// reset_pc
 				// 
-				this->reset_pc->Location = System::Drawing::Point(300, 21);
+				this->reset_pc->Location = System::Drawing::Point(350, 23);
 				this->reset_pc->Margin = System::Windows::Forms::Padding(2);
 				this->reset_pc->Name = L"reset_pc";
-				this->reset_pc->Size = System::Drawing::Size(78, 23);
+				this->reset_pc->Size = System::Drawing::Size(91, 25);
 				this->reset_pc->TabIndex = 4;
 				this->reset_pc->Text = L"Reset";
 				this->reset_pc->UseVisualStyleBackColor = true;
@@ -579,10 +625,10 @@ private: System::Windows::Forms::Button^ button1;
 				// 
 				// fetch
 				// 
-				this->fetch->Location = System::Drawing::Point(205, 22);
+				this->fetch->Location = System::Drawing::Point(239, 24);
 				this->fetch->Margin = System::Windows::Forms::Padding(2);
 				this->fetch->Name = L"fetch";
-				this->fetch->Size = System::Drawing::Size(91, 23);
+				this->fetch->Size = System::Drawing::Size(106, 25);
 				this->fetch->TabIndex = 4;
 				this->fetch->Text = L"Fetch";
 				this->fetch->UseVisualStyleBackColor = true;
@@ -591,9 +637,10 @@ private: System::Windows::Forms::Button^ button1;
 				// memory_label
 				// 
 				this->memory_label->AutoSize = true;
-				this->memory_label->Location = System::Drawing::Point(426, 77);
+				this->memory_label->Location = System::Drawing::Point(497, 83);
+				this->memory_label->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 				this->memory_label->Name = L"memory_label";
-				this->memory_label->Size = System::Drawing::Size(44, 13);
+				this->memory_label->Size = System::Drawing::Size(50, 14);
 				this->memory_label->TabIndex = 4;
 				this->memory_label->Text = L"Memory";
 				// 
@@ -601,9 +648,10 @@ private: System::Windows::Forms::Button^ button1;
 				// 
 				this->memory_panel->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 				this->memory_panel->Controls->Add(this->memory_list);
-				this->memory_panel->Location = System::Drawing::Point(411, 84);
+				this->memory_panel->Location = System::Drawing::Point(479, 90);
+				this->memory_panel->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->memory_panel->Name = L"memory_panel";
-				this->memory_panel->Size = System::Drawing::Size(249, 440);
+				this->memory_panel->Size = System::Drawing::Size(290, 474);
 				this->memory_panel->TabIndex = 3;
 				// 
 				// memory_list
@@ -611,20 +659,21 @@ private: System::Windows::Forms::Button^ button1;
 				this->memory_list->BackgroundColor = System::Drawing::SystemColors::Control;
 				this->memory_list->BorderStyle = System::Windows::Forms::BorderStyle::None;
 				this->memory_list->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-				dataGridViewCellStyle7->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
-				dataGridViewCellStyle7->BackColor = System::Drawing::SystemColors::Window;
-				dataGridViewCellStyle7->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular,
+				dataGridViewCellStyle1->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
+				dataGridViewCellStyle1->BackColor = System::Drawing::SystemColors::Window;
+				dataGridViewCellStyle1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-				dataGridViewCellStyle7->ForeColor = System::Drawing::SystemColors::ControlText;
-				dataGridViewCellStyle7->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+				dataGridViewCellStyle1->ForeColor = System::Drawing::SystemColors::ControlText;
+				dataGridViewCellStyle1->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
 					static_cast<System::Int32>(static_cast<System::Byte>(220)), static_cast<System::Int32>(static_cast<System::Byte>(180)));
-				dataGridViewCellStyle7->SelectionForeColor = System::Drawing::Color::Black;
-				dataGridViewCellStyle7->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
-				this->memory_list->DefaultCellStyle = dataGridViewCellStyle7;
-				this->memory_list->Location = System::Drawing::Point(7, 8);
+				dataGridViewCellStyle1->SelectionForeColor = System::Drawing::Color::Black;
+				dataGridViewCellStyle1->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
+				this->memory_list->DefaultCellStyle = dataGridViewCellStyle1;
+				this->memory_list->Location = System::Drawing::Point(8, 9);
+				this->memory_list->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->memory_list->Name = L"memory_list";
 				this->memory_list->RowHeadersWidth = 51;
-				this->memory_list->Size = System::Drawing::Size(238, 422);
+				this->memory_list->Size = System::Drawing::Size(278, 454);
 				this->memory_list->TabIndex = 0;
 				this->memory_list->CellClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_OnCellClick);
 				this->memory_list->CellEndEdit += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MainForm::memory_list_CellEndEdit);
@@ -639,9 +688,10 @@ private: System::Windows::Forms::Button^ button1;
 				// label1
 				// 
 				this->label1->AutoSize = true;
-				this->label1->Location = System::Drawing::Point(23, 154);
+				this->label1->Location = System::Drawing::Point(27, 166);
+				this->label1->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 				this->label1->Name = L"label1";
-				this->label1->Size = System::Drawing::Size(51, 13);
+				this->label1->Size = System::Drawing::Size(56, 14);
 				this->label1->TabIndex = 2;
 				this->label1->Text = L"Registers";
 				// 
@@ -649,26 +699,29 @@ private: System::Windows::Forms::Button^ button1;
 				// 
 				this->registers_panel->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 				this->registers_panel->Controls->Add(this->registers_list);
-				this->registers_panel->Location = System::Drawing::Point(10, 162);
+				this->registers_panel->Location = System::Drawing::Point(12, 174);
+				this->registers_panel->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->registers_panel->Name = L"registers_panel";
-				this->registers_panel->Size = System::Drawing::Size(393, 362);
+				this->registers_panel->Size = System::Drawing::Size(458, 390);
 				this->registers_panel->TabIndex = 1;
 				// 
 				// registers_list
 				// 
 				this->registers_list->HideSelection = false;
-				this->registers_list->Location = System::Drawing::Point(7, 8);
+				this->registers_list->Location = System::Drawing::Point(8, 9);
+				this->registers_list->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->registers_list->Name = L"registers_list";
-				this->registers_list->Size = System::Drawing::Size(378, 344);
+				this->registers_list->Size = System::Drawing::Size(440, 370);
 				this->registers_list->TabIndex = 0;
 				this->registers_list->UseCompatibleStateImageBehavior = false;
 				// 
 				// controls_label
 				// 
 				this->controls_label->AutoSize = true;
-				this->controls_label->Location = System::Drawing::Point(23, 4);
+				this->controls_label->Location = System::Drawing::Point(27, 4);
+				this->controls_label->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 				this->controls_label->Name = L"controls_label";
-				this->controls_label->Size = System::Drawing::Size(45, 13);
+				this->controls_label->Size = System::Drawing::Size(51, 14);
 				this->controls_label->TabIndex = 0;
 				this->controls_label->Text = L"Controls";
 				// 
@@ -684,16 +737,18 @@ private: System::Windows::Forms::Button^ button1;
 				this->controls_panel->Controls->Add(this->reset_registers);
 				this->controls_panel->Controls->Add(this->play);
 				this->controls_panel->Controls->Add(this->load_from_file);
-				this->controls_panel->Location = System::Drawing::Point(10, 10);
+				this->controls_panel->Location = System::Drawing::Point(12, 11);
+				this->controls_panel->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->controls_panel->Name = L"controls_panel";
-				this->controls_panel->Size = System::Drawing::Size(936, 59);
+				this->controls_panel->Size = System::Drawing::Size(1092, 63);
 				this->controls_panel->TabIndex = 0;
 				// 
 				// run_until_halt
 				// 
-				this->run_until_halt->Location = System::Drawing::Point(444, 19);
+				this->run_until_halt->Location = System::Drawing::Point(518, 20);
+				this->run_until_halt->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->run_until_halt->Name = L"run_until_halt";
-				this->run_until_halt->Size = System::Drawing::Size(99, 23);
+				this->run_until_halt->Size = System::Drawing::Size(115, 25);
 				this->run_until_halt->TabIndex = 8;
 				this->run_until_halt->Text = L"Run Until Halt";
 				this->run_until_halt->UseVisualStyleBackColor = true;
@@ -702,17 +757,19 @@ private: System::Windows::Forms::Button^ button1;
 				// steps_label
 				// 
 				this->steps_label->AutoSize = true;
-				this->steps_label->Location = System::Drawing::Point(653, 23);
+				this->steps_label->Location = System::Drawing::Point(762, 25);
+				this->steps_label->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 				this->steps_label->Name = L"steps_label";
-				this->steps_label->Size = System::Drawing::Size(82, 13);
+				this->steps_label->Size = System::Drawing::Size(92, 14);
 				this->steps_label->TabIndex = 7;
 				this->steps_label->Text = L"instructions/sec";
 				// 
 				// step
 				// 
-				this->step->Location = System::Drawing::Point(836, 17);
+				this->step->Location = System::Drawing::Point(975, 18);
+				this->step->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->step->Name = L"step";
-				this->step->Size = System::Drawing::Size(75, 23);
+				this->step->Size = System::Drawing::Size(88, 25);
 				this->step->TabIndex = 4;
 				this->step->Text = L"Step";
 				this->step->UseVisualStyleBackColor = true;
@@ -720,20 +777,22 @@ private: System::Windows::Forms::Button^ button1;
 				// 
 				// steps_spinbox
 				// 
-				this->steps_spinbox->Location = System::Drawing::Point(549, 20);
+				this->steps_spinbox->Location = System::Drawing::Point(640, 22);
+				this->steps_spinbox->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->steps_spinbox->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 256, 0, 0, 0 });
 				this->steps_spinbox->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
 				this->steps_spinbox->Name = L"steps_spinbox";
-				this->steps_spinbox->Size = System::Drawing::Size(98, 20);
+				this->steps_spinbox->Size = System::Drawing::Size(114, 22);
 				this->steps_spinbox->TabIndex = 6;
 				this->steps_spinbox->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 5, 0, 0, 0 });
 				this->steps_spinbox->ValueChanged += gcnew System::EventHandler(this, &MainForm::steps_spinbox_ValueChanged);
 				// 
 				// export_to_file
 				// 
-				this->export_to_file->Location = System::Drawing::Point(124, 19);
+				this->export_to_file->Location = System::Drawing::Point(145, 20);
+				this->export_to_file->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->export_to_file->Name = L"export_to_file";
-				this->export_to_file->Size = System::Drawing::Size(101, 23);
+				this->export_to_file->Size = System::Drawing::Size(118, 25);
 				this->export_to_file->TabIndex = 5;
 				this->export_to_file->Text = L"Export To File";
 				this->export_to_file->UseVisualStyleBackColor = true;
@@ -741,9 +800,10 @@ private: System::Windows::Forms::Button^ button1;
 				// 
 				// reset_memory
 				// 
-				this->reset_memory->Location = System::Drawing::Point(231, 19);
+				this->reset_memory->Location = System::Drawing::Point(270, 20);
+				this->reset_memory->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->reset_memory->Name = L"reset_memory";
-				this->reset_memory->Size = System::Drawing::Size(101, 23);
+				this->reset_memory->Size = System::Drawing::Size(118, 25);
 				this->reset_memory->TabIndex = 3;
 				this->reset_memory->Text = L"Reset Memory";
 				this->reset_memory->UseVisualStyleBackColor = true;
@@ -751,9 +811,10 @@ private: System::Windows::Forms::Button^ button1;
 				// 
 				// reset_registers
 				// 
-				this->reset_registers->Location = System::Drawing::Point(338, 18);
+				this->reset_registers->Location = System::Drawing::Point(394, 19);
+				this->reset_registers->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->reset_registers->Name = L"reset_registers";
-				this->reset_registers->Size = System::Drawing::Size(100, 23);
+				this->reset_registers->Size = System::Drawing::Size(117, 25);
 				this->reset_registers->TabIndex = 2;
 				this->reset_registers->Text = L"Reset Registers";
 				this->reset_registers->UseVisualStyleBackColor = true;
@@ -761,9 +822,10 @@ private: System::Windows::Forms::Button^ button1;
 				// 
 				// play
 				// 
-				this->play->Location = System::Drawing::Point(744, 17);
+				this->play->Location = System::Drawing::Point(868, 18);
+				this->play->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->play->Name = L"play";
-				this->play->Size = System::Drawing::Size(78, 23);
+				this->play->Size = System::Drawing::Size(91, 25);
 				this->play->TabIndex = 1;
 				this->play->Text = L"Play";
 				this->play->UseVisualStyleBackColor = true;
@@ -771,30 +833,23 @@ private: System::Windows::Forms::Button^ button1;
 				// 
 				// load_from_file
 				// 
-				this->load_from_file->Location = System::Drawing::Point(15, 19);
+				this->load_from_file->Location = System::Drawing::Point(18, 20);
+				this->load_from_file->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->load_from_file->Name = L"load_from_file";
-				this->load_from_file->Size = System::Drawing::Size(103, 23);
+				this->load_from_file->Size = System::Drawing::Size(120, 25);
 				this->load_from_file->TabIndex = 0;
 				this->load_from_file->Text = L"Load From File";
 				this->load_from_file->UseVisualStyleBackColor = true;
 				this->load_from_file->Click += gcnew System::EventHandler(this, &MainForm::load_from_file_Click);
 				// 
-				// button1
-				// 
-				this->button1->Location = System::Drawing::Point(8, 531);
-				this->button1->Name = L"button1";
-				this->button1->Size = System::Drawing::Size(395, 23);
-				this->button1->TabIndex = 17;
-				this->button1->Text = L"Batch Add Code";
-				this->button1->UseVisualStyleBackColor = true;
-				// 
 				// MainForm
 				// 
-				this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+				this->AutoScaleDimensions = System::Drawing::SizeF(7, 14);
 				this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-				this->ClientSize = System::Drawing::Size(957, 584);
+				this->ClientSize = System::Drawing::Size(1116, 629);
 				this->Controls->Add(this->main_panel);
 				this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
+				this->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 				this->Name = L"MainForm";
 				this->Text = L"MainForm";
 				this->main_panel->ResumeLayout(false);
@@ -892,6 +947,14 @@ private: System::Windows::Forms::Button^ button1;
 			void updateOperandLabels(OP_CODE opcode);
 			void updateOperandsAndDescription(System::Collections::Generic::List<int>^ decodedInstruction, OP_CODE opcode);
 
+			private: System::Void hex_rb_CheckedChanged(System::Object^ sender, System::EventArgs^ e);
+
+			System::Void updateScreen();
+
+			System::Void hexScreenToASCII();
+
+			System::Void asciiScreenToHex();
+
 	#pragma endregion
 
 	#pragma region Textbox Event Handlers
@@ -916,5 +979,5 @@ private: System::Windows::Forms::Button^ button1;
 			Generic::Queue<System::Tuple<System::DateTime, int, int>^>^ color_reset_queue;
 			bool starting_address_textbox_clicked = false;
 	#pragma endregion
-	};
+};
 }

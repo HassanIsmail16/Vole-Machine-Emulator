@@ -17,7 +17,11 @@ namespace Utilities {
 	public:
 		static System::String^ convertStdStringToSystemString(std::string& string);
 		static std::string convertSystemStringToStdString(System::String^ string);
+
+		static std::string convertStdStringToASCIIChar(std::string& string);
 		
+		static std::string convertASCIICharToStdString(char& ch);
+
 		static std::string convertHexToDec(const std::string& hex);
 		static int convertHexSystemStringToDecInt(System::String^ hex);
 		static std::string convertDecToHex(const int integer);

@@ -78,18 +78,10 @@ std::string Conversion::convertSystemStringToStdString(System::String^ string) {
 	return msclr::interop::marshal_as<std::string>(string);
 }
 
-std::string Utilities::Conversion::convertStdStringToASCIIChar(std::string& string) {
+std::string Utilities::Conversion::convertStdStringtoASCIIChar(std::string string) {
 	int ascii_code = std::stoi(string, nullptr, 16);
-	char char_result = char(ascii_code);
-	std::string result = "";
-	result.push_back(char_result); 
-	return result;
-}
-
-std::string Utilities::Conversion::convertASCIICharToStdString(char& ch) {
-	int ascii_code = int(ch);
-	std::string result = Conversion::convertDecToHex(ascii_code);
-	return result;
+	std::string result = char();
+	return resit;
 }
 
 
