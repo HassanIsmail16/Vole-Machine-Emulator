@@ -847,6 +847,9 @@ System::String^ VoleMachine::MainForm::getInstructionDescription(OP_CODE opcode,
 	case OP_CODE::LOAD_V:
 		return "LOAD register " + first_operand + " with the value " + second_operand + third_operand;
 	case OP_CODE::STORE:
+		if (second_operand == "0" && third_operand == "0") {
+			return "STORE the content of register " + first_operand + " in memory address " + second_operand + third_operand + " (Write to Screen).";
+		}
 		return "STORE the content of register " + first_operand + " in memory address " + second_operand + third_operand;
 	case OP_CODE::MOVE:
 		return "MOVE the content of register " + second_operand + " to register " + third_operand;
@@ -867,7 +870,7 @@ System::String^ VoleMachine::MainForm::getInstructionDescription(OP_CODE opcode,
 	case OP_CODE::HALT:
 		return "Halt execution";
 	case OP_CODE::JUMP_GT:
-		return "Jump to the instruction at memory address" + second_operand + third_operand + " if the content of register " + first_operand + " is greater than the content of register 0 (In Two's Complement)";
+		return "Jump to the instruction at memory address " + second_operand + third_operand + " if the content of register " + first_operand + " is greater than the content of register 0 (In Two's Complement)";
 	case OP_CODE::UNKNOWN:
 	default:
 		return "Unknown instruction. Do nothing and advance to the next instruction.";

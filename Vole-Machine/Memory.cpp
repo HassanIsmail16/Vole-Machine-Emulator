@@ -25,6 +25,15 @@ void Memory::setValueAt(const size_t index, std::string& value) {
 		throw "attempted to add a " + value.size() + "-char long value to memory";
 	}
 
+	if (value.size() == 1) {
+		value = "0" + value;
+	}
+
+
+	if (value.empty()) {
+		value = "00";
+	}
+
 	this->memory[index].setValue(value);
 }
 

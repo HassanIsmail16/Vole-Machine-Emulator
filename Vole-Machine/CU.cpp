@@ -100,5 +100,5 @@ bool CU::isScreen(int reg, int memory_address) {
 }
 
 void CU::move(int reg1, int reg2, Registers& registers) {
-    registers[reg1].setValue(registers[reg2].getValue());
+    registers[reg2].setValue(registers[reg1].getValue());
 }
