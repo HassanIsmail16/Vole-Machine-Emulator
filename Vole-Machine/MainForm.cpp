@@ -633,7 +633,7 @@ System::Void VoleMachine::MainForm::OnChangeSpeed() {
 		this->steps_spinbox->Value = this->exec_ctrl->InstructionsPerSecond;
 	} // update the spinbox if it has changed
 }
-
+`
 System::Void VoleMachine::MainForm::OnHaltProgram() {
 	this->play->Text = "Play";
 	this->exec_ctrl->pauseInstructions();
