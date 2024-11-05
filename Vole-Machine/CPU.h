@@ -15,6 +15,8 @@ private:
     ALU alu;
     CU cu;
     int starting_address = 0;
+    bool is_program_counter_odd = false;
+
 public:
     CPU();
     void runInstructions(Memory& memory);
@@ -26,6 +28,9 @@ public:
     void halt();
     bool isInstructionPending();
     void resetProgram(int starting_address = 0);
+
+    void resetInstructionRegister();
+
     int getStartingAddress();
     void setStartingAddress(int starting_address);
 
@@ -34,5 +39,9 @@ public:
 
     void setProgramCounter(int address);
     size_t& getProgramCounter();
+
+    bool isProgramCounterOdd();
+    bool hasReachedEndOfMemory();
+
     std::string getCurrentInstruction();
 };

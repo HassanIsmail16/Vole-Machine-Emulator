@@ -6,7 +6,7 @@
 void CU::executeInstruction(const std::vector<int>& instruction, Registers& registers, Memory& memory, ALU& alu, size_t& program_counter) {
     if (instruction.empty()) {
         return;
-    }
+    } // skip if instruction is invalid (empty vector)
 
     OP_CODE operation_code = OP_CODE(instruction[0]);
 
@@ -22,7 +22,6 @@ void CU::executeInstruction(const std::vector<int>& instruction, Registers& regi
         break;
     }
     case OP_CODE::STORE: {
-        std::cout << "t1" << std::endl;
         int memory_address = instruction[2];
         storeInMemory(instruction[1], memory_address, registers, memory);
         break;
@@ -79,12 +78,7 @@ void CU::loadValue(int reg, int value, Registers& registers) {
 }
 
 void CU::storeInMemory(int reg, int memory_address, Registers& registers, Memory& memory) {
-    if (isScreen(reg, memory_address)) {
-        return;
-    }
-    else {
-        memory.setValueAt(memory_address, registers[reg].getValue());
-    }
+    memory.setValueAt(memory_address, registers[reg].getValue());
 }
 
 void CU::jumpIfEqual(int reg, int memory_address, Registers& registers, size_t& program_counter) {
@@ -106,5 +100,5 @@ bool CU::isScreen(int reg, int memory_address) {
 }
 
 void CU::move(int reg1, int reg2, Registers& registers) {
-    registers[reg1].setValue(registers[reg2].getValue());
+    registers[reg2].setValue(registers[reg1].getValue());
 }

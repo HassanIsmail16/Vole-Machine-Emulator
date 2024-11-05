@@ -3,23 +3,67 @@
 #include <fstream>
 #include <iostream>
 
+//void Machine::loadProgram(std::string& filename) {
+//	this->memory.clearMemory();
+//
+//	// begin adding instructions from the starting address
+//	this->memory.setLastAddedInstructionIndex(this->processor.getStartingAddress());
+//
+//	std::fstream file(filename);
+//
+//	std::string current_instruction;
+//	while (file >> current_instruction) {
+//		if (!Utilities::Validation::isValidInstruction(current_instruction)) {
+//			continue;
+//		} // skip instruction if not valid
+//
+//		this->memory.addInstruction(Utilities::Conversion::capitalize(current_instruction));
+//	}
+//}
+
+void Machine::loadInstructions(std::istream& input) {
+    std::string temp; // temporary string to hold 4 characters
+
+    char ch;
+    while (input >> ch) {
+        // only process hexadecimal characters (0-9, A-F, a-f)
+        if (std::isxdigit(ch)) {
+            temp += std::toupper(ch); // add character in uppercase to the temporary string
+
+            // when we have 4 characters, validate and potentially add to memory
+            if (temp.length() == 4) {
+                if (Utilities::Validation::isValidInstruction(temp)) {
+                    this->memory.addInstruction(temp); // Add valid instruction to memory
+                }
+                // clear to start collecting the next 4 characters
+                temp.clear();
+            }
+        } // ignore non-hexadecimal characters (spaces, commas, etc.)
+    }
+
+    // handle any remaining characters
+    if (!temp.empty() && Utilities::Validation::isValidCode(temp)) {
+        // add the final code if it's valid
+        this->memory.addCode(temp);
+    }
+}
+
+
 void Machine::loadProgram(std::string& filename) {
-	this->memory.clearMemory();
+    this->memory.clearMemory();
+    this->memory.setLastAddedInstructionIndex(this->processor.getStartingAddress());
 
-	for (int i = 0; i < this->processor.getStartingAddress() / 2; i++) {
-		this->memory.addInstruction("0000");
-	}
+    std::ifstream file(filename);
+    
+    loadInstructions(file);
+}
 
-	std::fstream file(filename);
 
-	std::string current_instruction;
-	while (file >> current_instruction) {
-		if (!Utilities::Validation::isValidInstruction(current_instruction)) {
-			continue;
-		} // skip instruction if not valid
+void Machine::loadProgramFromTextBox(std::string input_text) {
+    this->memory.setLastAddedInstructionIndex(this->processor.getStartingAddress());
 
-		this->memory.addInstruction(current_instruction);
-	}
+    std::istringstream input_stream(input_text);
+    loadInstructions(input_stream);
 }
 
 CPU& Machine::getCPU() {
@@ -28,13 +72,4 @@ CPU& Machine::getCPU() {
 
 Memory& Machine::getMemory() {
 	return this->memory;
-}
-
-// TODO: remove this
-void Machine::displayMemory() { 
-	std::cout << std::string(20, '-') << std::endl;
-	for (int i = 0; i < 128; i += 2) {
-		std::cout << this->memory.memory[i].getValue() << " " << this->memory.memory[i + 1].getValue() << std::endl;
-	}
-	std::cout << std::string(20, '-') << std::endl;
 }

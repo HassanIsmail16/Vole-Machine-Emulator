@@ -12,7 +12,7 @@ void ALU::addTwoComp(int regR, int regS, int regT, Registers& registers) {
     int valueT = std::stoi(registers[regT].getValue(), nullptr, 16);
     int result = valueS + valueT;
 
-    // Handle two's complement overflow
+    // handle two's complement overflow
     if (result > 127) {
         result -= 256;
     }
@@ -56,29 +56,30 @@ void ALU::addFloatingPoint(int regR, int regS, int regT, Registers& registers) {
 }
 
 void ALU::bitwiseOr(int regR, int regS, int regT, Registers& registers) {
-    int valueS = std::stoi(registers[regS].getValue(), nullptr, 16);
-    int valueT = std::stoi(registers[regT].getValue(), nullptr, 16);
+    int valueS = Utilities::Conversion::convertHexToTwosComplementInt(registers[regS].getValue());
+    int valueT = Utilities::Conversion::convertHexToTwosComplementInt(registers[regT].getValue());
     int result = valueS | valueT;
     registers[regR].setValue(Utilities::Conversion::convertDecToHex(result));
 }
 
 void ALU::bitwiseAnd(int regR, int regS, int regT, Registers& registers) {
-    int valueS = std::stoi(registers[regS].getValue(), nullptr, 16);
-    int valueT = std::stoi(registers[regT].getValue(), nullptr, 16);
+    int valueS = Utilities::Conversion::convertHexToTwosComplementInt(registers[regS].getValue());
+    int valueT = Utilities::Conversion::convertHexToTwosComplementInt(registers[regT].getValue());
     int result = valueS & valueT;
     registers[regR].setValue(Utilities::Conversion::convertDecToHex(result));
 }
 
 void ALU::bitwiseXor(int regR, int regS, int regT, Registers& registers) {
-    int valueS = std::stoi(registers[regS].getValue(), nullptr, 16);
-    int valueT = std::stoi(registers[regT].getValue(), nullptr, 16);
+    int valueS = Utilities::Conversion::convertHexToTwosComplementInt(registers[regS].getValue());
+    int valueT = Utilities::Conversion::convertHexToTwosComplementInt(registers[regT].getValue());
     int result = valueS ^ valueT;
     registers[regR].setValue(Utilities::Conversion::convertDecToHex(result));
 }
 
 void ALU::rotateRight(int regR, int steps, Registers& registers) {
-    int value = std::stoi(registers[regR].getValue(), nullptr, 16);
-    value = (value >> steps) | (value << (8 - steps)) & 0xFF;
-    registers[regR].setValue(Utilities::Conversion::convertDecToHex(value));
+    int value = Utilities::Conversion::convertHexToTwosComplementInt(registers[regR].getValue());
+    steps %= 8; // Limit rotation to 8-bit
+    int rotatedValue = ((value >> steps) | (value << (8 - steps)));
+    registers[regR].setValue(Utilities::Conversion::convertDecToHex(rotatedValue));
 }
 
