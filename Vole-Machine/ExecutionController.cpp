@@ -171,7 +171,16 @@ System::Nullable<int> ExecutionController::getUpdatedAddress() {
 }
 
 void ExecutionController::setStartingAddress(int address) {
-	this->starting_address = address;
+	this->machine->getCPU().setStartingAddress(address);
+}
+
+bool ExecutionController::hasReachedEndOfMemory() {
+	// ODD
+	return this->machine->getCPU().hasReachedEndOfMemory();
+}
+
+bool ExecutionController::isProgramCounterOdd() {
+	return this->machine->getCPU().isProgramCounterOdd();
 }
 
 void ExecutionController::setStartingAddress(System::String^ address) {

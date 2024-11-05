@@ -76,6 +76,10 @@ public:
 	void setStartingAddress(System::String^ address);
 	void setStartingAddress(int address);
 
+
+	bool hasReachedEndOfMemory();
+	bool isProgramCounterOdd();
+
 	property int InstructionsPerSecond {
 		int get() { return this->instructions_per_sec; }
 		void set(int value) {

@@ -941,20 +941,20 @@ System::Void VoleMachine::MainForm::updateStartingAddress() {
 	if (text->Length == 2) {
 		int decimal_value = Utilities::Conversion::convertHexSystemStringToDecInt(text);
 
-		if (decimal_value % 2 != 0) {
-			decimal_value--;
+		//if (decimal_value % 2 != 0) {
+		//	decimal_value--;
 
-			text = Utilities::Conversion::convertStdStringToSystemString(
-				Utilities::Conversion::convertDecToHex(decimal_value)
-			);
+		//	text = Utilities::Conversion::convertStdStringToSystemString(
+		//		Utilities::Conversion::convertDecToHex(decimal_value)
+		//	);
 
 
-			if (text->Length == 1) {
-				text = "0" + text;
-			} // add leading zero
+		//	if (text->Length == 1) {
+		//		text = "0" + text;
+		//	} // add leading zero
 
-			this->starting_address_textbox->Text = text;
-		} // handle odd addresses
+		//	this->starting_address_textbox->Text = text;
+		//} // handle odd addresses
 
 		int current_execution_address = Utilities::Conversion::convertHexSystemStringToDecInt(this->current_address_textbox->Text);
 

@@ -5,13 +5,13 @@
 #include <algorithm>
 
 CPU::CPU() {
-	this->program_counter = 0;
+	this->setProgramCounter(0);
 	this->instruction_register = "";
 	this->clearRegisters();
 }
 
 void CPU::runInstructions(Memory& memory) {
-	while (!this->isHalt() && this->program_counter < 256) {
+	while (!this->isHalt() && this->program_counter + 2 < 256) {
 		this->fetch(memory);
 		std::vector<int> instruction = this->decode();
 		this->execute(memory, instruction);
@@ -20,14 +20,15 @@ void CPU::runInstructions(Memory& memory) {
 }
 
 void CPU::fetch(Memory& memory) {
-	if (this->program_counter == 255) {
-		this->program_counter = this->starting_address;
+	if (this->hasReachedEndOfMemory()) { // ODD
+		this->setProgramCounter(this->starting_address);
 	} // TODO: odd starting address
 
 	std::string instruction1 = memory.getValueAt(this->program_counter);
 	std::string instruction2 = memory.getValueAt(this->program_counter + 1);
 	this->instruction_register = instruction1 + instruction2;
-	this->program_counter += (this->program_counter == 254) ? 1 : 2; // TODO: odd starting address
+	this->program_counter += ((!this->isProgramCounterOdd() && this->program_counter == 254) ||
+							 (this->isProgramCounterOdd() && this->program_counter == 253)) ? 1 : 2; // ODD
 }
 
 std::vector<int> CPU::decode() {
@@ -75,7 +76,7 @@ bool CPU::isInstructionPending() {
 }
 
 void CPU::resetProgram(int starting_address) {
-	this->program_counter = starting_address; // set PC to starting address
+	this->setProgramCounter(starting_address); // set PC to starting address
 	this->starting_address = starting_address;
 	this->instruction_register.clear();
 }
@@ -86,7 +87,7 @@ int CPU::getStartingAddress() {
 
 void CPU::setStartingAddress(int starting_address) {
 	this->starting_address = starting_address;
-	this->program_counter = max(this->program_counter, starting_address);
+	this->setProgramCounter(max(this->program_counter, starting_address));
 }
 
 std::string CPU::getRegisterValueAt(int index) {
@@ -99,10 +100,20 @@ void CPU::setRegisterValueAt(int index, std::string& value) {
 
 void CPU::setProgramCounter(int address) {
 	this->program_counter = address;
+	this->is_program_counter_odd == address % 2 == 1;
 }
 
 size_t& CPU::getProgramCounter() {
 	return program_counter;
+}
+
+bool CPU::isProgramCounterOdd() {
+	return this->is_program_counter_odd;
+}
+
+bool CPU::hasReachedEndOfMemory() {
+	return (this->isProgramCounterOdd() && this->program_counter == 254) ||
+		(!this->isProgramCounterOdd() && this->program_counter == 255);
 }
 
 std::string CPU::getCurrentInstruction() {
