@@ -99,7 +99,7 @@ System::Void VoleMachine::MainForm::initializeMemoryList() {
 	}
 
 	// highlight starting address & select first cell
-	this->memory_list->CurrentCell = this->memory_list->Rows[0]->Cells[1];
+	this->memory_list->CurrentCell = nullptr;
 	this->highlightAddress(this->starting_address_textbox->Text);
 }
 
@@ -900,6 +900,12 @@ System::String^ VoleMachine::MainForm::getInstructionDescription(OP_CODE opcode,
 	}
 }
 
+System::Void VoleMachine::MainForm::batch_add_code_Click(System::Object^ sender, System::EventArgs^ e) {
+	auto form = gcnew BatchAddCodeForm(this->mem_ctrl, this->exec_ctrl, this->starting_address_textbox->Text);
+	form->StartPosition = FormStartPosition::CenterParent;
+	form->ShowDialog();
+}
+
 #pragma endregion
 
 #pragma region Text Boxes Events
@@ -959,6 +965,11 @@ System::Void VoleMachine::MainForm::starting_address_textbox_Enter(System::Objec
 }
 
 System::Void VoleMachine::MainForm::updateStartingAddress() {
+	if (this->starting_address_textbox->Text == "FF") {
+		this->starting_address_textbox->Text = Utilities::Conversion::convertDecToHexSystemString(this->exec_ctrl->getStartingAddress());
+		return;
+	}
+
 	String^ text = this->starting_address_textbox->Text;
 
 	if (text->Length == 2) {

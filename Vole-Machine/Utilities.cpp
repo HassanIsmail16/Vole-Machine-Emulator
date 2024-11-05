@@ -37,6 +37,34 @@ bool Validation::isValidInstruction(std::string& instruction_string) {
 	return false;
 }
 
+bool Utilities::Validation::isValidCode(std::string& code) {
+	if (code.size() != 2) {
+		return false;
+	}
+
+	if ((code[0] >= '1' && code[0] <= '3') || (toupper(code[0]) == 'B') || (toupper(code[0]) == 'D')) {
+		return isValidRegisterIndex(code[1]);
+	}
+
+	if (code[0] == '4') {
+		return true;
+	}
+
+	if (code[0] >= '5' && code[0] <= '9') {
+		return isValidRegisterIndex(code[1]);
+	}
+
+	if (toupper(code[0] == 'A')) {
+		return isValidRegisterIndex(code[1]);
+	}
+
+	if (toupper(code[0] == 'C')) {
+		return true;
+	}
+
+	return false;
+}
+
 bool Validation::isValidMemoryAddress(std::string& address) {
 	if (address.size() != 2) {
 		return false;

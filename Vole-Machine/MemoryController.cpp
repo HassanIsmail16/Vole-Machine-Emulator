@@ -36,6 +36,12 @@ void MemoryController::loadFromFile(std::string filename) {
 	this->memoryUpdated();
 }
 
+void MemoryController::loadFromText(System::String^ text) {
+    std::string text_string = Utilities::Conversion::convertSystemStringToStdString(text);
+    this->machine->loadProgramFromTextBox(text_string);
+    this->memoryUpdated();
+}
+
 void MemoryController::resetMemory() {
 	this->machine->getMemory().clearMemory();
 	this->memoryUpdated();

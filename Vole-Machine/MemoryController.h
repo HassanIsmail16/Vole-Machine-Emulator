@@ -22,6 +22,7 @@ public:
 	void setMemoryValueAt(int index, System::String^ new_value);
 
 	void loadFromFile(std::string filename);
+	void loadFromText(System::String^ text);
 
 	void exportToFile(std::string filename);
 

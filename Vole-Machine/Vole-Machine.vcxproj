@@ -124,6 +124,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ALU.cpp" />
+    <ClCompile Include="BatchAddCodeForm.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="CPU.cpp" />
     <ClCompile Include="CU.cpp" />
@@ -139,6 +140,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ALU.h" />
+    <ClInclude Include="BatchAddCodeForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="Controller.h" />
     <ClInclude Include="CPU.h" />
     <ClInclude Include="CU.h" />
@@ -155,6 +159,9 @@
     <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="BatchAddCodeForm.resx">
+      <DependentUpon>BatchAddCodeForm.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.h</DependentUpon>
       <SubType>Designer</SubType>

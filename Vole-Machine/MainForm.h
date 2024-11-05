@@ -4,6 +4,7 @@
 #include "MemoryController.h"
 #include "RegistersController.h"
 #include "ExecutionController.h"
+#include "BatchAddCodeForm.h"
 
 namespace VoleMachine {
 	using namespace System;
@@ -142,8 +143,9 @@ private: System::Windows::Forms::Button^ batch_add_code;
 	#pragma region Windows Form Designer generated code
 			void InitializeComponent(void) {
 				this->components = (gcnew System::ComponentModel::Container());
-				System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle2 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
+				System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle4 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
 				this->main_panel = (gcnew System::Windows::Forms::Panel());
+				this->batch_add_code = (gcnew System::Windows::Forms::Button());
 				this->screen_groupbox = (gcnew System::Windows::Forms::GroupBox());
 				this->hex_rb = (gcnew System::Windows::Forms::RadioButton());
 				this->ascii_rb = (gcnew System::Windows::Forms::RadioButton());
@@ -196,7 +198,6 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				this->play = (gcnew System::Windows::Forms::Button());
 				this->load_from_file = (gcnew System::Windows::Forms::Button());
 				this->starting_address_textbox_tooltip = (gcnew System::Windows::Forms::ToolTip(this->components));
-				this->batch_add_code = (gcnew System::Windows::Forms::Button());
 				this->main_panel->SuspendLayout();
 				this->screen_groupbox->SuspendLayout();
 				this->memory_list_groupbox->SuspendLayout();
@@ -236,6 +237,16 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				this->main_panel->Padding = System::Windows::Forms::Padding(10);
 				this->main_panel->Size = System::Drawing::Size(957, 584);
 				this->main_panel->TabIndex = 0;
+				// 
+				// batch_add_code
+				// 
+				this->batch_add_code->Location = System::Drawing::Point(8, 531);
+				this->batch_add_code->Name = L"batch_add_code";
+				this->batch_add_code->Size = System::Drawing::Size(395, 23);
+				this->batch_add_code->TabIndex = 17;
+				this->batch_add_code->Text = L"Batch Add Code";
+				this->batch_add_code->UseVisualStyleBackColor = true;
+				this->batch_add_code->Click += gcnew System::EventHandler(this, &MainForm::batch_add_code_Click);
 				// 
 				// screen_groupbox
 				// 
@@ -512,7 +523,7 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				this->current_instruction_textbox->Location = System::Drawing::Point(138, 18);
 				this->current_instruction_textbox->Name = L"current_instruction_textbox";
 				this->current_instruction_textbox->ReadOnly = true;
-				this->current_instruction_textbox->Size = System::Drawing::Size(92, 20);
+				this->current_instruction_textbox->Size = System::Drawing::Size(121, 20);
 				this->current_instruction_textbox->TabIndex = 1;
 				// 
 				// instruction_register_instruction_label
@@ -549,7 +560,7 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				// 
 				// current_address_textbox
 				// 
-				this->current_address_textbox->Location = System::Drawing::Point(122, 23);
+				this->current_address_textbox->Location = System::Drawing::Point(124, 22);
 				this->current_address_textbox->Name = L"current_address_textbox";
 				this->current_address_textbox->ReadOnly = true;
 				this->current_address_textbox->Size = System::Drawing::Size(78, 20);
@@ -581,10 +592,10 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				// 
 				// fetch
 				// 
-				this->fetch->Location = System::Drawing::Point(205, 22);
+				this->fetch->Location = System::Drawing::Point(219, 21);
 				this->fetch->Margin = System::Windows::Forms::Padding(2);
 				this->fetch->Name = L"fetch";
-				this->fetch->Size = System::Drawing::Size(91, 23);
+				this->fetch->Size = System::Drawing::Size(78, 23);
 				this->fetch->TabIndex = 4;
 				this->fetch->Text = L"Fetch";
 				this->fetch->UseVisualStyleBackColor = true;
@@ -613,16 +624,16 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				this->memory_list->BackgroundColor = System::Drawing::SystemColors::Control;
 				this->memory_list->BorderStyle = System::Windows::Forms::BorderStyle::None;
 				this->memory_list->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-				dataGridViewCellStyle2->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
-				dataGridViewCellStyle2->BackColor = System::Drawing::SystemColors::Window;
-				dataGridViewCellStyle2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular,
+				dataGridViewCellStyle4->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
+				dataGridViewCellStyle4->BackColor = System::Drawing::SystemColors::Window;
+				dataGridViewCellStyle4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-				dataGridViewCellStyle2->ForeColor = System::Drawing::SystemColors::ControlText;
-				dataGridViewCellStyle2->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+				dataGridViewCellStyle4->ForeColor = System::Drawing::SystemColors::ControlText;
+				dataGridViewCellStyle4->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
 					static_cast<System::Int32>(static_cast<System::Byte>(220)), static_cast<System::Int32>(static_cast<System::Byte>(180)));
-				dataGridViewCellStyle2->SelectionForeColor = System::Drawing::Color::Black;
-				dataGridViewCellStyle2->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
-				this->memory_list->DefaultCellStyle = dataGridViewCellStyle2;
+				dataGridViewCellStyle4->SelectionForeColor = System::Drawing::Color::Black;
+				dataGridViewCellStyle4->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
+				this->memory_list->DefaultCellStyle = dataGridViewCellStyle4;
 				this->memory_list->Location = System::Drawing::Point(7, 8);
 				this->memory_list->Name = L"memory_list";
 				this->memory_list->RowHeadersWidth = 51;
@@ -694,9 +705,9 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				// 
 				// run_until_halt
 				// 
-				this->run_until_halt->Location = System::Drawing::Point(444, 19);
+				this->run_until_halt->Location = System::Drawing::Point(426, 18);
 				this->run_until_halt->Name = L"run_until_halt";
-				this->run_until_halt->Size = System::Drawing::Size(99, 23);
+				this->run_until_halt->Size = System::Drawing::Size(95, 23);
 				this->run_until_halt->TabIndex = 8;
 				this->run_until_halt->Text = L"Run Until Halt";
 				this->run_until_halt->UseVisualStyleBackColor = true;
@@ -705,7 +716,7 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				// steps_label
 				// 
 				this->steps_label->AutoSize = true;
-				this->steps_label->Location = System::Drawing::Point(653, 23);
+				this->steps_label->Location = System::Drawing::Point(628, 23);
 				this->steps_label->Name = L"steps_label";
 				this->steps_label->Size = System::Drawing::Size(82, 13);
 				this->steps_label->TabIndex = 7;
@@ -713,9 +724,9 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				// 
 				// step
 				// 
-				this->step->Location = System::Drawing::Point(836, 17);
+				this->step->Location = System::Drawing::Point(817, 18);
 				this->step->Name = L"step";
-				this->step->Size = System::Drawing::Size(75, 23);
+				this->step->Size = System::Drawing::Size(95, 23);
 				this->step->TabIndex = 4;
 				this->step->Text = L"Step";
 				this->step->UseVisualStyleBackColor = true;
@@ -723,20 +734,20 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				// 
 				// steps_spinbox
 				// 
-				this->steps_spinbox->Location = System::Drawing::Point(549, 20);
+				this->steps_spinbox->Location = System::Drawing::Point(527, 19);
 				this->steps_spinbox->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 256, 0, 0, 0 });
 				this->steps_spinbox->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
 				this->steps_spinbox->Name = L"steps_spinbox";
-				this->steps_spinbox->Size = System::Drawing::Size(98, 20);
+				this->steps_spinbox->Size = System::Drawing::Size(95, 20);
 				this->steps_spinbox->TabIndex = 6;
 				this->steps_spinbox->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 5, 0, 0, 0 });
 				this->steps_spinbox->ValueChanged += gcnew System::EventHandler(this, &MainForm::steps_spinbox_ValueChanged);
 				// 
 				// export_to_file
 				// 
-				this->export_to_file->Location = System::Drawing::Point(124, 19);
+				this->export_to_file->Location = System::Drawing::Point(123, 18);
 				this->export_to_file->Name = L"export_to_file";
-				this->export_to_file->Size = System::Drawing::Size(101, 23);
+				this->export_to_file->Size = System::Drawing::Size(95, 23);
 				this->export_to_file->TabIndex = 5;
 				this->export_to_file->Text = L"Export To File";
 				this->export_to_file->UseVisualStyleBackColor = true;
@@ -744,9 +755,9 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				// 
 				// reset_memory
 				// 
-				this->reset_memory->Location = System::Drawing::Point(231, 19);
+				this->reset_memory->Location = System::Drawing::Point(224, 18);
 				this->reset_memory->Name = L"reset_memory";
-				this->reset_memory->Size = System::Drawing::Size(101, 23);
+				this->reset_memory->Size = System::Drawing::Size(95, 23);
 				this->reset_memory->TabIndex = 3;
 				this->reset_memory->Text = L"Reset Memory";
 				this->reset_memory->UseVisualStyleBackColor = true;
@@ -754,9 +765,9 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				// 
 				// reset_registers
 				// 
-				this->reset_registers->Location = System::Drawing::Point(338, 18);
+				this->reset_registers->Location = System::Drawing::Point(325, 18);
 				this->reset_registers->Name = L"reset_registers";
-				this->reset_registers->Size = System::Drawing::Size(100, 23);
+				this->reset_registers->Size = System::Drawing::Size(95, 23);
 				this->reset_registers->TabIndex = 2;
 				this->reset_registers->Text = L"Reset Registers";
 				this->reset_registers->UseVisualStyleBackColor = true;
@@ -764,9 +775,9 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				// 
 				// play
 				// 
-				this->play->Location = System::Drawing::Point(744, 17);
+				this->play->Location = System::Drawing::Point(716, 18);
 				this->play->Name = L"play";
-				this->play->Size = System::Drawing::Size(78, 23);
+				this->play->Size = System::Drawing::Size(95, 23);
 				this->play->TabIndex = 1;
 				this->play->Text = L"Play";
 				this->play->UseVisualStyleBackColor = true;
@@ -774,22 +785,13 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				// 
 				// load_from_file
 				// 
-				this->load_from_file->Location = System::Drawing::Point(15, 19);
+				this->load_from_file->Location = System::Drawing::Point(22, 18);
 				this->load_from_file->Name = L"load_from_file";
-				this->load_from_file->Size = System::Drawing::Size(103, 23);
+				this->load_from_file->Size = System::Drawing::Size(95, 23);
 				this->load_from_file->TabIndex = 0;
 				this->load_from_file->Text = L"Load From File";
 				this->load_from_file->UseVisualStyleBackColor = true;
 				this->load_from_file->Click += gcnew System::EventHandler(this, &MainForm::load_from_file_Click);
-				// 
-				// batch_add_code
-				// 
-				this->batch_add_code->Location = System::Drawing::Point(8, 531);
-				this->batch_add_code->Name = L"batch_add_code";
-				this->batch_add_code->Size = System::Drawing::Size(395, 23);
-				this->batch_add_code->TabIndex = 17;
-				this->batch_add_code->Text = L"Batch Add Code";
-				this->batch_add_code->UseVisualStyleBackColor = true;
 				// 
 				// MainForm
 				// 
@@ -895,6 +897,7 @@ private: System::Windows::Forms::Button^ batch_add_code;
 			System::Void decodeInstruction();
 			System::Void resetInstructionRegister();
 			System::String^ getInstructionDescription(OP_CODE opcode, System::String^ firstOperand, System::String^ secondOperand, System::String^ thirdOperand);
+			System::Void batch_add_code_Click(System::Object^ sender, System::EventArgs^ e);
 			void updateOperandLabels(OP_CODE opcode);
 			void updateOperandsAndDescription(System::Collections::Generic::List<int>^ decodedInstruction, OP_CODE opcode);
 
@@ -924,5 +927,5 @@ private: System::Windows::Forms::Button^ batch_add_code;
 			bool starting_address_textbox_clicked = false;
 			bool is_last_highlighted_address_odd = false;
 	#pragma endregion
-	};
+};
 }

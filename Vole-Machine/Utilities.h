@@ -7,6 +7,7 @@ namespace Utilities {
 	class Validation {
 	public:
 		static bool isValidInstruction(std::string& instruction_string);
+		static bool isValidCode(std::string& code);
 		static bool isValidMemoryAddress(std::string& address);
 		static bool isValidRegisterIndex(char& index);
 		static bool isValidHexChar(char& ch);
