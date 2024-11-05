@@ -279,10 +279,13 @@ System::Void VoleMachine::MainForm::memory_list_KeyPress(Object^ sender, KeyPres
 
 System::Void VoleMachine::MainForm::memory_list_OnCellClick(Object^ sender, DataGridViewCellEventArgs^ e) {
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
+		if (this->isOddSelection() && e->RowIndex == 127 && e->ColumnIndex == 3) {
+			return;
+		}
 		int row = e->RowIndex;
-		this->exec_ctrl->setCurrentAddress(row * 2);
+		this->exec_ctrl->setCurrentAddress(row * 2 + this->isOddSelection());
 
-		String^ hex_address = this->memory_list->Rows[row]->Cells[0]->Value->ToString();
+		String^ hex_address = this->memory_list->Rows[row]->Cells[0 + this->isOddSelection() * 3]->Value->ToString();
 		this->highlightAddress(hex_address);
 		this->current_address_textbox->Text = hex_address;
 	} // set program counter to selected memory list address
@@ -291,8 +294,12 @@ System::Void VoleMachine::MainForm::memory_list_OnCellClick(Object^ sender, Data
 System::Void VoleMachine::MainForm::memory_list_OnCellMouseEnter(Object^ sender, DataGridViewCellEventArgs^ e) {
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
 		// highlight address cells on hover
+		bool is_odd = isOddSelection();
+		if (is_odd && e->RowIndex == 127 && e->ColumnIndex == 3) {
+			return;
+		}
 		this->memory_list->Cursor = Cursors::Hand;
-		this->setMemoryListAddressCellColorsAtRow(e->RowIndex, Color::Azure);
+		this->setMemoryListAddressCellColorsAtRow(e->RowIndex, Color::Azure, is_odd);
 	} else {
 		// highlight value cells on hover
 		this->memory_list->Cursor = Cursors::IBeam;
@@ -303,13 +310,9 @@ System::Void VoleMachine::MainForm::memory_list_OnCellMouseEnter(Object^ sender,
 System::Void VoleMachine::MainForm::memory_list_OnCellMouseLeave(Object^ sender, DataGridViewCellEventArgs^ e) {
 	this->memory_list->Cursor = Cursors::Default;
 	if (e->ColumnIndex == 0 || e->ColumnIndex == 3) {
-		if (last_highlighted_address == this->memory_list->Rows[e->RowIndex]->Cells[0]->Value->ToString()) {
-			// reset program counter highlight on leave
-			this->setMemoryListAddressCellColorsAtRow(e->RowIndex, Color::LightBlue);
-		} else {
-			// reset address highlight on leave
-			this->setMemoryListAddressCellColorsAtRow(e->RowIndex, SystemColors::Control);
-		}
+		int last_highlighted_address_row = Utilities::Conversion::convertHexSystemStringToDecInt(this->last_highlighted_address) / 2;
+		this->setMemoryListAddressCellColorsAtRow(e->RowIndex, SystemColors::Control, isOddSelection());
+		this->setMemoryListAddressCellColorsAtRow(last_highlighted_address_row, Color::LightBlue, isLastHighlightedAddressOdd());
 	} else {
 		// reset value highlight on leave
 		this->memory_list->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Style->BackColor = Color::White;
@@ -421,14 +424,14 @@ System::Void VoleMachine::MainForm::memory_list_ResetCellColor(Object^ sender, E
 
 System::Void VoleMachine::MainForm::highlightAddress(String^ address) {
 	this->unHiglightLastAdderss();
-
 	int numeric_address = Utilities::Conversion::convertHexSystemStringToDecInt(address);
+
+	bool is_odd = numeric_address % 2 == 1;
 
 	int row = numeric_address / 2;
 
-	this->setMemoryListAddressCellColorsAtRow(row, Color::LightBlue);
-
-	this->last_highlighted_address = address;
+	this->setMemoryListAddressCellColorsAtRow(row, Color::LightBlue, is_odd);
+	this->setLastHighlightedAddress(address);
 }
 
 System::Void VoleMachine::MainForm::unHiglightLastAdderss() {
@@ -439,8 +442,7 @@ System::Void VoleMachine::MainForm::unHiglightLastAdderss() {
 	int numeric_address = Utilities::Conversion::convertHexSystemStringToDecInt(this->last_highlighted_address);
 
 	int row = numeric_address / 2;
-
-	this->setMemoryListAddressCellColorsAtRow(row, SystemColors::Control);
+	this->setMemoryListAddressCellColorsAtRow(row, SystemColors::Control, this->is_last_highlighted_address_odd);
 }
 
 System::Void VoleMachine::MainForm::addCellToResetQueue(int index) {
@@ -462,9 +464,31 @@ System::Void VoleMachine::MainForm::setMemoryListValueCellColorsAtRow(int row, C
 	this->memory_list->Rows[row]->Cells[2]->Style->BackColor = color;
 }
 
-System::Void VoleMachine::MainForm::setMemoryListAddressCellColorsAtRow(int row, Color color) {
-	this->memory_list->Rows[row]->Cells[0]->Style->BackColor = color;
-	this->memory_list->Rows[row]->Cells[3]->Style->BackColor = color;
+System::Void VoleMachine::MainForm::setLastHighlightedAddress(String^ address) {
+	this->last_highlighted_address = address;
+	int numeric = Utilities::Conversion::convertHexSystemStringToDecInt(address);
+	this->is_last_highlighted_address_odd = numeric % 2 == 1;
+}
+
+bool VoleMachine::MainForm::isOddSelection() {
+	return this->odd_selection_rb->Checked;
+}
+
+bool VoleMachine::MainForm::isLastHighlightedAddressOdd() {
+	return this->is_last_highlighted_address_odd;
+}
+
+System::Void VoleMachine::MainForm::setMemoryListAddressCellColorsAtRow(int row, Color color, bool is_odd) {
+	if (is_odd) {
+		if (row < 127) {
+			this->memory_list->Rows[row]->Cells[3]->Style->BackColor = color;
+			this->memory_list->Rows[row + 1]->Cells[0]->Style->BackColor = color;
+		}
+	} else {
+		std::cout << "s1 " << row << std::endl;
+		this->memory_list->Rows[row]->Cells[0]->Style->BackColor = color;
+		this->memory_list->Rows[row]->Cells[3]->Style->BackColor = color;
+	}
 }
 
 System::Void VoleMachine::MainForm::memory_list_CellPainting(Object^ sender, DataGridViewCellPaintingEventArgs^ e) {

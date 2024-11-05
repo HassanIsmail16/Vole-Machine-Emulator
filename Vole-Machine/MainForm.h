@@ -855,7 +855,10 @@ private: System::Windows::Forms::Button^ batch_add_code;
 			System::Void addCellToResetQueue(int index);
 			System::Void addCellToResetQueue(int row, int col);
 			System::Void setMemoryListValueCellColorsAtRow(int row, Color color);
-			System::Void setMemoryListAddressCellColorsAtRow(int row, Color color);
+			System::Void setMemoryListAddressCellColorsAtRow(int row, Color color, bool is_odd);
+			System::Void setLastHighlightedAddress(String^ address);
+			bool isOddSelection();
+			bool isLastHighlightedAddressOdd();
 	#pragma endregion
 
 	#pragma region Registers
@@ -917,6 +920,7 @@ private: System::Windows::Forms::Button^ batch_add_code;
 			String^ last_highlighted_address = "";
 			Generic::Queue<System::Tuple<System::DateTime, int, int>^>^ color_reset_queue;
 			bool starting_address_textbox_clicked = false;
+			bool is_last_highlighted_address_odd = false;
 	#pragma endregion
 	};
 }
