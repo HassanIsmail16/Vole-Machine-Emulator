@@ -131,7 +131,6 @@ void ExecutionController::resetProgram() {
 	resetInstructionRegister();
 	fetchedInstruction();
 	this->reset_instruction_register();
-	std::cout << this->machine->getCPU().getStartingAddress() << std::endl;
 }
 
 void ExecutionController::resetInstructionRegister() {

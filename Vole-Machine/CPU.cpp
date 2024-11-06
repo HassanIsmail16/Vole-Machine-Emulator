@@ -87,7 +87,7 @@ void CPU::setRegisterValueAt(int index, std::string& value) {
 
 void CPU::setProgramCounter(int address) {
 	this->program_counter = address;
-	this->is_program_counter_odd == address % 2 == 1;
+	this->is_program_counter_odd = (address % 2 == 1);
 }
 
 size_t& CPU::getProgramCounter() {
