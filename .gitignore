@@ -63,3 +63,6 @@ x64/
 /Vole-Machine/Debug/
 /Vole-Machine/Release/
 /Vole-Machine/Vole-Machine/
+*.dnu~
+*.fpl~
+*.aiw~
