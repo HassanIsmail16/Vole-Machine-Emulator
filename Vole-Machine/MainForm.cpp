@@ -186,10 +186,6 @@ System::Void VoleMachine::MainForm::memory_list_AddressCellStateChanged(Object^ 
 		// Prevent selection of address cells
 		e->Cell->Selected = false;
 		return;
-	} else {
-		// Update selected cell tracking
-		this->memory_list_selected_cell_row = e->Cell->RowIndex;
-		this->memory_list_selected_cell_col = e->Cell->ColumnIndex;
 	}
 }
 

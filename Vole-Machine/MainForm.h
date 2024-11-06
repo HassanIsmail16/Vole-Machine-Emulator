@@ -915,15 +915,12 @@ private: System::Windows::Forms::Button^ batch_add_code;
 	#pragma endregion
 
 	#pragma region Data Members
-			int memory_list_selected_cell_row = 0;
-			int memory_list_selected_cell_col = 1;
 			MemoryController^ mem_ctrl;
 			RegistersController^ reg_ctrl;
 			ExecutionController^ exec_ctrl;
 			Timer^ reset_color_timer;
 			String^ last_highlighted_address = "";
 			Generic::Queue<System::Tuple<System::DateTime, int, int>^>^ color_reset_queue;
-			bool starting_address_textbox_clicked = false;
 			bool is_last_highlighted_address_odd = false;
 	#pragma endregion
 };
