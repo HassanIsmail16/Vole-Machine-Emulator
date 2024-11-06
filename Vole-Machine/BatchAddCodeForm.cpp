@@ -74,6 +74,7 @@ System::Void VoleMachine::BatchAddCodeForm::starting_address_textbox_SelectStart
 }
 
 System::Void VoleMachine::BatchAddCodeForm::add_code_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->exec_ctrl->setStartingAddress(this->starting_address_textbox->Text);
 	this->mem_ctrl->loadFromText(this->textbox->Text);
 	this->exec_ctrl->setStartingAddress(this->starting_address);
 	this->Close();

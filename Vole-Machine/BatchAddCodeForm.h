@@ -11,8 +11,7 @@ namespace VoleMachine {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
-	public ref class BatchAddCodeForm : public System::Windows::Forms::Form
-	{
+	public ref class BatchAddCodeForm : public System::Windows::Forms::Form {
 	public:
 		BatchAddCodeForm(MemoryController^ mem_ctrl, ExecutionController^ exec_ctrl, String^ starting_address) {
 			InitializeComponent();

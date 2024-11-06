@@ -58,3 +58,7 @@ x64/
 /x64/
 
 *.TMP
+/Debug/
+/Release/
+/Vole-Machine/Debug/
+/Vole-Machine/
