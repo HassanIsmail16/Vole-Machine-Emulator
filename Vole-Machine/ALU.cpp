@@ -77,9 +77,11 @@ void ALU::bitwiseXor(int regR, int regS, int regT, Registers& registers) {
 }
 
 void ALU::rotateRight(int regR, int steps, Registers& registers) {
-    int value = Utilities::Conversion::convertHexToTwosComplementInt(registers[regR].getValue());
-    steps %= 8; // Limit rotation to 8-bit
-    int rotatedValue = ((value >> steps) | (value << (8 - steps)));
-    registers[regR].setValue(Utilities::Conversion::convertDecToHex(rotatedValue));
-}
+    uint8_t value = static_cast<uint8_t>(Utilities::Conversion::convertHexToTwosComplementInt(registers[regR].getValue()));
 
+    steps %= 8; // Limit rotation steps to 8-bit width.
+
+    uint8_t rotatedValue = (value >> steps) | (value << (8 - steps));
+
+    registers[regR].setValue(Utilities::Conversion::convertDecToHex(static_cast<int>(rotatedValue)));
+}
