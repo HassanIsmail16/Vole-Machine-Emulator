@@ -13,8 +13,10 @@ using namespace System::Threading::Tasks;
 int main(array<System::String^>^ args) {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
-	VoleMachine::MainForm form;
+	Machine* machine = new Machine();
+	VoleMachine::MainForm form(machine);
 	Application::Run(% form);
+	delete machine;
 	return 0;
 }
 
@@ -103,22 +105,22 @@ System::Void VoleMachine::MainForm::initializeMemoryList() {
 	this->highlightAddress(this->starting_address_textbox->Text);
 }
 
-System::Void VoleMachine::MainForm::initializeControllers() {
-	this->initializeMemoryController();
-	this->initializeRegistersController();
-	this->initializeExecutionController();
+System::Void VoleMachine::MainForm::initializeControllers(Machine* machine) {
+	this->initializeMemoryController(machine);
+	this->initializeRegistersController(machine);
+	this->initializeExecutionController(machine);
 }
 
-System::Void VoleMachine::MainForm::initializeMemoryController() {
-	this->mem_ctrl = gcnew MemoryController(this->machine);
+System::Void VoleMachine::MainForm::initializeMemoryController(Machine* machine) {
+	this->mem_ctrl = gcnew MemoryController(machine);
 
 	// events
 	this->mem_ctrl->memory_updated += gcnew MemoryController::MemoryUpdatedEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdated);
 	this->mem_ctrl->memory_updated_at_address += gcnew MemoryController::MemoryUpdatedAtAddressEventHandler(this, &VoleMachine::MainForm::OnMemoryUpdatedAtAddress);
 }
 
-System::Void VoleMachine::MainForm::initializeRegistersController() {
-	this->reg_ctrl = gcnew RegistersController(this->machine);
+System::Void VoleMachine::MainForm::initializeRegistersController(Machine* machine) {
+	this->reg_ctrl = gcnew RegistersController(machine);
 
 	// events
 	this->reg_ctrl->register_updated += gcnew RegistersController::RegisterUpdatedEventHandler(this, &VoleMachine::MainForm::OnRegisterUpdated);
@@ -126,8 +128,8 @@ System::Void VoleMachine::MainForm::initializeRegistersController() {
 	this->reg_ctrl->all_registers_updated += gcnew RegistersController::AllRegistersUpdatedEventHandler(this, &VoleMachine::MainForm::OnAllRegistersUpdated);
 }
 
-System::Void VoleMachine::MainForm::initializeExecutionController() {
-	this->exec_ctrl = gcnew ExecutionController(this->machine);
+System::Void VoleMachine::MainForm::initializeExecutionController(Machine* machine) {
+	this->exec_ctrl = gcnew ExecutionController(machine);
 
 	// events
 	this->exec_ctrl->fetched_instruction += gcnew ExecutionController::InstructionFetchedEventHandler(this, &VoleMachine::MainForm::OnFetchInstruction);

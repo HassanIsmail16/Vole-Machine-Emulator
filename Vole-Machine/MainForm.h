@@ -17,13 +17,12 @@ namespace VoleMachine {
 	public ref class MainForm : public System::Windows::Forms::Form {
 
 	public:
-		MainForm(void) {
+		MainForm(Machine* machine) {
 
 		#pragma region Initialize Main Components and Controllers
-			this->machine = new Machine();
 			this->MaximizeBox = false;
 			this->InitializeComponent();
-			this->initializeControllers();
+			this->initializeControllers(machine);
 			this->initializeRegistersList();
 			this->initializeMemoryList();
 		#pragma endregion
@@ -48,17 +47,9 @@ namespace VoleMachine {
 
 	protected:
 		~MainForm() {
-			this->!MainForm();
 			if (components)
 			{
 				delete components;
-			}
-		}
-
-		!MainForm() {
-			if (this->machine) {
-				delete this->machine;
-				this->machine = nullptr;
 			}
 		}
 
@@ -830,10 +821,10 @@ private: System::Windows::Forms::Button^ batch_add_code;
 	#pragma region Initialization
 			System::Void initializeRegistersList();
 			System::Void initializeMemoryList();
-			System::Void initializeControllers();
-			System::Void initializeMemoryController();
-			System::Void initializeRegistersController();
-			System::Void initializeExecutionController();
+			System::Void initializeControllers(Machine* machine);
+			System::Void initializeMemoryController(Machine* machine);
+			System::Void initializeRegistersController(Machine* machine);
+			System::Void initializeExecutionController(Machine* machine);
 	#pragma endregion
 
 	#pragma region Memory
@@ -926,7 +917,6 @@ private: System::Windows::Forms::Button^ batch_add_code;
 	#pragma region Data Members
 			int memory_list_selected_cell_row = 0;
 			int memory_list_selected_cell_col = 1;
-			Machine* machine;
 			MemoryController^ mem_ctrl;
 			RegistersController^ reg_ctrl;
 			ExecutionController^ exec_ctrl;
