@@ -1,4 +1,0 @@
-C:\Users\hassa\source\repos\Vole-Machine-Emulator\Vole-Machine\Release\Vole-Machine.vcxproj.AssemblyReference.cache
-C:\Users\hassa\source\repos\Vole-Machine-Emulator\Vole-Machine\Release\VoleMachine.BatchAddCodeForm.resources
-C:\Users\hassa\source\repos\Vole-Machine-Emulator\Vole-Machine\Release\VoleMachine.MainForm.resources
-C:\Users\hassa\source\repos\Vole-Machine-Emulator\Vole-Machine\Release\Vole-Machine.vcxproj.GenerateResource.cache
