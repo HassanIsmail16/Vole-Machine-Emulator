@@ -31,6 +31,5 @@ public:
     void storeInMemory(int reg, int memory_address, Registers& registers, Memory& memory);
     void jumpIfEqual(int reg, int memory_address, Registers& registers, size_t& program_counter);
     void jumpIfGreater(int reg, int memory_address, Registers& registers, size_t& program_counter);
-    bool isScreen(int reg, int memory_address);
     void move(int reg1, int reg2, Registers& registers);
 };

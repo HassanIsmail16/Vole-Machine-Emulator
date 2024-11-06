@@ -4,23 +4,11 @@
 #include <iostream>
 
 void MemoryController::memoryUpdated() {
-	if (this->is_updating_memory_list) {
-		return;
-	} // exit if memory is already being updated
-
-	this->is_updating_memory_list = true;
 	this->memory_updated();
-	this->is_updating_memory_list = false;
 }
 
 void MemoryController::memoryUpdatedAtAddress(int index) {
-    if (this->is_updating_memory_list) {
-        return;
-    } // exit if memory is already being updated
-
-    this->is_updating_memory_list = true;
     this->memory_updated_at_address(index);
-	this->is_updating_memory_list = false;
 }
 
 System::String^ MemoryController::getMemoryValueAt(int index) {
@@ -32,7 +20,7 @@ void MemoryController::setMemoryValueAt(int index, System::String^ new_value) {
 }
 
 void MemoryController::loadFromFile(std::string filename) {
-	this->machine->loadProgram(filename);
+	this->machine->loadProgramFromFile(filename);
 	this->memoryUpdated();
 }
 
@@ -47,7 +35,7 @@ void MemoryController::resetMemory() {
 	this->memoryUpdated();
 }
 
-int MemoryController::isMemoryEmpty() {
+bool MemoryController::isMemoryEmpty() {
     return this->machine->getMemory().isEmpty();
 }
 

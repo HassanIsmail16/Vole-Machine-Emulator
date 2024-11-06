@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iostream>
 
-//void Machine::loadProgram(std::string& filename) {
+//void Machine::loadProgramFromFile(std::string& filename) {
 //	this->memory.clearMemory();
 //
 //	// begin adding instructions from the starting address
@@ -49,7 +49,7 @@ void Machine::loadInstructions(std::istream& input) {
 }
 
 
-void Machine::loadProgram(std::string& filename) {
+void Machine::loadProgramFromFile(std::string& filename) {
     this->memory.clearMemory();
     this->memory.setLastAddedInstructionIndex(this->processor.getStartingAddress());
 

@@ -657,6 +657,40 @@ System::Void VoleMachine::MainForm::OnExecutedAllInstructions() {
 	this->reg_ctrl->updateAllRegisters();
 	this->resetRegistersColor();
 }
+
+System::Void VoleMachine::MainForm::updateScreen() {
+	if (ascii_rb->Checked) {
+		this->hexScreenToASCII();
+	}
+	else {
+		this->asciiScreenToHex();
+	}
+}
+
+System::Void VoleMachine::MainForm::hexScreenToASCII() {
+	System::String^ screen_text = this->screen_textbox->Text;
+	this->screen_textbox->Clear();
+
+	for (int i = 0; i < screen_text->Length - 1; i += 2) {
+		System::String^ hex_char = screen_text[i].ToString() + screen_text[i + 1].ToString();
+		int hex_value = System::Convert::ToInt32(hex_char, 16);
+
+		System::String^ ascii_char = System::Convert::ToChar(hex_value).ToString();
+		this->screen_textbox->AppendText(ascii_char);
+	}
+
+}
+
+System::Void VoleMachine::MainForm::asciiScreenToHex() {
+	System::String^ screen_text = this->screen_textbox->Text;
+	this->screen_textbox->Clear();
+
+	for (int i = 0; i < screen_text->Length; i++) {
+		int ascii_code = int(screen_text[i]);
+		System::String^ hex_char = String::Format("{0:X2}", ascii_code);
+		this->screen_textbox->AppendText(hex_char);
+	}
+}
 #pragma endregion
 
 #pragma region Button Click Events
@@ -878,42 +912,6 @@ void VoleMachine::MainForm::updateOperandsAndDescription(System::Collections::Ge
 
 System::Void VoleMachine::MainForm::hex_rb_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 	this->updateScreen();
-}
-
-System::Void VoleMachine::MainForm::updateScreen() {
-	if (ascii_rb->Checked) {
-		this->hexScreenToASCII();
-	}
-	else {
-		this->asciiScreenToHex();
-	}
-}
-
-System::Void VoleMachine::MainForm::hexScreenToASCII() {
-	System::String^ screen_text = this->screen_textbox->Text;
-	this->screen_textbox->Clear();
-
-	for (int i = 0; i < screen_text->Length - 1; i += 2) {
-		System::String^ hex_char = screen_text[i].ToString() + screen_text[i + 1].ToString();
-		int hex_value = System::Convert::ToInt32(hex_char, 16);
-
-		System::String^ ascii_char = System::Convert::ToChar(hex_value).ToString();
-		this->screen_textbox->AppendText(ascii_char);
-	}
-
-}
-
-System::Void VoleMachine::MainForm::asciiScreenToHex() {
-	System::String^ screen_text = this->screen_textbox->Text;
-	this->screen_textbox->Clear();
-
-	for (int i = 0; i < screen_text->Length; i++) {
-		int ascii_code = int(screen_text[i]);
-		System::String^ hex_char = String::Format("{0:X2}", ascii_code);
-		this->screen_textbox->AppendText(hex_char);
-	}
-
-
 }
 
 System::String^ VoleMachine::MainForm::getInstructionDescription(OP_CODE opcode, System::String^ first_operand, System::String^ second_operand, System::String^ third_operand) {

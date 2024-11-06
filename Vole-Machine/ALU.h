@@ -9,7 +9,6 @@ class ALU {
 public:
     void addTwoComp(int regR, int regS, int regT, Registers& registers);
     void addFloatingPoint(int regR, int regS, int regT, Registers& registers);
-
 	void bitwiseAnd(int regR, int regS, int regT, Registers& registers);
     void bitwiseOr(int regR, int regS, int regT, Registers& registers);
     void bitwiseXor(int regR, int regS, int regT, Registers& registers);

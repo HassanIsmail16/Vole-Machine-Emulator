@@ -10,15 +10,6 @@ CPU::CPU() {
 	this->clearRegisters();
 }
 
-void CPU::runInstructions(Memory& memory) {
-	while (!this->isHalt() && this->program_counter + 2 < 256) {
-		this->fetch(memory);
-		std::vector<int> instruction = this->decode();
-		this->execute(memory, instruction);
-	}
-	this->halt();
-}
-
 void CPU::fetch(Memory& memory) {
 	if (this->hasReachedEndOfMemory()) {
 		this->setProgramCounter(this->starting_address);
@@ -65,10 +56,6 @@ void CPU::clearRegisters() {
 
 bool CPU::isHalt() {
 	return toupper(instruction_register[0]) == 'C';
-}
-
-void CPU::halt() {
-	return;
 }
 
 bool CPU::isInstructionPending() {

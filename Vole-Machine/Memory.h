@@ -13,7 +13,6 @@ public:
 	void addInstruction(std::string instruction);
 	void addCode(std::string code);
 	std::string getValueAt(const size_t index);
-	void setValueAt(const size_t index, StorageUnit& value);
 	void setValueAt(const size_t index, std::string& value);
 	void clearValueAt(const size_t index);
 	void clearMemory();

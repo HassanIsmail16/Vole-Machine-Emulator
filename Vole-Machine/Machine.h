@@ -12,8 +12,8 @@ private:
     void loadInstructions(std::istream& input);
 
 public:
-    void loadProgram(std::string& filename);
-    void loadProgramFromTextBox(std::string inputText);
+    void loadProgramFromFile(std::string& filename);
+    void loadProgramFromTextBox(std::string input_text);
     CPU& getCPU();
     Memory& getMemory();
 };

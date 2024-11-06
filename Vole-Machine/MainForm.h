@@ -871,6 +871,11 @@ private: System::Windows::Forms::Button^ batch_add_code;
 			System::Void OnHaltProgram();
 			System::Void OnReachedEndOfMemory();
 			System::Void OnExecutedAllInstructions();
+			System::Void updateScreen();
+
+			System::Void hexScreenToASCII();
+
+			System::Void asciiScreenToHex();
 	#pragma endregion
 
 	#pragma region Button Click Event Handlers
@@ -892,15 +897,7 @@ private: System::Windows::Forms::Button^ batch_add_code;
 			System::Void batch_add_code_Click(System::Object^ sender, System::EventArgs^ e);
 			void updateOperandLabels(OP_CODE opcode);
 			void updateOperandsAndDescription(System::Collections::Generic::List<int>^ decodedInstruction, OP_CODE opcode);
-
-			private: System::Void hex_rb_CheckedChanged(System::Object^ sender, System::EventArgs^ e);
-
-			System::Void updateScreen();
-
-			System::Void hexScreenToASCII();
-
-			System::Void asciiScreenToHex();
-
+			System::Void hex_rb_CheckedChanged(System::Object^ sender, System::EventArgs^ e);
 	#pragma endregion
 
 	#pragma region Textbox Event Handlers

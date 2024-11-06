@@ -74,7 +74,7 @@ public:
 	void setCurrentAddress(int address);
 
 	void setStartingAddress(System::String^ address);
-	void setStartingAddress(int address);
+	void setStartingAddress(int address);	
 
 
 	bool hasReachedEndOfMemory();

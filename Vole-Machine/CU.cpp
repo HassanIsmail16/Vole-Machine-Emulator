@@ -95,10 +95,6 @@ void CU::jumpIfGreater(int reg, int memory_address, Registers& registers, size_t
     }
 }
 
-bool CU::isScreen(int reg, int memory_address) {
-    return memory_address == 0x00;
-}
-
 void CU::move(int reg1, int reg2, Registers& registers) {
     registers[reg2].setValue(registers[reg1].getValue());
 }

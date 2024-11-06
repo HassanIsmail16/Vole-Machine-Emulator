@@ -27,7 +27,7 @@ public:
 	void exportToFile(std::string filename);
 
 	void resetMemory();
-	int isMemoryEmpty();
+	bool isMemoryEmpty();
 
 	bool isUpdatingMemoryList();
 

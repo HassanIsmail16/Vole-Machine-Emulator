@@ -26,10 +26,6 @@ std::string Memory::getValueAt(const size_t index) {
 	return this->memory[index].getValue();
 }
 
-void Memory::setValueAt(const size_t index, StorageUnit& value) {
-	this->memory[index].setValue(value.getValue());
-}
-
 void Memory::setValueAt(const size_t index, std::string& value) {
 	if (value.size() > 2) {
 		throw "attempted to add a " + value.size() + "-char long value to memory";
