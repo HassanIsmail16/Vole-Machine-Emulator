@@ -20,7 +20,6 @@ namespace VoleMachine {
 		MainForm(Machine* machine) {
 
 		#pragma region Initialize Main Components and Controllers
-			this->MaximizeBox = false;
 			this->InitializeComponent();
 			this->initializeControllers(machine);
 			this->initializeRegistersList();
@@ -134,7 +133,8 @@ private: System::Windows::Forms::Button^ batch_add_code;
 	#pragma region Windows Form Designer generated code
 			void InitializeComponent(void) {
 				this->components = (gcnew System::ComponentModel::Container());
-				System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle11 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
+				System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle1 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
+				System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MainForm::typeid));
 				this->main_panel = (gcnew System::Windows::Forms::Panel());
 				this->batch_add_code = (gcnew System::Windows::Forms::Button());
 				this->screen_groupbox = (gcnew System::Windows::Forms::GroupBox());
@@ -225,7 +225,7 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				this->main_panel->Dock = System::Windows::Forms::DockStyle::Fill;
 				this->main_panel->Location = System::Drawing::Point(0, 0);
 				this->main_panel->Name = L"main_panel";
-				this->main_panel->Padding = System::Windows::Forms::Padding(10, 10, 10, 10);
+				this->main_panel->Padding = System::Windows::Forms::Padding(10);
 				this->main_panel->Size = System::Drawing::Size(957, 584);
 				this->main_panel->TabIndex = 0;
 				// 
@@ -616,16 +616,16 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				this->memory_list->BackgroundColor = System::Drawing::SystemColors::Control;
 				this->memory_list->BorderStyle = System::Windows::Forms::BorderStyle::None;
 				this->memory_list->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-				dataGridViewCellStyle11->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
-				dataGridViewCellStyle11->BackColor = System::Drawing::SystemColors::Window;
-				dataGridViewCellStyle11->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular,
+				dataGridViewCellStyle1->Alignment = System::Windows::Forms::DataGridViewContentAlignment::MiddleLeft;
+				dataGridViewCellStyle1->BackColor = System::Drawing::SystemColors::Window;
+				dataGridViewCellStyle1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-				dataGridViewCellStyle11->ForeColor = System::Drawing::SystemColors::ControlText;
-				dataGridViewCellStyle11->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
+				dataGridViewCellStyle1->ForeColor = System::Drawing::SystemColors::ControlText;
+				dataGridViewCellStyle1->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
 					static_cast<System::Int32>(static_cast<System::Byte>(220)), static_cast<System::Int32>(static_cast<System::Byte>(180)));
-				dataGridViewCellStyle11->SelectionForeColor = System::Drawing::Color::Black;
-				dataGridViewCellStyle11->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
-				this->memory_list->DefaultCellStyle = dataGridViewCellStyle11;
+				dataGridViewCellStyle1->SelectionForeColor = System::Drawing::Color::Black;
+				dataGridViewCellStyle1->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
+				this->memory_list->DefaultCellStyle = dataGridViewCellStyle1;
 				this->memory_list->Location = System::Drawing::Point(5, 7);
 				this->memory_list->Name = L"memory_list";
 				this->memory_list->RowHeadersWidth = 51;
@@ -792,8 +792,10 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				this->ClientSize = System::Drawing::Size(957, 584);
 				this->Controls->Add(this->main_panel);
 				this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
+				this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 				this->Name = L"MainForm";
-				this->Text = L"MainForm";
+				this->Text = L"Vole Machine Emulator";
+				this->MaximizeBox = false;
 				this->main_panel->ResumeLayout(false);
 				this->main_panel->PerformLayout();
 				this->screen_groupbox->ResumeLayout(false);

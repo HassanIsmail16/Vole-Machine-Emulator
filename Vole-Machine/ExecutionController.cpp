@@ -125,7 +125,6 @@ void ExecutionController::pauseInstructions() {
 	}
 }
 
-
 void ExecutionController::resetProgram() {
 	this->machine->getCPU().resetProgram(this->starting_address);
 	resetInstructionRegister();

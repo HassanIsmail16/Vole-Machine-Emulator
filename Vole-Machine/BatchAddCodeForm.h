@@ -39,6 +39,7 @@ namespace VoleMachine {
 
 #pragma region Windows Form Designer generated code
 		void InitializeComponent(void) {
+			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(BatchAddCodeForm::typeid));
 			this->textbox = (gcnew System::Windows::Forms::TextBox());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->starting_address_textbox = (gcnew System::Windows::Forms::TextBox());
@@ -68,11 +69,11 @@ namespace VoleMachine {
 			this->starting_address_textbox->Name = L"starting_address_textbox";
 			this->starting_address_textbox->Size = System::Drawing::Size(63, 20);
 			this->starting_address_textbox->TabIndex = 2;
-			this->starting_address_textbox->Text = "00";
-			this->starting_address_textbox->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &BatchAddCodeForm::starting_address_textbox_KeyPress);
-			this->starting_address_textbox->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &BatchAddCodeForm::starting_address_textbox_KeyDown);
-			this->starting_address_textbox->Leave += gcnew System::EventHandler(this, &BatchAddCodeForm::starting_address_textbox_Leave);
+			this->starting_address_textbox->Text = L"00";
 			this->starting_address_textbox->Enter += gcnew System::EventHandler(this, &BatchAddCodeForm::starting_address_textbox_Enter);
+			this->starting_address_textbox->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &BatchAddCodeForm::starting_address_textbox_KeyDown);
+			this->starting_address_textbox->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &BatchAddCodeForm::starting_address_textbox_KeyPress);
+			this->starting_address_textbox->Leave += gcnew System::EventHandler(this, &BatchAddCodeForm::starting_address_textbox_Leave);
 			// 
 			// add_code
 			// 
@@ -94,6 +95,7 @@ namespace VoleMachine {
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->textbox);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->MaximizeBox = false;
 			this->Name = L"BatchAddCodeForm";
 			this->Text = L"Batch Add Code";
