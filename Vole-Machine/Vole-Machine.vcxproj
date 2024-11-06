@@ -140,7 +140,6 @@
     <ClCompile Include="MemoryController.cpp" />
     <ClCompile Include="RegistersController.cpp" />
     <ClCompile Include="StorageUnit.cpp" />
-    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ALU.h" />
@@ -160,7 +159,6 @@
     <ClInclude Include="MemoryController.h" />
     <ClInclude Include="RegistersController.h" />
     <ClInclude Include="StorageUnit.h" />
-    <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="BatchAddCodeForm.resx">

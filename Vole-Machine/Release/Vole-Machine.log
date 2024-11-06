@@ -1,0 +1,35 @@
+﻿  ALU.cpp
+  BatchAddCodeForm.cpp
+C:\Users\hassa\source\repos\Vole-Machine-Emulator\Vole-Machine\BatchAddCodeForm.h(17,19): warning C4677: 'BatchAddCodeForm': signature of non-private member contains assembly private type 'MemoryController'
+  (compiling source file 'BatchAddCodeForm.cpp')
+      C:\Users\hassa\source\repos\Vole-Machine-Emulator\Vole-Machine\MemoryController.h(5,11):
+      see declaration of 'MemoryController'
+  
+C:\Users\hassa\source\repos\Vole-Machine-Emulator\Vole-Machine\BatchAddCodeForm.h(17,19): warning C4677: 'BatchAddCodeForm': signature of non-private member contains assembly private type 'ExecutionController'
+  (compiling source file 'BatchAddCodeForm.cpp')
+      C:\Users\hassa\source\repos\Vole-Machine-Emulator\Vole-Machine\ExecutionController.h(7,11):
+      see declaration of 'ExecutionController'
+  
+  CPU.cpp
+C:\Users\hassa\source\repos\Vole-Machine-Emulator\Vole-Machine\CPU.cpp(77,26): warning C4018: '>': signed/unsigned mismatch
+  CU.cpp
+  ExecutionController.cpp
+  Machine.cpp
+  MainForm.cpp
+C:\Users\hassa\source\repos\Vole-Machine-Emulator\Vole-Machine\BatchAddCodeForm.h(17,19): warning C4677: 'BatchAddCodeForm': signature of non-private member contains assembly private type 'MemoryController'
+  (compiling source file 'MainForm.cpp')
+      C:\Users\hassa\source\repos\Vole-Machine-Emulator\Vole-Machine\MemoryController.h(5,11):
+      see declaration of 'MemoryController'
+  
+C:\Users\hassa\source\repos\Vole-Machine-Emulator\Vole-Machine\BatchAddCodeForm.h(17,19): warning C4677: 'BatchAddCodeForm': signature of non-private member contains assembly private type 'ExecutionController'
+  (compiling source file 'MainForm.cpp')
+      C:\Users\hassa\source\repos\Vole-Machine-Emulator\Vole-Machine\ExecutionController.h(7,11):
+      see declaration of 'ExecutionController'
+  
+  MemoryController.cpp
+  RegistersController.cpp
+  Utilities.cpp
+C:\Users\hassa\source\repos\Vole-Machine-Emulator\Vole-Machine\Utilities.cpp(249,43): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+  ALU.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
+  Vole-Machine.vcxproj -> C:\Users\hassa\Source\Repos\Vole-Machine-Emulator\Release\Vole-Machine.exe
