@@ -82,6 +82,10 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies />
+<<<<<<< HEAD
+=======
+      <SubSystem>Windows (/SUBSYSTEM::Windows)</SubSystem>
+>>>>>>> 95de815d66ed1cc858e611809c82b7a80efb96f6
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -91,7 +95,11 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies />
+<<<<<<< HEAD
       <SubSystem>Windows</SubSystem>
+=======
+      <SubSystem>Windows (/SUBSYSTEM::Windows)</SubSystem>
+>>>>>>> 95de815d66ed1cc858e611809c82b7a80efb96f6
       <EntryPointSymbol>main</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
@@ -102,7 +110,11 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies />
+<<<<<<< HEAD
       <SubSystem>Windows</SubSystem>
+=======
+      <SubSystem>Windows (/SUBSYSTEM::Windows)</SubSystem>
+>>>>>>> 95de815d66ed1cc858e611809c82b7a80efb96f6
       <EntryPointSymbol>main</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
@@ -113,6 +125,10 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies />
+<<<<<<< HEAD
+=======
+      <SubSystem>Windows (/SUBSYSTEM::Windows)</SubSystem>
+>>>>>>> 95de815d66ed1cc858e611809c82b7a80efb96f6
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -124,6 +140,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ALU.cpp" />
+<<<<<<< HEAD
+=======
+    <ClCompile Include="BatchAddCodeForm.cpp" />
+>>>>>>> 95de815d66ed1cc858e611809c82b7a80efb96f6
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="CPU.cpp" />
     <ClCompile Include="CU.cpp" />
@@ -139,6 +159,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ALU.h" />
+<<<<<<< HEAD
+=======
+    <ClInclude Include="BatchAddCodeForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+>>>>>>> 95de815d66ed1cc858e611809c82b7a80efb96f6
     <ClInclude Include="Controller.h" />
     <ClInclude Include="CPU.h" />
     <ClInclude Include="CU.h" />
@@ -155,14 +181,23 @@
     <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
+=======
+    <EmbeddedResource Include="BatchAddCodeForm.resx">
+      <DependentUpon>BatchAddCodeForm.h</DependentUpon>
+    </EmbeddedResource>
+>>>>>>> 95de815d66ed1cc858e611809c82b7a80efb96f6
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.h</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+<<<<<<< HEAD
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
   </ItemGroup>
+=======
+>>>>>>> 95de815d66ed1cc858e611809c82b7a80efb96f6
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

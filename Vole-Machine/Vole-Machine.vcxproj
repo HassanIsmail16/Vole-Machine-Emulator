@@ -82,6 +82,8 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies />
+      <SubSystem>Console</SubSystem>
+      <EntryPointSymbol>main</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -113,6 +115,8 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies />
+      <SubSystem>Windows</SubSystem>
+      <EntryPointSymbol>main</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -124,6 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ALU.cpp" />
+    <ClCompile Include="BatchAddCodeForm.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="CPU.cpp" />
     <ClCompile Include="CU.cpp" />
@@ -135,10 +140,12 @@
     <ClCompile Include="MemoryController.cpp" />
     <ClCompile Include="RegistersController.cpp" />
     <ClCompile Include="StorageUnit.cpp" />
-    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ALU.h" />
+    <ClInclude Include="BatchAddCodeForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="Controller.h" />
     <ClInclude Include="CPU.h" />
     <ClInclude Include="CU.h" />
@@ -152,9 +159,11 @@
     <ClInclude Include="MemoryController.h" />
     <ClInclude Include="RegistersController.h" />
     <ClInclude Include="StorageUnit.h" />
-    <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="BatchAddCodeForm.resx">
+      <DependentUpon>BatchAddCodeForm.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.h</DependentUpon>
       <SubType>Designer</SubType>

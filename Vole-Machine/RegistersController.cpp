@@ -14,7 +14,14 @@ void RegistersController::resetRegisters() {
 }
 
 System::String^ RegistersController::getHexRegisterValueAt(int index) {
-	return Utilities::Conversion::convertStdStringToSystemString(this->machine->getCPU().getRegisterValueAt(index));
+	std::string hex_value = this->machine->getCPU().getRegisterValueAt(index);
+
+	if (hex_value.length() == 1) {
+		hex_value = "0" + hex_value;
+	}
+
+	std::transform(hex_value.begin(), hex_value.end(), hex_value.begin(), ::toupper);
+	return Utilities::Conversion::convertStdStringToSystemString(hex_value);
 }
 
 System::String^ RegistersController::getIntRegisterValueAt(int index) {
@@ -46,14 +53,13 @@ System::Nullable<int> RegistersController::getUpdatedRegister() {
 
 	if (current_instruction.length() == 0 || current_instruction[0] == 'B' || current_instruction[0] == 'D') {
 		return System::Nullable<int>();
-	}
+	} // handle instructions that do not update registers
 
 
 	if (current_instruction[0] == '4') {
 		return System::Convert::ToInt32(Utilities::Conversion::convertStdStringToSystemString(current_instruction)->Substring(3, 1), 16);
-	}
+	} // handle jump instructions
 
 	return System::Convert::ToInt32(Utilities::Conversion::convertStdStringToSystemString(current_instruction)->Substring(1, 1), 16);
-
 }
 

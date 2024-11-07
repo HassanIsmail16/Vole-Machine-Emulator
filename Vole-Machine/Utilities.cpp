@@ -18,7 +18,7 @@ bool Validation::isValidInstruction(std::string& instruction_string) {
 	} // validate LOAD, STORE, and JUMP
 
 	if (instruction_string[0] == '4') {
-		return isValidRegisterIndex(instruction_string[2]) && isValidRegisterIndex(instruction_string[4]);
+		return isValidRegisterIndex(instruction_string[2]) && isValidRegisterIndex(instruction_string[3]);
 	} // validate MOVE 
 
 	if (instruction_string[0] >= '5' && instruction_string[0] <= '9') {
@@ -33,6 +33,34 @@ bool Validation::isValidInstruction(std::string& instruction_string) {
 	if (toupper(instruction_string[0]) == 'C') {
 		return true;
 	} // validate HALT
+
+	return false;
+}
+
+bool Utilities::Validation::isValidCode(std::string& code) {
+	if (code.size() != 2) {
+		return false;
+	}
+
+	if ((code[0] >= '1' && code[0] <= '3') || (toupper(code[0]) == 'B') || (toupper(code[0]) == 'D')) {
+		return isValidRegisterIndex(code[1]);
+	}
+
+	if (code[0] == '4') {
+		return true;
+	}
+
+	if (code[0] >= '5' && code[0] <= '9') {
+		return isValidRegisterIndex(code[1]);
+	}
+
+	if (toupper(code[0] == 'A')) {
+		return isValidRegisterIndex(code[1]);
+	}
+
+	if (toupper(code[0] == 'C')) {
+		return true;
+	}
 
 	return false;
 }
@@ -76,6 +104,20 @@ System::String^ Conversion::convertStdStringToSystemString(std::string& string) 
 
 std::string Conversion::convertSystemStringToStdString(System::String^ string) {
 	return msclr::interop::marshal_as<std::string>(string);
+}
+
+std::string Utilities::Conversion::convertStdStringToASCIIChar(std::string& string) {
+	int ascii_code = std::stoi(string, nullptr, 16);
+	char char_result = char(ascii_code);
+	std::string result = "";
+	result.push_back(char_result); 
+	return result;
+}
+
+std::string Utilities::Conversion::convertASCIICharToStdString(char& ch) {
+	int ascii_code = int(ch);
+	std::string result = Conversion::convertDecToHex(ascii_code);
+	return result;
 }
 
 
@@ -139,6 +181,10 @@ std::string Conversion::convertDecToBin(double decimal) {
 	return binary;
 }
 
+System::String^ Conversion::convertDecToHexSystemString(int dec) {
+	return convertStdStringToSystemString(Conversion::convertDecToHex(dec));
+}
+
 double Conversion::convvertBinToFloat(std::string& binary) {
 	// make sure it's 8-bits
 	binary.insert(0, 8 - binary.size(), '0');
@@ -158,11 +204,19 @@ double Conversion::convvertBinToFloat(std::string& binary) {
 		+ 0.0625 * std::stoi(std::to_string(binary[7] - '0'));
 
 
-	// Get float value using explicit normalization
-	const int bias = 4;
-	double result = sign * mantissa * pow(2, exponent - bias);
+	// get float value using explicit normalization
+	const int BIAS = 4;
+	double result = sign * mantissa * pow(2, exponent - BIAS);
 	Conversion::clampFloatingValue(result);
 	return result;
+}
+
+std::string Utilities::Conversion::capitalize(std::string str) {
+	for (char& ch : str) {
+		ch = toupper(ch);
+	}
+
+	return str;
 }
 
 std::string Conversion::convertFloatToBin(double decimal) {
@@ -186,8 +240,8 @@ std::string Conversion::convertFloatToBin(double decimal) {
 	}
 
 	// normalize
-	const int bias = 4;
-	std::string exponent_bits = Conversion::convertIntToBin(exponent + bias);
+	const int BIAS = 4;
+	std::string exponent_bits = Conversion::convertIntToBin(exponent + BIAS);
 	exponent_bits.insert(0, 3 - exponent_bits.size(), '0'); // make sure the exponent is 3-bits
 
 	// extract mantissa
