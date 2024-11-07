@@ -53,6 +53,7 @@ void ExecutionController::runAllInstructions() {
 		this->executeCurrentInstruction();
 
 		if (this->machine->getCPU().isHalt()) {
+			this->setCurrentAddress(this->machine->getCPU().getProgramCounter() - 2);
 			program_halted();
 			break;
 		} // exit if program is halted
@@ -74,7 +75,7 @@ void ExecutionController::runAllInstructions() {
 }
 
 void ExecutionController::fetchInstruction() {
-	if (this->hasReachedEndOfMemory() || this->getCurrentAddress() == "FF") {
+	if ((this->hasReachedEndOfMemory() || this->getCurrentAddress() == "FF") && !this->all_instructions) {
 		reached_end_of_memory();
 		return;
 	} // exit if reached end of memory

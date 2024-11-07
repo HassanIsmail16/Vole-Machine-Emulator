@@ -860,7 +860,7 @@ System::Void VoleMachine::MainForm::OnProgramTimeOut() {
 	this->exec_ctrl->resetProgram();
 	this->resetRegistersColor();
 	this->memory_list_ScrollUpdate();
-	MessageBox::Show("The execution timed out, please make sure there are no infinite loops in the instruction set.", "Program Timeout", MessageBoxButtons::OK, MessageBoxIcon::Information);
+	MessageBox::Show("The execution timed out, please make sure there are no infinite loops in the instruction set.", "Program Timeout", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 }
 
 System::Void VoleMachine::MainForm::OnReachedEndOfMemory() {
@@ -1275,11 +1275,11 @@ System::Void VoleMachine::MainForm::starting_address_textbox_SelectStartingAddre
 }
 
 System::Void VoleMachine::MainForm::current_address_textbox_TextChanged(System::Object^ sender, System::EventArgs^ e) {
-	if (this->current_address_textbox->Text == "FF") {
-		this->OnReachedEndOfMemory();
-		this->current_address_textbox->Text = this->exec_ctrl->getCurrentAddress();
+	if ((this->current_address_textbox->Text == "FF")) {
+		this->current_address_textbox->Text = "00";
 	}
 }
+
 System::Void VoleMachine::MainForm::MainForm_Activated(System::Object^ sender, System::EventArgs^ e) {
 	this->BringToFront();
 }
