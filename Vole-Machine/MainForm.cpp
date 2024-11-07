@@ -590,7 +590,16 @@ System::Void VoleMachine::MainForm::memory_list_OnMemoryCellValueChanged(Object^
 	} // if memory list is updating, don't update
 	
 	int address = e->RowIndex * 2 + e->ColumnIndex - 1;
-	String^ value = this->memory_list->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Value->ToString();
+	Object^ cell_value_obj = this->memory_list->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Value;
+	
+	String^ value;
+
+	if (cell_value_obj == nullptr) {
+		value = "00";
+		this->memory_list->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Value = "00";
+	} else {
+		value = cell_value_obj->ToString();
+	}g
 
 	this->mem_ctrl->setMemoryValueAt(address, value);
 }
