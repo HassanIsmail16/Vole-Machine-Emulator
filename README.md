@@ -12,7 +12,8 @@ The Visual Studio project solution file is called "Vole-Machine.sln" and can be 
 ## How to Use
 ### Writing instructions
 Instructions can be written directly in the memory list cells in the user interface, by loading them from a file using the "Load From File" button in the UI, or using the "Batch Add Code" button in the UI.
-![image](https://github.com/user-attachments/assets/366332e4-bf41-4256-8206-54d1a703867e)
+
+![Vole-Machine UI](https://github.com/user-attachments/assets/9651b203-98b7-41ea-bca5-7d9adb57d761)
 
 ### List of Instructions
 - **1RXY** -> Load content of memory cell "XY" into register "R"
