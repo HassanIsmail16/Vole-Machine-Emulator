@@ -144,7 +144,207 @@ System::Void VoleMachine::MainForm::initializeExecutionController(Machine* machi
 	this->exec_ctrl->reset_instruction_register += gcnew ExecutionController::ResetInstructionRegisterEventHandler(this, &MainForm::resetInstructionRegister);
 }
 
-#pragma endregion
+System::Void VoleMachine::MainForm::initializeTooltips() {
+	int auto_pop_delay = 5000;
+	int initial_delay = 500;
+	int reshow_delay = 500;
+
+	// starting_address_textbox tooltip
+	this->starting_address_textbox_tooltip->AutoPopDelay = auto_pop_delay;
+	this->starting_address_textbox_tooltip->InitialDelay = initial_delay;
+	this->starting_address_textbox_tooltip->ReshowDelay = reshow_delay;
+
+	String^ tooltip_text = "Enter the starting address in hex (0-9, A-F).\nThis will change the address that the program counter starts at\nand the address that the instructions will start loading from file at.";
+	this->starting_address_textbox_tooltip->SetToolTip(this->starting_address_textbox, tooltip_text);
+	this->starting_address_textbox_tooltip->SetToolTip(this->starting_address_label, tooltip_text);
+
+	// load_from_file tooltip
+	this->load_from_file_tt->AutoPopDelay = auto_pop_delay;
+	this->load_from_file_tt->InitialDelay = initial_delay;
+	this->load_from_file_tt->ReshowDelay = reshow_delay;
+
+	String^ load_from_file_tt_text = "Select a file to load instructions from.";
+	this->load_from_file_tt->SetToolTip(this->load_from_file, load_from_file_tt_text);
+	
+	// export_to_file tooltip
+	this->export_to_file_tt->AutoPopDelay = auto_pop_delay;
+	this->export_to_file_tt->InitialDelay = initial_delay;
+	this->export_to_file_tt->ReshowDelay = reshow_delay;
+
+	String^ export_to_file_tt_text = "Select a file to export the current program to.";
+	this->export_to_file_tt->SetToolTip(this->export_to_file, export_to_file_tt_text);
+
+	// reset_memory tooltip
+	this->reset_memory_tt->AutoPopDelay = auto_pop_delay;
+	this->reset_memory_tt->InitialDelay = initial_delay;
+	this->reset_memory_tt->ReshowDelay = reshow_delay;
+
+	String^ reset_memory_tt_text = "Reset all memory cells";
+	this->reset_memory_tt->SetToolTip(this->reset_memory, reset_memory_tt_text);
+
+	// reset registers tooltip
+	this->reset_registers_tt->AutoPopDelay = auto_pop_delay;
+	this->reset_registers_tt->InitialDelay = initial_delay;
+	this->reset_registers_tt->ReshowDelay = reshow_delay;
+
+	String^ reset_registers_tt_text = "Reset all registers";
+	this->reset_registers_tt->SetToolTip(this->reset_registers, reset_registers_tt_text);
+
+	// run_until_halt tooltip
+	this->run_until_halt_tt->AutoPopDelay = auto_pop_delay;
+	this->run_until_halt_tt->InitialDelay = initial_delay;
+	this->run_until_halt_tt->ReshowDelay = reshow_delay;
+
+	String^ run_until_halt_tt_text = "Run the program until it halts, reaches end of memory, or times out (15 sec)";
+	this->run_until_halt_tt->SetToolTip(this->run_until_halt, run_until_halt_tt_text);
+
+	// instruction_speed tooltip
+	this->instruction_speed_tt->AutoPopDelay = auto_pop_delay;
+	this->instruction_speed_tt->InitialDelay = initial_delay;
+	this->instruction_speed_tt->ReshowDelay = reshow_delay;
+
+	String^ instruction_speed_tt_text = "Change the speed at which the program executes";
+	this->instruction_speed_tt->SetToolTip(this->steps_spinbox, instruction_speed_tt_text);
+	this->instruction_speed_tt->SetToolTip(this->steps_label, instruction_speed_tt_text);
+
+	// play tooltip
+	this->play_tt->AutoPopDelay = auto_pop_delay;
+	this->play_tt->InitialDelay = initial_delay;
+	this->play_tt->ReshowDelay = reshow_delay;
+
+	String^ play_tt_text = "Play/Pause program execution";
+	this->play_tt->SetToolTip(this->play, play_tt_text);
+
+	// step tooltip
+	this->step_tt->AutoPopDelay = auto_pop_delay;
+	this->step_tt->InitialDelay = initial_delay;
+	this->step_tt->ReshowDelay = reshow_delay;
+
+	String^ step_tt_text = "Execute one instruction";
+	this->step_tt->SetToolTip(this->step, step_tt_text);
+
+	// current_address tooltip
+	this->current_address_tt->AutoPopDelay = auto_pop_delay;
+	this->current_address_tt->InitialDelay = initial_delay;
+	this->current_address_tt->ReshowDelay = reshow_delay;
+
+	String^ current_address_tt_text = "Current program counter address";
+	this->current_address_tt->SetToolTip(this->current_address_textbox, current_address_tt_text);
+	this->current_address_tt->SetToolTip(this->program_counter_address_label, current_address_tt_text);
+
+	// fetch tooltip
+	this->fetch_tt->AutoPopDelay = auto_pop_delay;
+	this->fetch_tt->InitialDelay = initial_delay;
+	this->fetch_tt->ReshowDelay = reshow_delay;
+
+	String^ fetch_tt_text = "Fetch the next instruction";
+	this->fetch_tt->SetToolTip(this->fetch, fetch_tt_text);
+
+	// reset tooltip
+	this->reset_tt->AutoPopDelay = auto_pop_delay;
+	this->reset_tt->InitialDelay = initial_delay;
+	this->reset_tt->ReshowDelay = reshow_delay;
+
+	String^ reset_tt_text = "Reset the program counter to starting address";
+	this->reset_tt->SetToolTip(this->reset_pc, reset_tt_text);
+	
+	// current_instruction tooltip
+	this->current_instruction_tt->AutoPopDelay = auto_pop_delay;
+	this->current_instruction_tt->InitialDelay = initial_delay;
+	this->current_instruction_tt->ReshowDelay = reshow_delay;
+
+	String^ current_instruction_tt_text = "Current fetched instruction";
+	this->current_instruction_tt->SetToolTip(this->current_instruction_textbox, current_instruction_tt_text);
+	this->current_instruction_tt->SetToolTip(this->instruction_register_instruction_label, current_instruction_tt_text);
+
+	// decode tooltip
+	this->decode_tt->AutoPopDelay = auto_pop_delay;
+	this->decode_tt->InitialDelay = initial_delay;
+	this->decode_tt->ReshowDelay = reshow_delay;
+
+	String^ decode_tt_text = "Decode the current instruction";
+	this->decode_tt->SetToolTip(this->decode, decode_tt_text);
+
+	// instruction_description tooltip
+	this->instruction_description_tt->AutoPopDelay = auto_pop_delay;
+	this->instruction_description_tt->InitialDelay = initial_delay;
+	this->instruction_description_tt->ReshowDelay = reshow_delay;
+
+	String^ instruction_description_tt_text = "Description of the current instruction";
+	this->instruction_description_tt->SetToolTip(this->instruction_decode_textbox, instruction_description_tt_text);
+
+	// execute tooltip
+	this->execute_tt->AutoPopDelay = auto_pop_delay;
+	this->execute_tt->InitialDelay = initial_delay;
+	this->execute_tt->ReshowDelay = reshow_delay;
+
+	String^ execute_tt_text = "Execute the current instruction";
+	this->execute_tt->SetToolTip(this->execute, execute_tt_text);
+
+	// clear_screen tooltip
+	this->clear_screen_tt->AutoPopDelay = auto_pop_delay;
+	this->clear_screen_tt->InitialDelay = initial_delay;
+	this->clear_screen_tt->ReshowDelay = reshow_delay;
+
+	String^ clear_screen_tt_text = "Clear the screen";
+	this->clear_screen_tt->SetToolTip(this->clear_screen, clear_screen_tt_text);
+
+	// screen tooltip
+	this->screen_tt->AutoPopDelay = auto_pop_delay;
+	this->screen_tt->InitialDelay = initial_delay;
+	this->screen_tt->ReshowDelay = reshow_delay;
+
+	String^ screen_tt_text = "Screen contents. Print to screen by loading values to memory cell \"00\"";
+	this->screen_tt->SetToolTip(this->screen_textbox, screen_tt_text);
+
+	// print_ascii tooltip
+	this->print_ascii_tt->AutoPopDelay = auto_pop_delay;
+	this->print_ascii_tt->InitialDelay = initial_delay;
+	this->print_ascii_tt->ReshowDelay = reshow_delay;
+
+	String^ print_ascii_tt_text = "Print in ASCII string to the screen (converts HEX printing to ASCII)";
+	this->print_ascii_tt->SetToolTip(this->ascii_rb, print_ascii_tt_text);
+
+	// print_hex tooltip
+	this->print_hex_tt->AutoPopDelay = auto_pop_delay;
+	this->print_hex_tt->InitialDelay = initial_delay;
+	this->print_hex_tt->ReshowDelay = reshow_delay;
+
+	String^ print_hex_tt_text = "Print in HEX string to the screen (converts ASCII printing to HEX)";
+	this->print_hex_tt->SetToolTip(this->hex_rb, print_hex_tt_text);
+
+	// even_selection tooltip
+	this->even_selection_tt->AutoPopDelay = auto_pop_delay;
+	this->even_selection_tt->InitialDelay = initial_delay;
+	this->even_selection_tt->ReshowDelay = reshow_delay;
+
+	String^ even_selection_tt_text = "Select even memory cells";
+	this->even_selection_tt->SetToolTip(this->even_selection_rb, even_selection_tt_text);
+
+	// odd_selection tooltip
+	this->odd_selection_tt->AutoPopDelay = auto_pop_delay;
+	this->odd_selection_tt->InitialDelay = initial_delay;
+	this->odd_selection_tt->ReshowDelay = reshow_delay;
+
+	String^ odd_selection_tt_text = "Select odd memory cells";
+	this->odd_selection_tt->SetToolTip(this->odd_selection_rb, odd_selection_tt_text);
+
+	// help tooltip
+	this->help_tt->AutoPopDelay = auto_pop_delay;
+	this->help_tt->InitialDelay = initial_delay;
+	this->help_tt->ReshowDelay = reshow_delay;
+
+	String^ help_tt_text = "Help";
+	this->help_tt->SetToolTip(this->help, help_tt_text);
+
+	// batch_add_code tooltip
+	this->batch_add_code_tt->AutoPopDelay = auto_pop_delay;
+	this->batch_add_code_tt->InitialDelay = initial_delay;
+	this->batch_add_code_tt->ReshowDelay = reshow_delay;
+
+	String^ batch_add_code_tt_text = "Opens a textbox to batch add code to memory";
+	this->batch_add_code_tt->SetToolTip(this->batch_add_code, batch_add_code_tt_text);
+}
 
 #pragma region memory_list Events
 System::Void VoleMachine::MainForm::memory_list_CellEndEdit(Object^ sender, DataGridViewCellEventArgs^ e) {
@@ -926,6 +1126,12 @@ System::Void VoleMachine::MainForm::hex_rb_CheckedChanged(System::Object^ sender
 	this->updateScreen();
 }
 
+System::Void VoleMachine::MainForm::help_click(System::Object^ sender, System::EventArgs^ e) {
+	HelpForm^ help_form = gcnew HelpForm();
+	help_form->StartPosition = FormStartPosition::CenterParent;
+	help_form->Show();
+}
+
 System::String^ VoleMachine::MainForm::getInstructionDescription(OP_CODE opcode, System::String^ first_operand, System::String^ second_operand, System::String^ third_operand) {
 	switch (opcode) {
 	case OP_CODE::LOAD_M:
@@ -933,10 +1139,7 @@ System::String^ VoleMachine::MainForm::getInstructionDescription(OP_CODE opcode,
 	case OP_CODE::LOAD_V:
 		return "LOAD register " + first_operand + " with the value " + second_operand + third_operand;
 	case OP_CODE::STORE:
-		if (second_operand == "0" && third_operand == "0") {
-			return "STORE the content of register " + first_operand + " in memory address " + second_operand + third_operand + " (Write to Screen).";
-		}
-		return "STORE the content of register " + first_operand + " in memory address " + second_operand + third_operand;
+		return "STORE the content of register " + first_operand + " in memory address " + second_operand + third_operand + ((second_operand == "0" && third_operand == "0") ? " (Write to screen)" : "");
 	case OP_CODE::MOVE:
 		return "MOVE the content of register " + second_operand + " to register " + third_operand;
 	case OP_CODE::ADD:
@@ -1067,5 +1270,8 @@ System::Void VoleMachine::MainForm::current_address_textbox_TextChanged(System::
 		this->OnReachedEndOfMemory();
 		this->current_address_textbox->Text = this->exec_ctrl->getCurrentAddress();
 	}
+}
+System::Void VoleMachine::MainForm::MainForm_Activated(System::Object^ sender, System::EventArgs^ e) {
+	this->BringToFront();
 }
 #pragma endregion

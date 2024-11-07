@@ -5,6 +5,7 @@
 #include "RegistersController.h"
 #include "ExecutionController.h"
 #include "BatchAddCodeForm.h"
+#include "HelpForm.h"
 
 namespace VoleMachine {
 	using namespace System;
@@ -24,6 +25,7 @@ namespace VoleMachine {
 			this->initializeControllers(machine);
 			this->initializeRegistersList();
 			this->initializeMemoryList();
+			this->initializeTooltips();
 		#pragma endregion
 	
 		#pragma region Memory Update Highlight Timer
@@ -32,16 +34,6 @@ namespace VoleMachine {
 			this->reset_color_timer->Tick += gcnew System::EventHandler(this, &MainForm::memory_list_ResetCellColor);
 			this->color_reset_queue = gcnew System::Collections::Generic::Queue<System::Tuple<System::DateTime, int, int>^>();
 		#pragma endregion
-
-		#pragma region Starting Address Textbox Tooltip
-			this->starting_address_textbox_tooltip->AutoPopDelay = 5000;
-			this->starting_address_textbox_tooltip->InitialDelay = 500;
-			this->starting_address_textbox_tooltip->ReshowDelay = 500;
-			String^ tooltip_text = "Enter the starting address in hex (0-9, A-F).\nThis will change the address that the program counter starts at\nand the address that the instructions will start loading from file at.";
-			this->starting_address_textbox_tooltip->SetToolTip(this->starting_address_textbox, tooltip_text);
-			this->starting_address_textbox_tooltip->SetToolTip(this->starting_address_label, tooltip_text);
-		#pragma endregion
-
 		}
 
 	protected:
@@ -122,8 +114,31 @@ namespace VoleMachine {
 		private: System::Windows::Forms::GroupBox^ screen_groupbox;
 		private: System::Windows::Forms::RadioButton^ hex_rb;
 		private: System::Windows::Forms::RadioButton^ ascii_rb;
-private: System::Windows::Forms::Button^ batch_add_code;
-
+		private: System::Windows::Forms::Button^ batch_add_code;
+		private: System::Windows::Forms::Button^ help;
+		private: System::Windows::Forms::ToolTip^ load_from_file_tt;
+		private: System::Windows::Forms::ToolTip^ export_to_file_tt;
+		private: System::Windows::Forms::ToolTip^ reset_memory_tt;
+		private: System::Windows::Forms::ToolTip^ reset_registers_tt;
+		private: System::Windows::Forms::ToolTip^ run_until_halt_tt;
+		private: System::Windows::Forms::ToolTip^ instruction_speed_tt;
+		private: System::Windows::Forms::ToolTip^ play_tt;
+		private: System::Windows::Forms::ToolTip^ step_tt;
+		private: System::Windows::Forms::ToolTip^ current_address_tt;
+		private: System::Windows::Forms::ToolTip^ fetch_tt;
+		private: System::Windows::Forms::ToolTip^ reset_tt;
+		private: System::Windows::Forms::ToolTip^ current_instruction_tt;
+		private: System::Windows::Forms::ToolTip^ decode_tt;
+		private: System::Windows::Forms::ToolTip^ instruction_description_tt;
+		private: System::Windows::Forms::ToolTip^ execute_tt;
+		private: System::Windows::Forms::ToolTip^ clear_screen_tt;
+		private: System::Windows::Forms::ToolTip^ screen_tt;
+		private: System::Windows::Forms::ToolTip^ print_ascii_tt;
+		private: System::Windows::Forms::ToolTip^ print_hex_tt;
+		private: System::Windows::Forms::ToolTip^ even_selection_tt;
+		private: System::Windows::Forms::ToolTip^ odd_selection_tt;
+		private: System::Windows::Forms::ToolTip^ help_tt;
+		private: System::Windows::Forms::ToolTip^ batch_add_code_tt;
 
 		private: System::ComponentModel::IContainer^ components;
 	#pragma endregion
@@ -136,6 +151,7 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle1 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
 				System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MainForm::typeid));
 				this->main_panel = (gcnew System::Windows::Forms::Panel());
+				this->help = (gcnew System::Windows::Forms::Button());
 				this->batch_add_code = (gcnew System::Windows::Forms::Button());
 				this->screen_groupbox = (gcnew System::Windows::Forms::GroupBox());
 				this->hex_rb = (gcnew System::Windows::Forms::RadioButton());
@@ -189,6 +205,29 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				this->play = (gcnew System::Windows::Forms::Button());
 				this->load_from_file = (gcnew System::Windows::Forms::Button());
 				this->starting_address_textbox_tooltip = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->load_from_file_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->export_to_file_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->reset_memory_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->reset_registers_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->run_until_halt_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->instruction_speed_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->play_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->step_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->current_address_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->fetch_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->reset_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->current_instruction_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->decode_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->instruction_description_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->execute_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->clear_screen_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->screen_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->print_ascii_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->print_hex_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->even_selection_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->odd_selection_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->help_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->batch_add_code_tt = (gcnew System::Windows::Forms::ToolTip(this->components));
 				this->main_panel->SuspendLayout();
 				this->screen_groupbox->SuspendLayout();
 				this->memory_list_groupbox->SuspendLayout();
@@ -205,6 +244,7 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				// main_panel
 				// 
 				this->main_panel->BackColor = System::Drawing::SystemColors::Control;
+				this->main_panel->Controls->Add(this->help);
 				this->main_panel->Controls->Add(this->batch_add_code);
 				this->main_panel->Controls->Add(this->screen_groupbox);
 				this->main_panel->Controls->Add(this->memory_list_groupbox);
@@ -229,11 +269,21 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				this->main_panel->Size = System::Drawing::Size(957, 584);
 				this->main_panel->TabIndex = 0;
 				// 
+				// help
+				// 
+				this->help->Location = System::Drawing::Point(10, 530);
+				this->help->Name = L"help";
+				this->help->Size = System::Drawing::Size(64, 27);
+				this->help->TabIndex = 17;
+				this->help->Text = L"Help";
+				this->help->UseVisualStyleBackColor = true;
+				this->help->Click += gcnew System::EventHandler(this, &MainForm::help_click);
+				// 
 				// batch_add_code
 				// 
-				this->batch_add_code->Location = System::Drawing::Point(10, 531);
+				this->batch_add_code->Location = System::Drawing::Point(77, 530);
 				this->batch_add_code->Name = L"batch_add_code";
-				this->batch_add_code->Size = System::Drawing::Size(395, 21);
+				this->batch_add_code->Size = System::Drawing::Size(328, 27);
 				this->batch_add_code->TabIndex = 17;
 				this->batch_add_code->Text = L"Batch Add Code";
 				this->batch_add_code->UseVisualStyleBackColor = true;
@@ -336,7 +386,7 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				// credits_label
 				// 
 				this->credits_label->AutoSize = true;
-				this->credits_label->Location = System::Drawing::Point(74, 560);
+				this->credits_label->Location = System::Drawing::Point(74, 561);
 				this->credits_label->Name = L"credits_label";
 				this->credits_label->Size = System::Drawing::Size(263, 13);
 				this->credits_label->TabIndex = 13;
@@ -793,9 +843,11 @@ private: System::Windows::Forms::Button^ batch_add_code;
 				this->Controls->Add(this->main_panel);
 				this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 				this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
+				this->MaximizeBox = false;
 				this->Name = L"MainForm";
 				this->Text = L"Vole Machine Emulator";
-				this->MaximizeBox = false;
+				this->TopMost = false;
+				this->Activated += gcnew System::EventHandler(this, &MainForm::MainForm_Activated);
 				this->main_panel->ResumeLayout(false);
 				this->main_panel->PerformLayout();
 				this->screen_groupbox->ResumeLayout(false);
@@ -827,6 +879,7 @@ private: System::Windows::Forms::Button^ batch_add_code;
 			System::Void initializeMemoryController(Machine* machine);
 			System::Void initializeRegistersController(Machine* machine);
 			System::Void initializeExecutionController(Machine* machine);
+			System::Void initializeTooltips();
 	#pragma endregion
 
 	#pragma region Memory
@@ -875,9 +928,7 @@ private: System::Windows::Forms::Button^ batch_add_code;
 			System::Void OnReachedEndOfMemory();
 			System::Void OnExecutedAllInstructions();
 			System::Void updateScreen();
-
 			System::Void hexScreenToASCII();
-
 			System::Void asciiScreenToHex();
 	#pragma endregion
 
@@ -901,6 +952,7 @@ private: System::Windows::Forms::Button^ batch_add_code;
 			void updateOperandLabels(OP_CODE opcode);
 			void updateOperandsAndDescription(System::Collections::Generic::List<int>^ decodedInstruction, OP_CODE opcode);
 			System::Void hex_rb_CheckedChanged(System::Object^ sender, System::EventArgs^ e);
+			System::Void help_click(System::Object^ sender, System::EventArgs^ e);
 	#pragma endregion
 
 	#pragma region Textbox Event Handlers
@@ -913,6 +965,8 @@ private: System::Windows::Forms::Button^ batch_add_code;
 			System::Void starting_address_textbox_SelectStartingAddressText();
 			System::Void current_address_textbox_TextChanged(System::Object^ sender, System::EventArgs^ e);
 	#pragma endregion
+
+			System::Void MainForm_Activated(System::Object^ sender, System::EventArgs^ e);
 
 	#pragma region Data Members
 			MemoryController^ mem_ctrl;
