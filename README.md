@@ -36,7 +36,6 @@ You can execute instructions by pressing "Fetch", (optionally) "Decode", then "E
 
 ## Notes
 - Invalid instructions are ignored
-- If the instructions inside memory result in an infinite loop, they will be executed indefinitely
 - To print to screen in hexadecimal form, choose the "Print HEX" option in the screen settings, and to print in ASCII form, choose the "Print ASCII" option
 - You can select an address for the program counter to be set at by clicking on the memory list address you want in the UI
   - If you want to select an odd address, you can toggle the option "Odd Selection" in memory list settings
