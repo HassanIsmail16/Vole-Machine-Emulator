@@ -41,3 +41,4 @@ You can execute instructions by pressing "Fetch", (optionally) "Decode", then "E
 - You can select an address for the program counter to be set at by clicking on the memory list address you want in the UI
   - If you want to select an odd address, you can toggle the option "Odd Selection" in memory list settings
 - If you want to change the address at which execution starting or instruction loading from file starts, you can change it in the textbox "Starting Address" in memory list settings
+- The program works only on Windows
