@@ -133,6 +133,7 @@
     <ClCompile Include="CPU.cpp" />
     <ClCompile Include="CU.cpp" />
     <ClCompile Include="ExecutionController.cpp" />
+    <ClCompile Include="HelpForm.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="Machine.cpp" />
     <ClCompile Include="MainForm.cpp" />
@@ -150,6 +151,9 @@
     <ClInclude Include="CPU.h" />
     <ClInclude Include="CU.h" />
     <ClInclude Include="ExecutionController.h" />
+    <ClInclude Include="HelpForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Machine.h" />
     <ClInclude Include="MainForm.h">
@@ -163,6 +167,9 @@
   <ItemGroup>
     <EmbeddedResource Include="BatchAddCodeForm.resx">
       <DependentUpon>BatchAddCodeForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpForm.resx">
+      <DependentUpon>HelpForm.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.h</DependentUpon>
