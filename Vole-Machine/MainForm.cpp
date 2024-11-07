@@ -599,7 +599,7 @@ System::Void VoleMachine::MainForm::memory_list_OnMemoryCellValueChanged(Object^
 		this->memory_list->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Value = "00";
 	} else {
 		value = cell_value_obj->ToString();
-	}g
+	}
 
 	this->mem_ctrl->setMemoryValueAt(address, value);
 }
