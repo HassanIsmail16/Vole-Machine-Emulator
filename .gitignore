@@ -50,6 +50,7 @@ build/**/*
 include/*
 bin/*
 test/test_runner
+~AutoRecover.*
 
 
 ## vs
