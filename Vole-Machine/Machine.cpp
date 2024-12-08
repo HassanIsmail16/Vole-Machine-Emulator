@@ -3,23 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-//void Machine::loadProgramFromFile(std::string& filename) {
-//	this->memory.clearMemory();
-//
-//	// begin adding instructions from the starting address
-//	this->memory.setLastAddedInstructionIndex(this->processor.getStartingAddress());
-//
-//	std::fstream file(filename);
-//
-//	std::string current_instruction;
-//	while (file >> current_instruction) {
-//		if (!Utilities::Validation::isValidInstruction(current_instruction)) {
-//			continue;
-//		} // skip instruction if not valid
-//
-//		this->memory.addInstruction(Utilities::Conversion::capitalize(current_instruction));
-//	}
-//}
 
 void Machine::loadInstructions(std::istream& input) {
     std::string temp; // temporary string to hold 4 characters
