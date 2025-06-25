@@ -4,6 +4,9 @@ This is a vole machine emulator based on the Von Neumann Architecture. It consis
 Instruction are stored in memory. Each instruction consists of 4 hexadecimal digits, and each memory cell stores 2 hexadecimal digits, meaning that each 2 memory cells make an instruction.
 A program counter loops over all memory cells and fetches instructions from them, which can then be executed.
 
+## Demo
+[![Watch the video](https://img.youtube.com/vi/0iloy4kqEN0?si=I6hr4nCXMHHKjjF7/hqdefault.jpg)](https://www.youtube.com/watch?v=0iloy4kqEN0?si=I6hr4nCXMHHKjjF7)
+
 ## How to Run
 You can run the program directly from the executable, which can be found in the [latest release in the repository](https://github.com/HassanIsmail16/Vole-Machine-Emulator/releases/tag/Latest). 
 You can also build it directly using Visual Studio with the **Desktop Development with C++ pack**, the **.NET Desktop Development pack**, and the **C++/CLI support for v143 build tools** component. 
