@@ -5,7 +5,7 @@ Instruction are stored in memory. Each instruction consists of 4 hexadecimal dig
 A program counter loops over all memory cells and fetches instructions from them, which can then be executed.
 
 ## Demo
-[![Watch the video](https://img.youtube.com/vi/0iloy4kqEN0?si=I6hr4nCXMHHKjjF7/hqdefault.jpg)](https://www.youtube.com/watch?v=0iloy4kqEN0?si=I6hr4nCXMHHKjjF7)
+[Watch the video](https://www.youtube.com/watch?v=0iloy4kqEN0)
 
 ## How to Run
 You can run the program directly from the executable, which can be found in the [latest release in the repository](https://github.com/HassanIsmail16/Vole-Machine-Emulator/releases/tag/Latest). 
