@@ -2,7 +2,7 @@
 ## Description
 This is a vole machine emulator based on the Von Neumann Architecture. It consists of memory, CPU (CU, ALU, registers), and a user interface.
 Instruction are stored in memory. Each instruction consists of 4 hexadecimal digits, and each memory cell stores 2 hexadecimal digits, meaning that each 2 memory cells make an instruction.
-A program counter loops over all memory cells and fetches instructions from them, which can then be executed.
+A program counter loops over all memory cells and fetches instructions from them, which can then be executed. The UML diagram can be found [here](https://drive.google.com/file/d/1Pi19BYTlRVDBi7llYd-G1rqq2S0upnXD/view?usp=drive_link).
 
 ## Demo
 [Watch the video](https://www.youtube.com/watch?v=0iloy4kqEN0)
@@ -14,7 +14,7 @@ The Visual Studio project solution file is called "Vole-Machine.sln" and can be 
 
 ## How to Use
 ### Writing instructions
-Instructions can be written directly in the memory list cells in the user interface, by loading them from a file using the "Load From File" button in the UI, or using the "Batch Add Code" button in the UI.
+Instructions can be written directly in the memory list cells in the user interface, by loading them from a file using the "Load From File" button in the UI, or using the "Batch Add Code" button in the UI. Sample test cases can be found [here](https://drive.google.com/drive/folders/1TOP3klX5RtK0IoCAi3KJy80CFTCJX9JI?usp=drive_link).
 
 ![Vole-Machine UI](https://github.com/user-attachments/assets/9651b203-98b7-41ea-bca5-7d9adb57d761)
 
